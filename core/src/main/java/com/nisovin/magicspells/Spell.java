@@ -33,24 +33,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import com.nisovin.magicspells.util.Util;
-import com.nisovin.magicspells.util.IntMap;
-import com.nisovin.magicspells.util.TxtUtil;
-import com.nisovin.magicspells.util.TimeUtil;
-import com.nisovin.magicspells.util.CastItem;
+import com.nisovin.magicspells.util.*;
 import com.nisovin.magicspells.spelleffects.*;
-import com.nisovin.magicspells.util.TargetInfo;
-import com.nisovin.magicspells.util.BlockUtils;
 import com.nisovin.magicspells.mana.ManaHandler;
-import com.nisovin.magicspells.util.VariableMod;
-import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.spells.BuffSpell;
-import com.nisovin.magicspells.util.LocationUtil;
-import com.nisovin.magicspells.util.InventoryUtil;
-import com.nisovin.magicspells.util.SpellReagents;
 import com.nisovin.magicspells.spells.PassiveSpell;
-import com.nisovin.magicspells.util.ExperienceUtils;
-import com.nisovin.magicspells.util.ValidTargetList;
 import com.nisovin.magicspells.util.compat.EventUtil;
 import com.nisovin.magicspells.mana.ManaChangeReason;
 import com.nisovin.magicspells.events.SpellCastEvent;
@@ -58,7 +45,6 @@ import com.nisovin.magicspells.handlers.DebugHandler;
 import com.nisovin.magicspells.handlers.MoneyHandler;
 import com.nisovin.magicspells.events.SpellCastedEvent;
 import com.nisovin.magicspells.events.SpellTargetEvent;
-import com.nisovin.magicspells.util.ValidTargetChecker;
 import com.nisovin.magicspells.util.magicitems.MagicItem;
 import com.nisovin.magicspells.castmodifiers.ModifierSet;
 import com.nisovin.magicspells.spelleffects.effecttypes.*;
@@ -72,6 +58,7 @@ import com.nisovin.magicspells.spelleffects.trackers.AsyncEffectTracker;
 import com.nisovin.magicspells.events.MagicSpellsEntityDamageByEntityEvent;
 
 import de.slikey.effectlib.Effect;
+import de.slikey.effectlib.math.EquationTransform;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.LinkedListMultimap;
@@ -81,6 +68,13 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 	protected Random random = ThreadLocalRandom.current();
 
 	protected MagicConfig config;
+
+	protected ConfigData configData;
+
+	protected EquationTransform equationTransform;
+	protected EquationTransform equationTransformX;
+	protected EquationTransform equationTransformY;
+	protected EquationTransform equationTransformZ;
 
 	protected Map<UUID, Long> nextCast;
 	protected Map<String, Integer> xpGranted;
@@ -443,6 +437,26 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 		tags.add("spell-package:" + getClass().getPackage().getName());
 	}
 
+	protected ConfigData getConfigData() {
+		return configData;
+	}
+
+	protected EquationTransform getEquationTransform() {
+		return equationTransform;
+	}
+
+	protected EquationTransform getEquationTransformX() {
+		return equationTransformX;
+	}
+
+	protected EquationTransform getEquationTransformY() {
+		return equationTransformY;
+	}
+
+	protected EquationTransform getEquationTransformZ() {
+		return equationTransformZ;
+	}
+
 	public Set<String> getTags() {
 		return Collections.unmodifiableSet(tags);
 	}
@@ -469,48 +483,44 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 					float money = 1;
 
 					switch (data[0].toLowerCase()) {
-						case "health":
+						case "health" -> {
 							if (data.length > 1) amt = Integer.parseInt(data[1]);
 							reagents.setHealth(amt);
-							break;
-						case "mana":
+						}
+						case "mana" -> {
 							if (data.length > 1) amt = Integer.parseInt(data[1]);
 							reagents.setMana(amt);
-							break;
-						case "hunger":
+						}
+						case "hunger" -> {
 							if (data.length > 1) amt = Integer.parseInt(data[1]);
 							reagents.setHunger(amt);
-							break;
-						case "experience":
+						}
+						case "experience" -> {
 							if (data.length > 1) amt = Integer.parseInt(data[1]);
 							reagents.setExperience(amt);
-							break;
-						case "levels":
+						}
+						case "levels" -> {
 							if (data.length > 1) amt = Integer.parseInt(data[1]);
 							reagents.setLevels(amt);
-							break;
-						case "durability":
+						}
+						case "durability" -> {
 							if (data.length > 1) amt = Integer.parseInt(data[1]);
 							reagents.setDurability(amt);
-							break;
-						case "money":
+						}
+						case "money" -> {
 							if (data.length > 1) money = Float.parseFloat(data[1]);
 							reagents.setMoney(money);
-							break;
-						case "variable":
-							reagents.addVariable(data[1], Double.parseDouble(data[2]));
-							break;
-						default:
+						}
+						case "variable" -> reagents.addVariable(data[1], Double.parseDouble(data[2]));
+						default -> {
 							if (data.length > 1) amt = Integer.parseInt(data[1]);
-
 							MagicItemData itemData = MagicItems.getMagicItemDataFromString(data[0]);
 							if (itemData == null) {
 								MagicSpells.error("Failed to process cost value for " + internalName + " spell: " + costVal);
 								continue;
 							}
-
 							reagents.addItem(new SpellReagents.ReagentItem(itemData, amt));
-							break;
+						}
 					}
 				} catch (Exception e) {
 					// FIXME this should not be a means of breaking
@@ -787,6 +797,51 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 
 	protected boolean isConfigSection(String key) {
 		return config.isSection("spells." + internalName + '.' + key);
+	}
+
+	// Used for functions below
+	protected String getConfigString(LivingEntity caster, String key, String defaultValue) {
+		equationTransform = MagicSpells.getEquationStore().getTransform(MagicSpells.doVariableReplacements(caster, config.getString("spells." + internalName + '.' + key, defaultValue)));
+		return equationTransform.get() + "";
+	}
+
+	protected ConfigData getConfigDataString(LivingEntity caster, String startValue, String key) {
+		return new ConfigData(startValue, MagicSpells.doVariableReplacements(caster, config.getString("spells." + internalName + '.' + key, startValue)));
+	}
+
+	protected ConfigData getConfigDataInt(LivingEntity caster, int startValue, String key) {
+		return new ConfigData(startValue, Integer.parseInt(getConfigString(caster, key, startValue + "")));
+	}
+
+	protected ConfigData getConfigDataLong(LivingEntity caster, long startValue, String key) {
+		return new ConfigData(startValue, Long.parseLong(getConfigString(caster, key, startValue + "")));
+	}
+
+	protected ConfigData getConfigDataBoolean(LivingEntity caster, boolean startValue, String key) {
+		return new ConfigData(startValue, Boolean.parseBoolean(MagicSpells.doVariableReplacements(caster, config.getString("spells." + internalName + '.' + key, startValue + ""))));
+	}
+
+	protected ConfigData getConfigDataDouble(LivingEntity caster, double startValue, String key) {
+		return new ConfigData(startValue, Double.parseDouble(getConfigString(caster, key, startValue + "")));
+	}
+
+	protected ConfigData getConfigDataFloat(LivingEntity caster, float startValue, String key) {
+		return new ConfigData(startValue, Float.parseFloat(getConfigString(caster, key, startValue + "")));
+	}
+
+	// needs testing
+	protected ConfigData getConfigDataVector(LivingEntity caster, Vector startValue, String key, String defaultValue) {
+		String[] vecStrings = getConfigString(key, defaultValue).split(",");
+		equationTransformX = MagicSpells.getEquationStore().getTransform(MagicSpells.doVariableReplacements(caster, vecStrings[0]));
+		equationTransformY = MagicSpells.getEquationStore().getTransform(MagicSpells.doVariableReplacements(caster, vecStrings[1]));
+		equationTransformZ = MagicSpells.getEquationStore().getTransform(MagicSpells.doVariableReplacements(caster, vecStrings[2]));
+		return new ConfigData(startValue, new Vector(
+				equationTransformX.get(),
+				equationTransformY.get(),
+				equationTransformZ.get()));
+				/*Double.parseDouble(MagicSpells.doVariableReplacements(caster, vecStrings[0])),
+				Double.parseDouble(MagicSpells.doVariableReplacements(caster, vecStrings[1])),
+				Double.parseDouble(MagicSpells.doVariableReplacements(caster, vecStrings[2])));*/
 	}
 
 	public final SpellCastResult cast(LivingEntity livingEntity) {
@@ -2123,8 +2178,8 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 
 		private boolean inBounds(Location to) {
 			return Math.abs(from.getX() - to.getX()) < motionTolerance
-				&& Math.abs(from.getY() - to.getY()) < motionTolerance
-				&& Math.abs(from.getZ() - to.getZ()) < motionTolerance;
+					&& Math.abs(from.getY() - to.getY()) < motionTolerance
+					&& Math.abs(from.getZ() - to.getZ()) < motionTolerance;
 		}
 
 		private void interrupt() {
@@ -2219,8 +2274,8 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 
 		private boolean inBounds(Location to) {
 			return Math.abs(from.getX() - to.getX()) < motionTolerance
-				&& Math.abs(from.getY() - to.getY()) < motionTolerance
-				&& Math.abs(from.getZ() - to.getZ()) < motionTolerance;
+					&& Math.abs(from.getY() - to.getY()) < motionTolerance
+					&& Math.abs(from.getZ() - to.getZ()) < motionTolerance;
 		}
 
 		private void interrupt() {

@@ -61,6 +61,7 @@ import com.nisovin.magicspells.variables.variabletypes.GlobalStringVariable;
 import com.nisovin.magicspells.variables.variabletypes.PlayerStringVariable;
 
 import de.slikey.effectlib.EffectManager;
+import de.slikey.effectlib.math.EquationStore;
 
 public class MagicSpells extends JavaPlugin {
 
@@ -90,6 +91,8 @@ public class MagicSpells extends JavaPlugin {
 	private Map<String, Spellbook> spellbooks; // Player spellbooks
 
 	private List<Spell> spellsOrdered; // Spells ordered
+
+	private EquationStore equationStore;
 
 	// Container vars
 	private ManaHandler manaHandler;
@@ -202,6 +205,8 @@ public class MagicSpells extends JavaPlugin {
 
 		effectManager = new EffectManager(this);
 		effectManager.enableDebug(debug);
+
+		equationStore = EquationStore.getInstance();
 
 		commandManager = new PaperCommandManager(plugin);
 
@@ -801,6 +806,10 @@ public class MagicSpells extends JavaPlugin {
 		return createSpellClassLoader(jarList, dataFolder);
 	}
 
+	public static EquationStore getEquationStore() {
+		return plugin.equationStore;
+	}
+
 	private void addPermission(PluginManager pm, String perm, PermissionDefault permDefault) {
 		addPermission(pm, perm, permDefault, null, null);
 	}
@@ -979,7 +988,7 @@ public class MagicSpells extends JavaPlugin {
 	public static boolean isDebugNumberFormat() {
 		return plugin.debugNumberFormat;
 	}
-	
+
 	public static boolean areBowCycleButtonsReversed() {
 		return plugin.reverseBowCycleButtons;
 	}
@@ -1335,8 +1344,9 @@ public class MagicSpells extends JavaPlugin {
 	}
 
 	private static final Pattern chatVarMatchPattern = Pattern.compile("%var:(\\w+)(?::(\\d+))?%", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-	public static String doSubjectVariableReplacements(Player player, String string) {
+	public static String doSubjectVariableReplacements(LivingEntity caster, String string) {
 		if (string == null || string.isEmpty() || plugin.variableManager == null) return string;
+		if (!(caster instanceof Player pl)) return string;
 
 		Matcher matcher = chatVarMatchPattern.matcher(string);
 		StringBuffer buf = new StringBuffer();
@@ -1353,12 +1363,12 @@ public class MagicSpells extends JavaPlugin {
 			String value;
 			if (place != null) {
 				if (variable instanceof GlobalStringVariable || variable instanceof PlayerStringVariable) {
-					value = TxtUtil.getStringNumber(variable.getStringValue(player), Integer.parseInt(place));
+					value = TxtUtil.getStringNumber(variable.getStringValue(pl), Integer.parseInt(place));
 				} else {
-					value = TxtUtil.getStringNumber(variable.getValue(player), Integer.parseInt(place));
+					value = TxtUtil.getStringNumber(variable.getValue(pl), Integer.parseInt(place));
 				}
 			} else {
-				value = variable.getStringValue(player);
+				value = variable.getStringValue(pl);
 			}
 
 			matcher.appendReplacement(buf, Matcher.quoteReplacement(value));
@@ -1368,8 +1378,8 @@ public class MagicSpells extends JavaPlugin {
 	}
 
 	private static final Pattern chatPlayerVarMatchPattern = Pattern.compile("%playervar:(" + RegexUtil.USERNAME_REGEXP + "):(\\w+)(?::(\\d+))?%", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-	public static String doVariableReplacements(Player player, String string) {
-		string = doSubjectVariableReplacements(player, string);
+	public static String doVariableReplacements(LivingEntity caster, String string) {
+		string = doSubjectVariableReplacements(caster, string);
 		if (string == null || string.isEmpty() || plugin.variableManager == null) return string;
 
 		Matcher matcher = chatPlayerVarMatchPattern.matcher(string);
