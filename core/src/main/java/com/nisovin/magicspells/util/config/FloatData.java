@@ -79,9 +79,4 @@ public class FloatData extends ConfigData<Float> {
 		return 0f;
 	}
 
-	@Override
-	public boolean isValid() {
-		return value != null && expression != null;
-	}
-
 }

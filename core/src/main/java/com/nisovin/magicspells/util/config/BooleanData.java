@@ -42,9 +42,4 @@ public class BooleanData extends ConfigData<Boolean> {
 		return false;
 	}
 
-	@Override
-	public boolean isValid() {
-		return value != null && variable != null;
-	}
-
 }

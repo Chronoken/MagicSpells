@@ -111,9 +111,4 @@ public class DoubleData extends ConfigData<Double> {
 		return 0d;
 	}
 
-	@Override
-	public boolean isValid() {
-		return value != null && expression != null;
-	}
-
 }

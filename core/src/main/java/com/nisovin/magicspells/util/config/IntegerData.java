@@ -79,9 +79,4 @@ public class IntegerData extends ConfigData<Integer> {
 		return 0;
 	}
 
-	@Override
-	public boolean isValid() {
-		return value != null && expression != null;
-	}
-
 }

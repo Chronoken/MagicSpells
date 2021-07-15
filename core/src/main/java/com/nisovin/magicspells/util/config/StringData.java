@@ -25,9 +25,4 @@ public class StringData extends ConfigData<String> {
 		return replace ? MagicSpells.doVariableReplacements(caster, value) : value;
 	}
 
-	@Override
-	public boolean isValid() {
-		return value != null;
-	}
-
 }

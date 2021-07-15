@@ -79,9 +79,4 @@ public class LongData extends ConfigData<Long> {
 		return 0L;
 	}
 
-	@Override
-	public boolean isValid() {
-		return value != null && expression != null;
-	}
-
 }

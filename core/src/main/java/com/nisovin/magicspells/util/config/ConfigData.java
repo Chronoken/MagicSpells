@@ -10,8 +10,4 @@ public abstract class ConfigData<T> {
 
 	public abstract T get(LivingEntity caster);
 
-	public boolean isValid() {
-		return true;
-	}
-
 }

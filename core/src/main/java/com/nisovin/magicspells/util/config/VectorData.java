@@ -29,11 +29,6 @@ public class VectorData extends ConfigData<Vector> {
 		return null;
 	}
 
-	@Override
-	public boolean isValid() {
-		return x.isValid() && y.isValid() && z.isValid();
-	}
-
 	private static DoubleData createDouble(String data) {
 		Double value = null;
 		try {
