@@ -1,9 +1,5 @@
 package com.nisovin.magicspells.spells.targeted;
 
-import com.nisovin.magicspells.util.config.BooleanData;
-import com.nisovin.magicspells.util.config.ConfigData;
-import com.nisovin.magicspells.util.config.DoubleData;
-import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
@@ -16,6 +12,7 @@ import com.nisovin.magicspells.spells.DamageSpell;
 import com.nisovin.magicspells.spells.TargetedSpell;
 import com.nisovin.magicspells.util.compat.EventUtil;
 import com.nisovin.magicspells.handlers.DebugHandler;
+import com.nisovin.magicspells.util.config.ConfigData;
 import com.nisovin.magicspells.util.compat.CompatBasics;
 import com.nisovin.magicspells.spells.TargetedEntitySpell;
 import com.nisovin.magicspells.events.SpellApplyDamageEvent;
@@ -91,7 +88,6 @@ public class PainSpell extends TargetedSpell implements TargetedEntitySpell, Dam
 		if (target == null) return false;
 		if (target.isDead()) return false;
 		double localDamage = damage.get(caster) * power;
-		Bukkit.broadcastMessage(String.valueOf(damage.get(caster)));
 
 		if (checkPlugins.get(caster)) {
 			MagicSpellsEntityDamageByEntityEvent event = new MagicSpellsEntityDamageByEntityEvent(caster, target, damageType, localDamage, this);

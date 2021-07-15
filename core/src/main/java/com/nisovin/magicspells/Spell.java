@@ -3,7 +3,6 @@ package com.nisovin.magicspells;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.nisovin.magicspells.util.config.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -35,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.nisovin.magicspells.util.*;
+import com.nisovin.magicspells.util.config.*;
 import com.nisovin.magicspells.spelleffects.*;
 import com.nisovin.magicspells.mana.ManaHandler;
 import com.nisovin.magicspells.spells.BuffSpell;
