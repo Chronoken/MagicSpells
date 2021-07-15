@@ -58,9 +58,9 @@ public class LongData extends ConfigData<Long> {
 
 				value = def;
 				expression = null;
-
-				return;
 			}
+
+			return;
 		}
 
 		value = def;

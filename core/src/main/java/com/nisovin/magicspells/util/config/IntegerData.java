@@ -58,9 +58,9 @@ public class IntegerData extends ConfigData<Integer> {
 
 				value = def;
 				expression = null;
-
-				return;
 			}
+
+			return;
 		}
 
 		value = def;

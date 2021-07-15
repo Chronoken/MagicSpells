@@ -58,9 +58,9 @@ public class FloatData extends ConfigData<Float> {
 
 				value = def;
 				expression = null;
-
-				return;
 			}
+
+			return;
 		}
 
 		value = def;

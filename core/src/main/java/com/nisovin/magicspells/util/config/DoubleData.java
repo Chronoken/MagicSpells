@@ -58,9 +58,9 @@ public class DoubleData extends ConfigData<Double> {
 
 				value = def;
 				expression = null;
-
-				return;
 			}
+
+			return;
 		}
 
 		value = def;

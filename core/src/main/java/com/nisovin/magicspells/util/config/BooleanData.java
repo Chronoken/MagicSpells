@@ -11,7 +11,7 @@ public class BooleanData extends ConfigData<Boolean> {
 
 	private Boolean value;
 
-	private Variable variable;
+	private String variable;
 
 	public BooleanData(MagicConfig config, String path, Boolean def) {
 		if (config.isBoolean(path)) {
@@ -23,7 +23,7 @@ public class BooleanData extends ConfigData<Boolean> {
 
 		if (config.isString(path)) {
 			value = null;
-			variable = MagicSpells.getVariableManager().getVariable(config.getString(path, ""));
+			variable = config.getString(path, "");
 
 			return;
 		}
@@ -37,7 +37,7 @@ public class BooleanData extends ConfigData<Boolean> {
 		if (value != null) return value;
 
 		if (variable != null && caster instanceof Player player)
-			return Boolean.parseBoolean(variable.getStringValue(player));
+			return Boolean.parseBoolean(MagicSpells.getVariableManager().getStringValue(variable, player));
 
 		return false;
 	}
