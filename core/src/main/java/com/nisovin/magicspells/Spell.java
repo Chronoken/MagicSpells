@@ -3,6 +3,7 @@ package com.nisovin.magicspells;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.nisovin.magicspells.util.config.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -805,43 +806,32 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 		return equationTransform.get() + "";
 	}
 
-	protected ConfigData getConfigDataString(LivingEntity caster, String startValue, String key) {
-		return new ConfigData(startValue, MagicSpells.doVariableReplacements(caster, config.getString("spells." + internalName + '.' + key, startValue)));
+	protected ConfigData<String> getConfigDataString(String key, String def) {
+		return new StringData(config, key, def);
 	}
 
-	protected ConfigData getConfigDataInt(LivingEntity caster, int startValue, String key) {
-		return new ConfigData(startValue, Integer.parseInt(getConfigString(caster, key, startValue + "")));
+	protected ConfigData<Integer> getConfigDataInt(String key, int def) {
+		return new IntegerData(config, key, def);
 	}
 
-	protected ConfigData getConfigDataLong(LivingEntity caster, long startValue, String key) {
-		return new ConfigData(startValue, Long.parseLong(getConfigString(caster, key, startValue + "")));
+	protected ConfigData<Long> getConfigDataLong(String key, long def) {
+		return new LongData(config, key, def);
 	}
 
-	protected ConfigData getConfigDataBoolean(LivingEntity caster, boolean startValue, String key) {
-		return new ConfigData(startValue, Boolean.parseBoolean(MagicSpells.doVariableReplacements(caster, config.getString("spells." + internalName + '.' + key, startValue + ""))));
+	protected ConfigData<Boolean> getConfigDataBoolean(String key, boolean def) {
+		return new BooleanData(config, key, def);
 	}
 
-	protected ConfigData getConfigDataDouble(LivingEntity caster, double startValue, String key) {
-		return new ConfigData(startValue, Double.parseDouble(getConfigString(caster, key, startValue + "")));
+	protected ConfigData<Double> getConfigDataDouble(String key, double def) {
+		return new DoubleData(config, key, def);
 	}
 
-	protected ConfigData getConfigDataFloat(LivingEntity caster, float startValue, String key) {
-		return new ConfigData(startValue, Float.parseFloat(getConfigString(caster, key, startValue + "")));
+	protected ConfigData<Float> getConfigDataFloat(String key, float def) {
+		return new FloatData(config, key, def);
 	}
 
-	// needs testing
-	protected ConfigData getConfigDataVector(LivingEntity caster, Vector startValue, String key, String defaultValue) {
-		String[] vecStrings = getConfigString(key, defaultValue).split(",");
-		equationTransformX = MagicSpells.getEquationStore().getTransform(MagicSpells.doVariableReplacements(caster, vecStrings[0]));
-		equationTransformY = MagicSpells.getEquationStore().getTransform(MagicSpells.doVariableReplacements(caster, vecStrings[1]));
-		equationTransformZ = MagicSpells.getEquationStore().getTransform(MagicSpells.doVariableReplacements(caster, vecStrings[2]));
-		return new ConfigData(startValue, new Vector(
-				equationTransformX.get(),
-				equationTransformY.get(),
-				equationTransformZ.get()));
-				/*Double.parseDouble(MagicSpells.doVariableReplacements(caster, vecStrings[0])),
-				Double.parseDouble(MagicSpells.doVariableReplacements(caster, vecStrings[1])),
-				Double.parseDouble(MagicSpells.doVariableReplacements(caster, vecStrings[2])));*/
+	protected ConfigData<Vector> getConfigDataVector(String key, String def) {
+		return new VectorData(config, key, def);
 	}
 
 	public final SpellCastResult cast(LivingEntity livingEntity) {

@@ -1,5 +1,8 @@
 package com.nisovin.magicspells.spells.targeted;
 
+import com.nisovin.magicspells.util.config.BooleanData;
+import com.nisovin.magicspells.util.config.ConfigData;
+import com.nisovin.magicspells.util.config.DoubleData;
 import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
@@ -22,12 +25,12 @@ public class PainSpell extends TargetedSpell implements TargetedEntitySpell, Dam
 	private String spellDamageType;
 	private DamageCause damageType;
 
-	private double damage;
+	private ConfigData<Double> damage;
 
-	private boolean ignoreArmor;
-	private boolean checkPlugins;
-	private boolean avoidDamageModification;
-	private boolean tryAvoidingAntiCheatPlugins;
+	private ConfigData<Boolean> ignoreArmor;
+	private ConfigData<Boolean> checkPlugins;
+	private ConfigData<Boolean> avoidDamageModification;
+	private ConfigData<Boolean> tryAvoidingAntiCheatPlugins;
 	
 	public PainSpell(MagicConfig config, String spellName) {
 		super(config, spellName);
@@ -41,12 +44,12 @@ public class PainSpell extends TargetedSpell implements TargetedEntitySpell, Dam
 			damageType = DamageCause.ENTITY_ATTACK;
 		}
 
-		damage = getConfigFloat("damage", 4);
+		damage = getConfigDataDouble("damage", 4);
 
-		ignoreArmor = getConfigBoolean("ignore-armor", false);
-		checkPlugins = getConfigBoolean("check-plugins", true);
-		avoidDamageModification = getConfigBoolean("avoid-damage-modification", true);
-		tryAvoidingAntiCheatPlugins = getConfigBoolean("try-avoiding-anticheat-plugins", false);
+		ignoreArmor = getConfigDataBoolean("ignore-armor", false);
+		checkPlugins = getConfigDataBoolean("check-plugins", true);
+		avoidDamageModification = getConfigDataBoolean("avoid-damage-modification", true);
+		tryAvoidingAntiCheatPlugins = getConfigDataBoolean("try-avoiding-anticheat-plugins", false);
 	}
 
 	@Override
@@ -86,13 +89,13 @@ public class PainSpell extends TargetedSpell implements TargetedEntitySpell, Dam
 	private boolean causePain(LivingEntity caster, LivingEntity target, float power) {
 		if (target == null) return false;
 		if (target.isDead()) return false;
-		double localDamage = damage * power;
+		double localDamage = damage.get(caster) * power;
 
-		if (checkPlugins) {
+		if (checkPlugins.get(caster)) {
 			MagicSpellsEntityDamageByEntityEvent event = new MagicSpellsEntityDamageByEntityEvent(caster, target, damageType, localDamage, this);
 			EventUtil.call(event);
 			if (event.isCancelled()) return false;
-			if (!avoidDamageModification) localDamage = event.getDamage();
+			if (!avoidDamageModification.get(caster)) localDamage = event.getDamage();
 			target.setLastDamageCause(event);
 		}
 
@@ -100,7 +103,7 @@ public class PainSpell extends TargetedSpell implements TargetedEntitySpell, Dam
 		EventUtil.call(event);
 		localDamage = event.getFinalDamage();
 
-		if (ignoreArmor) {
+		if (ignoreArmor.get(caster)) {
 			double health = target.getHealth();
 			if (health > Util.getMaxHealth(target)) health = Util.getMaxHealth(target);
 			health = health - localDamage;
@@ -114,7 +117,7 @@ public class PainSpell extends TargetedSpell implements TargetedEntitySpell, Dam
 			return true;
 		}
 
-		if (tryAvoidingAntiCheatPlugins) target.damage(localDamage);
+		if (tryAvoidingAntiCheatPlugins.get(caster)) target.damage(localDamage);
 		else target.damage(localDamage, caster);
 		playSpellEffects(caster, target);
 		return true;
