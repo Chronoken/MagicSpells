@@ -18,7 +18,7 @@ public class ConversationContextUtil {
 		return (Conversable)context.get(CONVERSABLE_KEY);
 	}
 	
-	public static void setconversable(ConversationContext context, Conversable conversable) {
+	public static void setConversable(ConversationContext context, Conversable conversable) {
 		setConversable(context.getAllSessionData(), conversable);
 	}
 	

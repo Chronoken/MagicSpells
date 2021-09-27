@@ -69,12 +69,12 @@ public class PurgeSpell extends InstantSpell implements TargetedLocationSpell {
 		Collection<Entity> entitiesNearby = loc.getWorld().getNearbyEntities(loc, castingRange, castingRange, castingRange);
 		boolean killed = false;
 		for (Entity entity : entitiesNearby) {
-			if (!(entity instanceof LivingEntity)) continue;
+			if (!(entity instanceof LivingEntity livingEntity)) continue;
 			if (entity instanceof Player) continue;
 			if (entities != null && !entities.contains(entity.getType())) continue;
 			playSpellEffectsTrail(loc, entity.getLocation());
 			playSpellEffects(EffectPosition.TARGET, entity);
-			((LivingEntity) entity).setHealth(0);
+			livingEntity.setHealth(0);
 			killed = true;
 		}
 		return killed;

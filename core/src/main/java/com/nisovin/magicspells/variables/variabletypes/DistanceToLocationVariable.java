@@ -35,12 +35,10 @@ public class DistanceToLocationVariable extends Variable {
 		Player p = PlayerNameUtils.getPlayer(player);
 		if (p == null) return defaultValue;
 		
-		Location originLocation = p.getLocation();
-		if (originLocation == null) return defaultValue;
-		
 		Location targetLoc = targetLocation.getLocation();
 		if (targetLoc == null) return defaultValue;
-		
+
+		Location originLocation = p.getLocation();
 		if (!crossWorld && !LocationUtil.isSameWorld(originLocation, targetLoc)) return defaultValue;
 		
 		double multiplier = !LocationUtil.isSameWorld(originLocation, targetLoc) ? crossWorldDistanceMultiplier : 1.0;

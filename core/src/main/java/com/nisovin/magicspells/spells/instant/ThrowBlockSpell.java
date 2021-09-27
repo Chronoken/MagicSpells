@@ -192,8 +192,7 @@ public class ThrowBlockSpell extends InstantSpell implements TargetedLocationSpe
 			Iterator<Entity> iter = fallingBlocks.keySet().iterator();
 			while (iter.hasNext()) {
 				Entity entity = iter.next();
-				if (entity instanceof FallingBlock) {
-					FallingBlock block = (FallingBlock) entity;
+				if (entity instanceof FallingBlock block) {
 					if (block.isValid()) continue;
 					iter.remove();
 					if (!removeBlocks) continue;
@@ -202,8 +201,7 @@ public class ThrowBlockSpell extends InstantSpell implements TargetedLocationSpe
 						playSpellEffects(EffectPosition.BLOCK_DESTRUCTION, block.getLocation());
 						b.setType(Material.AIR);
 					}
-				} else if (entity instanceof TNTPrimed) {
-					TNTPrimed tnt = (TNTPrimed) entity;
+				} else if (entity instanceof TNTPrimed tnt) {
 					if (!tnt.isValid() || tnt.isDead()) iter.remove();
 				}
 			}
@@ -267,8 +265,7 @@ public class ThrowBlockSpell extends InstantSpell implements TargetedLocationSpe
 			FallingBlockInfo info;
 			if (removeBlocks || preventBlocks) info = fallingBlocks.get(event.getDamager());
 			else info = fallingBlocks.remove(event.getDamager());
-			if (info == null || !(event.getEntity() instanceof LivingEntity)) return;
-			LivingEntity entity = (LivingEntity) event.getEntity();
+			if (info == null || !(event.getEntity() instanceof LivingEntity entity)) return;
 			float power = info.power;
 			if (callTargetEvent && info.caster != null) {
 				SpellTargetEvent evt = new SpellTargetEvent(thisSpell, info.caster, entity, power);

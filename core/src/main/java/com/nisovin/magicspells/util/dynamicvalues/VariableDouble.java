@@ -1,11 +1,12 @@
 package com.nisovin.magicspells.util.dynamicvalues;
 
-import com.nisovin.magicspells.util.VariableMod;
 import org.bukkit.entity.Player;
+
+import com.nisovin.magicspells.util.VariableMod;
 
 public class VariableDouble {
 	
-	private VariableMod primaryValue = null;
+	private VariableMod primaryValue;
 	private VariableMod secondaryValue = null;
 	
 	public VariableDouble(VariableMod primaryValue, VariableMod secondaryValue) {

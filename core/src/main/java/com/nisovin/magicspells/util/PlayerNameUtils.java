@@ -1,7 +1,6 @@
 package com.nisovin.magicspells.util;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class PlayerNameUtils {
@@ -14,11 +13,6 @@ public class PlayerNameUtils {
 	public static Player getPlayer(String playername) {
 		//TODO come up with a non depreciated system
 		return Bukkit.getPlayer(playername);
-	}
-	
-	public static OfflinePlayer getOfflinePlayer(String name) {
-		//TODO come up with a non depreciated system
-		return Bukkit.getOfflinePlayer(name);
 	}
 	
 }

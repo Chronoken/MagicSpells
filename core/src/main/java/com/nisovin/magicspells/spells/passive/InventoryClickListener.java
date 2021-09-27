@@ -52,9 +52,7 @@ public class InventoryClickListener extends PassiveListener {
 	@OverridePriority
 	@EventHandler
 	public void onInvClick(InventoryClickEvent event) {
-		if (!(event.getWhoClicked() instanceof Player)) return;
-
-		Player player = (Player) event.getWhoClicked();
+		if (!(event.getWhoClicked() instanceof Player player)) return;
 		if (!hasSpell(player) || !canTrigger(player)) return;
 
 		// Valid action, but not used.

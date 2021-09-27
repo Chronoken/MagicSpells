@@ -1,12 +1,5 @@
 package com.nisovin.magicspells.spells.targeted;
 
-import java.util.Set;
-import java.util.List;
-import java.util.Random;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
+
+import java.util.Set;
+import java.util.List;
+import java.util.Random;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.MagicSpells;
@@ -149,8 +149,7 @@ public class MaterializeSpell extends TargetedSpell implements TargetedLocationS
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			List<Block> lastTwo;
 			try {
 				lastTwo = getLastTwoTargetedBlocks(player, power);
@@ -179,8 +178,8 @@ public class MaterializeSpell extends TargetedSpell implements TargetedLocationS
 			//This is the top-left edge of the shape array
 			Location patternStart = against.getLocation();
 
-			patternStart.setX(against.getX() - Math.ceil(rowSize / 2));
-			patternStart.setZ(against.getZ() - Math.ceil(columnSize / 2));
+			patternStart.setX(against.getX() - Math.ceil(rowSize / 2F));
+			patternStart.setZ(against.getZ() - Math.ceil(columnSize / 2F));
 
 			//spawnBlock is the current position in the loop where it will spawn the block
 			Location spawnBlock = patternStart;
@@ -245,11 +244,11 @@ public class MaterializeSpell extends TargetedSpell implements TargetedLocationS
 
 	@Override
 	public boolean castAtLocation(LivingEntity caster, Location target, float power) {
-		if (!(caster instanceof Player)) return false;
+		if (!(caster instanceof Player player)) return false;
 		Block block = target.getBlock();
 		Block against = target.clone().add(target.getDirection()).getBlock();
 		if (block.equals(against)) against = block.getRelative(BlockFace.DOWN);
-		if (block.getType() == Material.AIR) return materialize((Player) caster, block, against);
+		if (block.getType() == Material.AIR) return materialize(player, block, against);
 		Block block2 = block.getRelative(BlockFace.UP);
 		if (block2.getType() == Material.AIR) return materialize(null, block2, block);
 		return false;

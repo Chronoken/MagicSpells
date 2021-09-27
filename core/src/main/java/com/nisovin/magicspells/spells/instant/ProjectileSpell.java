@@ -259,13 +259,10 @@ public class ProjectileSpell extends InstantSpell implements TargetedLocationSpe
 	@EventHandler
 	public void onProjectileHit(EntityDamageByEntityEvent event) {
 		if (event.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) return;
-		if (!(event.getEntity() instanceof LivingEntity)) return;
+		if (!(event.getEntity() instanceof LivingEntity entity)) return;
 
-		LivingEntity entity = (LivingEntity) event.getEntity();
 		Entity damagerEntity = event.getDamager();
-		if (!(damagerEntity instanceof Projectile)) return;
-
-		Projectile projectile = (Projectile) damagerEntity;
+		if (!(damagerEntity instanceof Projectile projectile)) return;
 
 		Iterator<ProjectileTracker> iterator = trackerSet.iterator();
 		while (iterator.hasNext()) {
@@ -291,7 +288,6 @@ public class ProjectileSpell extends InstantSpell implements TargetedLocationSpe
 	public void onEnderTeleport(PlayerTeleportEvent event) {
 		if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
 		for (ProjectileTracker tracker : trackerSet) {
-			if (event.getTo() == null) continue;
 			if (tracker.getProjectile() == null) continue;
 			if (!locationsEqual(tracker.getProjectile().getLocation(), event.getTo())) continue;
 			event.setCancelled(true);

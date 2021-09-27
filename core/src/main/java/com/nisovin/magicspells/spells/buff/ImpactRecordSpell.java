@@ -74,9 +74,7 @@ public class ImpactRecordSpell extends BuffSpell {
 		if (event.isCancelled() && !recordCancelled) return;
 		
 		LivingEntity target = event.getTarget();
-		if (!(target instanceof Player)) return;
-
-		Player playerTarget = (Player) target;
+		if (!(target instanceof Player playerTarget)) return;
 		if (!isActive(playerTarget)) return;
 		
 		Spell spell = event.getSpell();

@@ -3,6 +3,8 @@ package com.nisovin.magicspells.util;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import net.md_5.bungee.api.ChatColor;
+
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -23,7 +25,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -40,6 +41,11 @@ import com.nisovin.magicspells.util.CastUtil.CastMode;
 import com.nisovin.magicspells.util.magicitems.MagicItems;
 import com.nisovin.magicspells.handlers.PotionEffectHandler;
 import com.nisovin.magicspells.util.magicitems.MagicItemData;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class Util {
 
@@ -84,8 +90,7 @@ public class Util {
 			}
 		}
 
-		boolean ambient = false;
-		if (data.length > 3 && (BooleanUtils.isYes(data[3]) || data[3].equalsIgnoreCase("ambient"))) ambient = true;
+		boolean ambient = data.length > 3 && (BooleanUtils.isYes(data[3]) || data[3].equalsIgnoreCase("ambient"));
 		return new PotionEffect(t, duration, level, ambient);
 	}
 
@@ -129,73 +134,6 @@ public class Util {
 			c[i] = Color.fromRGB(colors[i]);
 		}
 		return c;
-	}
-
-	// Just checks to see if the passed string could be lore data
-	public static boolean isLoreData(String line) {
-		if (line == null) return false;
-		line = decolorize(line);
-		return line.startsWith("MS$:");
-	}
-
-	public static void setLoreData(ItemStack item, String data) {
-		ItemMeta meta = item.getItemMeta();
-		List<String> lore;
-		if (meta.hasLore()) {
-			lore = meta.getLore();
-			if (!lore.isEmpty()) {
-				for (int i = 0; i < lore.size(); i++) {
-					if (!isLoreData(lore.get(i))) continue;
-					lore.remove(i);
-					break;
-				}
-			}
-		} else {
-			lore = new ArrayList<>();
-		}
-		lore.add(ChatColor.BLACK.toString() + ChatColor.MAGIC.toString() + "MS$:" + data);
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-	}
-
-	public static String getLoreData(ItemStack item) {
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null) return null;
-		if (!meta.hasLore()) return null;
-
-		List<String> lore = meta.getLore();
-		if (lore.isEmpty()) return null;
-
-		for (int i = 0; i < lore.size(); i++) {
-			String s = decolorize(lore.get(lore.size() - 1));
-			if (s.startsWith("MS$:")) return s.substring(4);
-		}
-
-		return null;
-	}
-
-	public static void removeLoreData(ItemStack item) {
-		ItemMeta meta = item.getItemMeta();
-		List<String> lore;
-		if (!meta.hasLore()) return;
-
-		lore = meta.getLore();
-		if (lore.isEmpty()) return;
-
-		boolean removed = false;
-		for (int i = 0; i < lore.size(); i++) {
-			String s = decolorize(lore.get(i));
-			if (!s.startsWith("MS$:")) continue;
-			lore.remove(i);
-			removed = true;
-			break;
-		}
-
-		if (removed) {
-			if (!lore.isEmpty()) meta.setLore(lore);
-			else meta.setLore(null);
-			item.setItemMeta(meta);
-		}
 	}
 
 	public static PotionEffectType getPotionEffectType(String type) {
@@ -309,7 +247,7 @@ public class Util {
 
 		if (!building.isEmpty()) list.add(building);
 
-		return list.toArray(new String[list.size()]);
+		return list.toArray(new String[0]);
 	}
 
 	public static String[] splitParams(String string) {
@@ -651,15 +589,31 @@ public class Util {
 		return new Vector(Double.parseDouble(vecStrings[0]), Double.parseDouble(vecStrings[1]), Double.parseDouble(vecStrings[2]));
 	}
 
+	public static Component getMiniMessage(String input) {
+		// Let's handle MS color patterns. Replace ampersand with section (§).
+		input = colorize(input);
+		// Translate legacy section (§) to Adventure colors.
+		Component component = LegacyComponentSerializer.legacySection().deserialize(input);
+		input = PlainTextComponentSerializer.plainText().serialize(component);
+		// Parse the actual MiniMessage.
+		return MiniMessage.get().parse(input);
+	}
+
+	public static Component getMiniMessageWithVars(Player player, String input) {
+		return getMiniMessage(MagicSpells.doVariableReplacements(player, input));
+	}
+
+	public static String getStringFromComponent(Component component) {
+		return component == null ? "" : MiniMessage.get().serialize(component);
+	}
+
 	public static String colorize(String string) {
-		Matcher matcher = ColorUtil.HEX_PATTERN.matcher(org.bukkit.ChatColor.translateAlternateColorCodes('&', string));
-		StringBuffer buffer = new StringBuffer();
+		Matcher matcher = ColorUtil.HEX_PATTERN.matcher(ChatColor.translateAlternateColorCodes('&', string));
+		StringBuilder buffer = new StringBuilder();
 		while (matcher.find()) {
 			try {
-				matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group(1).toUpperCase()).toString());
-			} catch (IllegalArgumentException ex) {
-				// ignored
-			}
+				matcher.appendReplacement(buffer, ChatColor.of(matcher.group(1).toUpperCase()).toString());
+			} catch (IllegalArgumentException ignored) {}
 		}
 		return matcher.appendTail(buffer).toString();
 	}

@@ -12,6 +12,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.block.data.BlockData;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.nisovin.magicspells.util.BlockUtils;
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.util.SpellAnimation;
@@ -28,9 +30,13 @@ public class TreeSpell extends TargetedSpell implements TargetedLocationSpell {
 	
 	public TreeSpell(MagicConfig config, String spellName) {
 		super(config, spellName);
-		
-		treeType = TreeType.valueOf(getConfigString("tree-type", "tree").toUpperCase().replace(" ", "_"));
-		if (treeType == null) treeType = TreeType.TREE;
+
+		try {
+			treeType = TreeType.valueOf(getConfigString("tree-type", "tree").toUpperCase().replace(" ", "_"));
+		}
+		catch (IllegalArgumentException ignored) {
+			treeType = TreeType.TREE;
+		}
 
 		speed = getConfigInt("animation-speed", 20);
 	}
@@ -142,7 +148,7 @@ public class TreeSpell extends TargetedSpell implements TargetedLocationSpell {
 		}
 
 		@Override
-		public boolean setBlockData(int x, int y, int z, BlockData data) {
+		public boolean setBlockData(int x, int y, int z, @NotNull BlockData data) {
 			BlockState state = loc.getWorld().getBlockAt(x, y, z).getState();
 			state.setBlockData(data);
 			blockStates.add(state);
@@ -150,6 +156,7 @@ public class TreeSpell extends TargetedSpell implements TargetedLocationSpell {
 		}
 		
 		@Override
+		@NotNull
 		public BlockData getBlockData(int x, int y, int z) {
 			return loc.getWorld().getBlockAt(x, y, z).getBlockData();
 		}

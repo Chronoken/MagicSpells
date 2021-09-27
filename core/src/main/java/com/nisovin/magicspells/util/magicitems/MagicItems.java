@@ -1,10 +1,8 @@
 package com.nisovin.magicspells.util.magicitems;
 
-import java.util.Map;
-import java.util.List;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Collection;
+import java.util.*;
+
+import net.kyori.adventure.text.Component;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.HashMultimap;
@@ -154,7 +152,7 @@ public class MagicItems {
 
 		// lore
 		if (meta.hasLore()) {
-			List<String> lore = meta.getLore();
+			List<Component> lore = meta.lore();
 			if (lore != null && !lore.isEmpty()) data.setAttribute(LORE, lore);
 		}
 
@@ -388,8 +386,7 @@ public class MagicItems {
 					else meta.addEnchant(e, level, true);
 				}
 
-				if (meta instanceof EnchantmentStorageMeta) {
-					EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
+				if (meta instanceof EnchantmentStorageMeta storageMeta) {
 
 					if (storageMeta.hasStoredEnchants()) {
 						Map<Enchantment, Integer> enchantments = storageMeta.getStoredEnchants();

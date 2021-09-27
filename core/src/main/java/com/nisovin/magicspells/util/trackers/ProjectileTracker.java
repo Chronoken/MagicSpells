@@ -1,11 +1,11 @@
 package com.nisovin.magicspells.util.trackers;
 
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.nisovin.magicspells.Subspell;
 import com.nisovin.magicspells.util.Util;
@@ -77,10 +77,6 @@ public class ProjectileTracker implements Runnable, Tracker {
 
 	private boolean stopped = false;
 
-	public ProjectileTracker() {
-
-	}
-
 	public ProjectileTracker(LivingEntity caster, Location startLocation, float power) {
 		this.caster = caster;
 		this.power = power;
@@ -89,7 +85,6 @@ public class ProjectileTracker implements Runnable, Tracker {
 	}
 
 	public void start() {
-
 		initialize();
 	}
 
@@ -124,8 +119,8 @@ public class ProjectileTracker implements Runnable, Tracker {
 			projectile.setCustomName(projectileName);
 			projectile.setCustomNameVisible(true);
 		}
-		if (projectile instanceof WitherSkull) ((WitherSkull) projectile).setCharged(charged);
-		if (projectile instanceof Explosive) ((Explosive) projectile).setIsIncendiary(incendiary);
+		if (projectile instanceof WitherSkull witherSkull) witherSkull.setCharged(charged);
+		if (projectile instanceof Explosive explosive) explosive.setIsIncendiary(incendiary);
 
 		if (spell != null) {
 			spell.playEffects(EffectPosition.CASTER, startLocation);
@@ -181,14 +176,14 @@ public class ProjectileTracker implements Runnable, Tracker {
 		counter++;
 
 		for (Entity e : projectile.getNearbyEntities(hitRadius, verticalHitRadius, hitRadius)) {
-			if (!(e instanceof LivingEntity)) continue;
+			if (!(e instanceof LivingEntity livingEntity)) continue;
 			if (!targetList.canTarget(caster, e)) continue;
 
-			SpellTargetEvent event = new SpellTargetEvent(spell, caster, (LivingEntity) e, power);
+			SpellTargetEvent event = new SpellTargetEvent(spell, caster, livingEntity, power);
 			EventUtil.call(event);
 			if (event.isCancelled()) continue;
 
-			if (hitSpell != null) hitSpell.castAtEntity(caster, (LivingEntity) e, event.getPower());
+			if (hitSpell != null) hitSpell.castAtEntity(caster, livingEntity, event.getPower());
 			stop();
 			return;
 		}

@@ -35,8 +35,8 @@ public class TxtUtil {
 	
 	public static List<String> tabCompleteSpellName(CommandSender sender, String partial) {
 		List<String> matches = new ArrayList<>();
-		if (sender instanceof Player) {
-			Spellbook spellbook = MagicSpells.getSpellbook((Player) sender);
+		if (sender instanceof Player player) {
+			Spellbook spellbook = MagicSpells.getSpellbook(player);
 			for (Spell spell : spellbook.getSpells()) {
 				if (!spellbook.canTeach(spell)) continue;
 				if (spell.getName().toLowerCase().startsWith(partial)) {

@@ -34,7 +34,7 @@ public class BlinkSpell extends TargetedSpell implements TargetedLocationSpell {
 			if (range > 125) range = 125;
 			BlockIterator iter; 
 			try {
-				iter = new BlockIterator(caster, range > 0 && range <= 125 ? range : 125);
+				iter = new BlockIterator(caster, range);
 			} catch (IllegalStateException e) {
 				iter = null;
 			}

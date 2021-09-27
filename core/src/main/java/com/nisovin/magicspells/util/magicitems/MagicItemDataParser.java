@@ -22,6 +22,8 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonSyntaxException;
 import com.google.common.collect.HashMultimap;
 
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -97,7 +99,7 @@ public class MagicItemDataParser {
 
 					switch (key.toLowerCase()) {
 						case "name":
-							data.setAttribute(NAME, Util.colorize(value.getAsString()));
+							data.setAttribute(NAME, Util.getMiniMessage(value.getAsString()));
 							break;
 						case "amount":
 							data.setAttribute(AMOUNT, value.getAsInt());
@@ -282,10 +284,10 @@ public class MagicItemDataParser {
 						case "lore":
 							if (!value.isJsonArray()) continue;
 
-							List<String> lore = new ArrayList<>();
+							List<Component> lore = new ArrayList<>();
 							JsonArray jsonArray = value.getAsJsonArray();
 							for (JsonElement elementInside : jsonArray) {
-								lore.add(Util.colorize(elementInside.getAsString()));
+								lore.add(Util.getMiniMessage(elementInside.getAsString()));
 							}
 
 							if (!lore.isEmpty()) data.setAttribute(LORE, lore);
@@ -293,10 +295,10 @@ public class MagicItemDataParser {
 						case "pages":
 							if (!value.isJsonArray()) continue;
 
-							List<String> pages = new ArrayList<>();
+							List<Component> pages = new ArrayList<>();
 							JsonArray pageArray = value.getAsJsonArray();
 							for (JsonElement page : pageArray) {
-								pages.add(Util.colorize(page.getAsString()));
+								pages.add(Util.getMiniMessage(page.getAsString()));
 							}
 
 							if (!pages.isEmpty()) data.setAttribute(PAGES, pages);

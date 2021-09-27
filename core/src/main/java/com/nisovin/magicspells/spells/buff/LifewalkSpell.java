@@ -135,9 +135,7 @@ public class LifewalkSpell extends BuffSpell {
 				Entity entity = Bukkit.getEntity(id);
 				if (entity == null) continue;
 				if (!entity.isValid()) continue;
-				if (!(entity instanceof LivingEntity)) continue;
-
-				LivingEntity livingEntity = (LivingEntity) entity;
+				if (!(entity instanceof LivingEntity livingEntity)) continue;
 				if (isExpired(livingEntity)) {
 					turnOff(livingEntity);
 					continue;

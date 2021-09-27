@@ -24,8 +24,7 @@ public class FoodSpell extends InstantSpell {
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			int f = player.getFoodLevel() + food;
 			if (f > 20) f = 20;
 			player.setFoodLevel(f);

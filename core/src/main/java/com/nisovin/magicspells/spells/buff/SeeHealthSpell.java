@@ -97,16 +97,15 @@ public class SeeHealthSpell extends BuffSpell {
 		StringBuilder sb = new StringBuilder(barSize);
 		sb.append(getRandomColor().toString());
 		int remain = (int) Math.round(barSize * pct);
-		sb.append(color.toString());
-
-		for (int i = 0; i < remain; i++) sb.append(symbol);
+		sb.append(color);
+		sb.append(symbol.repeat(remain));
 
 		if (remain < barSize) {
-			sb.append(ChatColor.DARK_GRAY.toString());
-			for (int i = 0; i < barSize - remain; i++) sb.append(symbol);
+			sb.append(ChatColor.DARK_GRAY);
+			sb.append(symbol.repeat(barSize - remain));
 		}
 
-		player.sendActionBar(sb.toString());
+		player.sendActionBar(Util.getMiniMessage(sb.toString()));
 	}
 
 	public static String getColors() {

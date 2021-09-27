@@ -78,10 +78,9 @@ public class ResistSpell extends BuffSpell {
 	@EventHandler
 	public void onSpellDamage(SpellApplyDamageEvent event) {
 		if (spellDamageTypes.isEmpty()) return;
-		if (!(event.getSpell() instanceof DamageSpell)) return;
+		if (!(event.getSpell() instanceof DamageSpell spell)) return;
 		if (!isActive(event.getTarget())) return;
 
-		DamageSpell spell = (DamageSpell) event.getSpell();
 		String spellDamageType = spell.getSpellDamageType();
 		if (spellDamageType == null) return;
 		if (!spellDamageTypes.contains(spellDamageType)) return;

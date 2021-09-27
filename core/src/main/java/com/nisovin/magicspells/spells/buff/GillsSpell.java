@@ -79,12 +79,10 @@ public class GillsSpell extends BuffSpell {
 		if (headEffect && headMaterial != null) {
 			for (UUID id : entities.keySet()) {
 				Entity entity = Bukkit.getEntity(id);
-				if (!(entity instanceof LivingEntity)) continue;
-				LivingEntity livingEntity = (LivingEntity) entity;
+				if (!(entity instanceof LivingEntity livingEntity)) continue;
 				if (!livingEntity.isValid()) continue;
-
 				EntityEquipment equipment = livingEntity.getEquipment();
-
+				if (equipment == null) continue;
 				equipment.setHelmet(entities.get(id));
 			}
 		}
@@ -95,10 +93,8 @@ public class GillsSpell extends BuffSpell {
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if (!(entity instanceof LivingEntity)) return;
+		if (!(entity instanceof LivingEntity livingEntity)) return;
 		if (event.getCause() != DamageCause.DROWNING) return;
-		
-		LivingEntity livingEntity = (LivingEntity) entity;
 		if (!isActive(livingEntity)) return;
 		if (isExpired(livingEntity)) {
 			turnOff(livingEntity);

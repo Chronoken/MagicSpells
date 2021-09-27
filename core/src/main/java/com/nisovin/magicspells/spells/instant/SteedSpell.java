@@ -120,21 +120,21 @@ public class SteedSpell extends InstantSpell {
 			Entity entity = caster.getWorld().spawnEntity(caster.getLocation(), type);
 			entity.setGravity(gravity);
 
-			if (entity instanceof AbstractHorse) {
-				((AbstractHorse) entity).setAdult();
-				((AbstractHorse) entity).setTamed(true);
-				if (caster instanceof AnimalTamer) ((AbstractHorse) entity).setOwner((AnimalTamer) caster);
-				((AbstractHorse) entity).setJumpStrength(jumpStrength);
-				((AbstractHorse) entity).getInventory().setSaddle(new ItemStack(Material.SADDLE));
+			if (entity instanceof AbstractHorse abstractHorse) {
+				abstractHorse.setAdult();
+				abstractHorse.setTamed(true);
+				if (caster instanceof AnimalTamer tamer) abstractHorse.setOwner(tamer);
+				abstractHorse.setJumpStrength(jumpStrength);
+				abstractHorse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
 
-				if (entity instanceof Horse) {
-					if (color != null) ((Horse) entity).setColor(color);
-					else ((Horse) entity).setColor(Horse.Color.values()[random.nextInt(Horse.Color.values().length)]);
-					if (style != null) ((Horse) entity).setStyle(style);
-					else ((Horse) entity).setStyle(Horse.Style.values()[random.nextInt(Horse.Style.values().length)]);
-					if (armor != null) ((Horse) entity).getInventory().setArmor(armor);
-				} else if (entity instanceof ChestedHorse) {
-					((ChestedHorse) entity).setCarryingChest(hasChest);
+				if (entity instanceof Horse horse) {
+					if (color != null) horse.setColor(color);
+					else horse.setColor(Horse.Color.values()[random.nextInt(Horse.Color.values().length)]);
+					if (style != null) horse.setStyle(style);
+					else horse.setStyle(Horse.Style.values()[random.nextInt(Horse.Style.values().length)]);
+					if (armor != null) horse.getInventory().setArmor(armor);
+				} else if (entity instanceof ChestedHorse chestedHorse) {
+					chestedHorse.setCarryingChest(hasChest);
 				}
 			}
 
@@ -161,8 +161,7 @@ public class SteedSpell extends InstantSpell {
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void onDismount(EntityDismountEvent event) {
-		if (!(event.getEntity() instanceof Player)) return;
-		Player player = (Player) event.getEntity();
+		if (!(event.getEntity() instanceof Player player)) return;
 		if (!mounted.containsKey(player.getUniqueId())) return;
 		mounted.remove(player.getUniqueId());
 		event.getDismounted().remove();

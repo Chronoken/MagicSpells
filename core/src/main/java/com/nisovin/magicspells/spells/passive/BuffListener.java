@@ -36,8 +36,7 @@ public class BuffListener extends PassiveListener {
 	@Override
 	public void initialize(String var) {
 		for (Subspell s : passiveSpell.getActivatedSpells()) {
-			if (!(s.getSpell() instanceof BuffSpell)) continue;
-			BuffSpell buff = (BuffSpell) s.getSpell();
+			if (!(s.getSpell() instanceof BuffSpell buff)) continue;
 			buff.setAsEverlasting();
 		}
 
@@ -134,8 +133,7 @@ public class BuffListener extends PassiveListener {
 		if (!hasSpell(entity)) return;
 
 		for (Subspell s : passiveSpell.getActivatedSpells()) {
-			if (!(s.getSpell() instanceof BuffSpell)) continue;
-			BuffSpell buff = (BuffSpell) s.getSpell();
+			if (!(s.getSpell() instanceof BuffSpell buff)) continue;
 			if (buff.isActive(entity)) continue;
 			buff.castAtEntity(entity, entity, 1F);
 		}
@@ -146,8 +144,7 @@ public class BuffListener extends PassiveListener {
 		if (!hasSpell(entity)) return;
 
 		for (Subspell s : passiveSpell.getActivatedSpells()) {
-			if (!(s.getSpell() instanceof BuffSpell)) continue;
-			BuffSpell buff = (BuffSpell) s.getSpell();
+			if (!(s.getSpell() instanceof BuffSpell buff)) continue;
 			if (!buff.isActive(entity)) continue;
 			buff.turnOff(entity);
 		}

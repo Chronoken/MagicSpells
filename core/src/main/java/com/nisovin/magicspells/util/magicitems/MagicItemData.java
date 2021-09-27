@@ -11,6 +11,8 @@ import java.util.Collection;
 
 import com.google.common.collect.Multimap;
 
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.FireworkEffect;
@@ -22,6 +24,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.attribute.AttributeModifier;
 
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.util.TxtUtil;
 import com.nisovin.magicspells.util.AttributeUtil.AttributeModifierData;
 
@@ -130,9 +133,7 @@ public class MagicItemData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MagicItemData)) return false;
-
-        MagicItemData other = (MagicItemData) o;
+        if (!(o instanceof MagicItemData other)) return false;
         return itemAttributes.equals(other.itemAttributes)
             && ignoredAttributes.equals(other.ignoredAttributes)
             && blacklistedAttributes.equals(other.blacklistedAttributes);
@@ -157,7 +158,7 @@ public class MagicItemData {
     public enum MagicItemAttribute {
 
         TYPE(Material.class),
-        NAME(String.class),
+        NAME(Component.class),
         AMOUNT(Integer.class),
         DURABILITY(Integer.class),
         REPAIR_COST(Integer.class),
@@ -215,7 +216,7 @@ public class MagicItemData {
 
             output
                 .append("\"name\":\"")
-                .append(TxtUtil.escapeJSON((String) getAttribute(MagicItemAttribute.NAME)))
+                .append(TxtUtil.escapeJSON(Util.getStringFromComponent((Component) getAttribute(MagicItemAttribute.NAME))))
                 .append('"');
 
             previous = true;
@@ -519,15 +520,15 @@ public class MagicItemData {
             if (previous) output.append(',');
             else output.append('{');
 
-            List<String> lore = (List<String>) getAttribute(MagicItemAttribute.LORE);
+            List<Component> lore = (List<Component>) getAttribute(MagicItemAttribute.LORE);
             boolean previousLore = false;
             output.append("\"lore\":[");
-            for (String line : lore) {
+            for (Component line : lore) {
                 if (previousLore) output.append(',');
 
                 output
                     .append('"')
-                    .append(TxtUtil.escapeJSON(line))
+                    .append(TxtUtil.escapeJSON(Util.getStringFromComponent(line)))
                     .append('"');
 
                 previousLore = true;
@@ -541,15 +542,15 @@ public class MagicItemData {
             if (previous) output.append(',');
             else output.append('{');
 
-            List<String> pages = (List<String>) getAttribute(MagicItemAttribute.PAGES);
+            List<Component> pages = (List<Component>) getAttribute(MagicItemAttribute.PAGES);
             boolean previousPages = false;
             output.append("\"pages\":[");
-            for (String page : pages) {
+            for (Component page : pages) {
                 if (previousPages) output.append(',');
 
                 output
                     .append('"')
-                    .append(TxtUtil.escapeJSON(page))
+                    .append(TxtUtil.escapeJSON(Util.getStringFromComponent(page)))
                     .append('"');
 
                 previousPages = true;

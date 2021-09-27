@@ -62,7 +62,7 @@ public class KeybindSpell extends CommandSpell {
 			conf.load(file);
 			for (String key : conf.getKeys(false)) {
 				int slot = Integer.parseInt(key);
-				String spellName = conf.getString(key);
+				String spellName = conf.getString(key, "");
 				Spell spell = MagicSpells.getSpellByInternalName(spellName);
 				if (spell != null) keybinds.setKeybind(slot, spell);
 			}
@@ -92,8 +92,7 @@ public class KeybindSpell extends CommandSpell {
 	
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			if (args.length != 1) {
 				player.sendMessage("Invalid args.");
 				return PostCastAction.ALREADY_HANDLED;
@@ -114,7 +113,7 @@ public class KeybindSpell extends CommandSpell {
 				saveKeybinds(keybinds);
 				return PostCastAction.HANDLE_NORMALLY;
 			}
-			if (item != null && !BlockUtils.isAir(item.getType())) {
+			if (!BlockUtils.isAir(item.getType())) {
 				player.sendMessage("Not empty.");
 				return PostCastAction.ALREADY_HANDLED;
 			}

@@ -2,6 +2,10 @@ package com.nisovin.magicspells.util.prompt;
 
 import java.util.regex.Pattern;
 
+import com.nisovin.magicspells.util.Util;
+
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.RegexPrompt;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,12 +26,13 @@ public class MagicRegexPrompt extends RegexPrompt {
 	}
 
 	@Override
-	public String getPromptText(ConversationContext paramConversationContext) {
+	@NotNull
+	public String getPromptText(@NotNull ConversationContext paramConversationContext) {
 		return promptText;
 	}
 
 	@Override
-	protected Prompt acceptValidatedInput(ConversationContext paramConversationContext, String paramString) {
+	protected Prompt acceptValidatedInput(@NotNull ConversationContext paramConversationContext, @NotNull String paramString) {
 		return responder.acceptValidatedInput(paramConversationContext, paramString);
 	}
 	
@@ -39,7 +44,7 @@ public class MagicRegexPrompt extends RegexPrompt {
 
 		MagicRegexPrompt ret = new MagicRegexPrompt(regexp);
 		ret.responder = new MagicPromptResponder(section);
-		ret.promptText = section.getString("prompt-text", "");
+		ret.promptText = Util.colorize(section.getString("prompt-text", ""));
 		return ret;
 	}
 

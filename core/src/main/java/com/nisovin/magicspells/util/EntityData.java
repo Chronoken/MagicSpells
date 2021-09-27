@@ -104,67 +104,67 @@ public class EntityData {
 		String mainGeneType = section.getString("main-gene", "");
 		String hiddenGeneType = section.getString("hidden-gene", "");
 		switch (entity.toLowerCase()) {
-			case "player":
+			case "player" -> {
 				entityType = EntityType.PLAYER;
 				isPlayer = true;
-				break;
-			case "pillager":
+			}
+			case "pillager" -> {
 				entityType = EntityType.PILLAGER;
 				isMob = true;
-				break;
-			case "ravager":
+			}
+			case "ravager" -> {
 				entityType = EntityType.RAVAGER;
 				isMob = true;
-				break;
-			case "trader_llama":
+			}
+			case "trader_llama" -> {
 				entityType = EntityType.TRADER_LLAMA;
 				isMob = true;
-				break;
-			case "wandering_trader":
+			}
+			case "wandering_trader" -> {
 				entityType = EntityType.WANDERING_TRADER;
 				isMob = true;
-				break;
-			case "hoglin":
+			}
+			case "hoglin" -> {
 				entityType = EntityType.HOGLIN;
 				isMob = true;
-				break;
-			case "piglin":
+			}
+			case "piglin" -> {
 				entityType = EntityType.PIGLIN;
 				isMob = true;
-				break;
-			case "piglin_brute":
+			}
+			case "piglin_brute" -> {
 				entityType = EntityType.PIGLIN_BRUTE;
 				isMob = true;
-				break;
-			case "zoglin":
+			}
+			case "zoglin" -> {
 				entityType = EntityType.ZOGLIN;
 				isMob = true;
-				break;
-			case "strider":
+			}
+			case "strider" -> {
 				entityType = EntityType.STRIDER;
 				isMob = true;
-				break;
-			case "bee":
+			}
+			case "bee" -> {
 				entityType = EntityType.BEE;
 				isMob = true;
-				break;
-			case "wither_skeleton":
+			}
+			case "wither_skeleton" -> {
 				entityType = EntityType.WITHER_SKELETON;
 				isMob = true;
-				break;
-			case "zombie_villager":
+			}
+			case "zombie_villager" -> {
 				entityType = EntityType.ZOMBIE_VILLAGER;
 				isMob = true;
-				break;
-			case "creeper":
+			}
+			case "creeper" -> {
 				entityType = EntityType.CREEPER;
 				isMob = true;
-				break;
-			case "panda":
+			}
+			case "panda" -> {
 				entityType = EntityType.PANDA;
 				isMob = true;
 				try {
-					 mainGene = Panda.Gene.valueOf(mainGeneType.toUpperCase());
+					mainGene = Panda.Gene.valueOf(mainGeneType.toUpperCase());
 				} catch (Exception exception) {
 					MagicSpells.error("Invalid panda main gene: " + mainGeneType);
 					mainGene = null;
@@ -175,8 +175,8 @@ public class EntityData {
 					MagicSpells.error("Invalid panda hidden gene: " + hiddenGeneType);
 					hiddenGene = null;
 				}
-				break;
-			case "villager":
+			}
+			case "villager" -> {
 				entityType = EntityType.VILLAGER;
 				isMob = true;
 				try {
@@ -185,8 +185,8 @@ public class EntityData {
 					MagicSpells.error("Invalid villager profession: " + type);
 					profession = null;
 				}
-				break;
-			case "sheep":
+			}
+			case "sheep" -> {
 				entityType = EntityType.SHEEP;
 				isMob = true;
 				try {
@@ -195,8 +195,8 @@ public class EntityData {
 					MagicSpells.error("Invalid sheep color: " + color);
 					dyeColor = null;
 				}
-				break;
-			case "rabbit":
+			}
+			case "rabbit" -> {
 				entityType = EntityType.RABBIT;
 				isMob = true;
 				try {
@@ -205,8 +205,8 @@ public class EntityData {
 					MagicSpells.error("Invalid rabbit type: " + type);
 					rabbitType = null;
 				}
-				break;
-			case "wolf":
+			}
+			case "wolf" -> {
 				entityType = EntityType.WOLF;
 				isMob = true;
 				try {
@@ -215,8 +215,8 @@ public class EntityData {
 					MagicSpells.error("Invalid wolf collar color: " + color);
 					dyeColor = null;
 				}
-				break;
-			case "fox":
+			}
+			case "fox" -> {
 				entityType = EntityType.FOX;
 				isMob = true;
 				try {
@@ -225,8 +225,8 @@ public class EntityData {
 					MagicSpells.error("Invalid fox type: " + type);
 					foxType = null;
 				}
-				break;
-			case "cat":
+			}
+			case "cat" -> {
 				entityType = EntityType.CAT;
 				isMob = true;
 				try {
@@ -235,16 +235,16 @@ public class EntityData {
 					MagicSpells.error("Invalid cat type: " + type);
 					catType = null;
 				}
-				break;
-			case "pig":
+			}
+			case "pig" -> {
 				entityType = EntityType.PIG;
 				isMob = true;
-				break;
-			case "iron_golem":
+			}
+			case "iron_golem" -> {
 				entityType = EntityType.IRON_GOLEM;
 				isMob = true;
-				break;
-			case "mooshroom":
+			}
+			case "mooshroom" -> {
 				entityType = EntityType.MUSHROOM_COW;
 				isMob = true;
 				try {
@@ -253,28 +253,28 @@ public class EntityData {
 					MagicSpells.error("Invalid mooshroom type: " + type);
 					cowVariant = null;
 				}
-				break;
-			case "magma_cube":
+			}
+			case "magma_cube" -> {
 				entityType = EntityType.MAGMA_CUBE;
 				isMob = true;
-				break;
-			case "ocelot":
+			}
+			case "ocelot" -> {
 				entityType = EntityType.OCELOT;
 				isMob = true;
-				break;
-			case "snow_golem":
+			}
+			case "snow_golem" -> {
 				entityType = EntityType.SNOWMAN;
 				isMob = true;
-				break;
-			case "wither":
+			}
+			case "wither" -> {
 				entityType = EntityType.WITHER;
 				isMob = true;
-				break;
-			case "ender_dragon":
+			}
+			case "ender_dragon" -> {
 				entityType = EntityType.ENDER_DRAGON;
 				isMob = true;
-				break;
-			case "horse":
+			}
+			case "horse" -> {
 				entityType = EntityType.HORSE;
 				isMob = true;
 				try {
@@ -283,51 +283,50 @@ public class EntityData {
 					MagicSpells.error("Invalid horse color: " + color);
 					horseColor = null;
 				}
-
 				try {
 					horseStyle = Horse.Style.valueOf(style.toUpperCase());
 				} catch (Exception exception) {
 					MagicSpells.error("Invalid horse style: " + style);
 					horseStyle = null;
 				}
-				break;
-			case "skeleton_horse":
+			}
+			case "skeleton_horse" -> {
 				entityType = EntityType.SKELETON_HORSE;
 				isMob = true;
-				break;
-			case "zombie_horse":
+			}
+			case "zombie_horse" -> {
 				entityType = EntityType.ZOMBIE_HORSE;
 				isMob = true;
-				break;
-			case "mule":
+			}
+			case "mule" -> {
 				entityType = EntityType.MULE;
 				isMob = true;
-				break;
-			case "donkey":
+			}
+			case "donkey" -> {
 				entityType = EntityType.DONKEY;
 				isMob = true;
-				break;
-			case "elder_guardian":
+			}
+			case "elder_guardian" -> {
 				entityType = EntityType.ELDER_GUARDIAN;
 				isMob = true;
-				break;
-			case "slime":
+			}
+			case "slime" -> {
 				entityType = EntityType.SLIME;
 				isMob = true;
-				break;
-			case "cod":
+			}
+			case "cod" -> {
 				entityType = EntityType.COD;
 				isMob = true;
-				break;
-			case "salmon":
+			}
+			case "salmon" -> {
 				entityType = EntityType.SALMON;
 				isMob = true;
-				break;
-			case "pufferfish":
+			}
+			case "pufferfish" -> {
 				entityType = EntityType.PUFFERFISH;
 				isMob = true;
-				break;
-			case "tropical_fish":
+			}
+			case "tropical_fish" -> {
 				entityType = EntityType.TROPICAL_FISH;
 				isMob = true;
 				try {
@@ -336,22 +335,20 @@ public class EntityData {
 					MagicSpells.error("Invalid fish pattern: " + type);
 					fishPattern = null;
 				}
-
 				try {
 					dyeColor = DyeColor.valueOf(color.toUpperCase());
 				} catch (Exception exception) {
 					MagicSpells.error("Invalid fish body color: " + color);
 					dyeColor = null;
 				}
-
 				try {
 					patternDyeColor = DyeColor.valueOf(patternColor.toUpperCase());
 				} catch (Exception exception) {
 					MagicSpells.error("Invalid fish pattern color: " + patternColor);
 					patternDyeColor = null;
 				}
-				break;
-			case "llama":
+			}
+			case "llama" -> {
 				entityType = EntityType.LLAMA;
 				isMob = true;
 				try {
@@ -360,34 +357,33 @@ public class EntityData {
 					MagicSpells.error("Invalid llama color: " + color);
 					llamaColor = null;
 				}
-
 				material = Util.getMaterial(mat);
 				if (material == null) {
 					MagicSpells.error("Invalid llama material: " + mat);
 					material = null;
 				}
-				break;
-			case "polar_bear":
+			}
+			case "polar_bear" -> {
 				entityType = EntityType.POLAR_BEAR;
 				isMob = true;
-				break;
-			case "armor_stand":
+			}
+			case "armor_stand" -> {
 				entityType = EntityType.ARMOR_STAND;
 				isMisc = true;
-				break;
-			case "bat":
+			}
+			case "bat" -> {
 				entityType = EntityType.BAT;
 				isMob = true;
-				break;
-			case "blaze":
+			}
+			case "blaze" -> {
 				entityType = EntityType.BLAZE;
 				isMob = true;
-				break;
-			case "dolphin":
+			}
+			case "dolphin" -> {
 				entityType = EntityType.DOLPHIN;
 				isMob = true;
-				break;
-			case "enderman":
+			}
+			case "enderman" -> {
 				entityType = EntityType.ENDERMAN;
 				isMob = true;
 				material = Util.getMaterial(mat);
@@ -395,81 +391,80 @@ public class EntityData {
 					MagicSpells.error("Invalid enderman material: " + mat);
 					material = null;
 				}
-				break;
-			case "ghast":
+			}
+			case "ghast" -> {
 				entityType = EntityType.GHAST;
 				isMob = true;
-				break;
-			case "guardian":
+			}
+			case "guardian" -> {
 				entityType = EntityType.GUARDIAN;
 				isMob = true;
-				break;
-			case "illusioner":
+			}
+			case "illusioner" -> {
 				entityType = EntityType.ILLUSIONER;
 				isMob = true;
-				break;
-			case "vindicator":
+			}
+			case "vindicator" -> {
 				entityType = EntityType.VINDICATOR;
 				isMob = true;
-				break;
-			case "evoker":
+			}
+			case "evoker" -> {
 				entityType = EntityType.EVOKER;
 				isMob = true;
-				break;
-			case "skeleton":
+			}
+			case "skeleton" -> {
 				entityType = EntityType.SKELETON;
 				isMob = true;
-				break;
-			case "spider":
+			}
+			case "spider" -> {
 				entityType = EntityType.SPIDER;
 				isMob = true;
-				break;
-			case "cave_spider":
+			}
+			case "cave_spider" -> {
 				entityType = EntityType.CAVE_SPIDER;
 				isMob = true;
-				break;
-			case "giant":
+			}
+			case "giant" -> {
 				entityType = EntityType.GIANT;
 				isMob = true;
-				break;
-			case "zombie":
+			}
+			case "zombie" -> {
 				entityType = EntityType.ZOMBIE;
 				isMob = true;
-				break;
-			case "zombie_pigman":
-			case "zombified_piglin":
+			}
+			case "zombie_pigman", "zombified_piglin" -> {
 				entityType = MobUtil.getPigZombieEntityType();
 				isMob = true;
-				break;
-			case "silverfish":
+			}
+			case "silverfish" -> {
 				entityType = EntityType.SILVERFISH;
 				isMob = true;
-				break;
-			case "witch":
+			}
+			case "witch" -> {
 				entityType = EntityType.WITCH;
 				isMob = true;
-				break;
-			case "endermite":
+			}
+			case "endermite" -> {
 				entityType = EntityType.ENDERMITE;
 				isMob = true;
-				break;
-			case "shulker":
+			}
+			case "shulker" -> {
 				entityType = EntityType.SHULKER;
 				isMob = true;
-				break;
-			case "cow":
+			}
+			case "cow" -> {
 				entityType = EntityType.COW;
 				isMob = true;
-				break;
-			case "chicken":
+			}
+			case "chicken" -> {
 				entityType = EntityType.CHICKEN;
 				isMob = true;
-				break;
-			case "squid":
+			}
+			case "squid" -> {
 				entityType = EntityType.SQUID;
 				isMob = true;
-				break;
-			case "parrot":
+			}
+			case "parrot" -> {
 				entityType = EntityType.PARROT;
 				isMob = true;
 				try {
@@ -478,20 +473,20 @@ public class EntityData {
 					MagicSpells.error("Invalid parrot variant: " + type);
 					parrotVariant = null;
 				}
-				break;
-			case "turtle":
+			}
+			case "turtle" -> {
 				entityType = EntityType.TURTLE;
 				isMob = true;
-				break;
-			case "phantom":
+			}
+			case "phantom" -> {
 				entityType = EntityType.PHANTOM;
 				isMob = true;
-				break;
-			case "drowned":
+			}
+			case "drowned" -> {
 				entityType = EntityType.DROWNED;
 				isMob = true;
-				break;
-			case "falling_block":
+			}
+			case "falling_block" -> {
 				entityType = EntityType.FALLING_BLOCK;
 				isMisc = true;
 				material = Util.getMaterial(mat);
@@ -499,13 +494,13 @@ public class EntityData {
 					MagicSpells.error("Invalid falling block material: " + mat);
 					material = null;
 				}
-				break;
-			case "item":
+			}
+			case "item" -> {
 				entityType = EntityType.DROPPED_ITEM;
 				isMisc = true;
 				material = Util.getMaterial(mat);
 				if (material == null) MagicSpells.error("Invalid item material: " + mat);
-				break;
+			}
 		}
 	}
 
@@ -632,17 +627,11 @@ public class EntityData {
 		startLoc.add(startLoc.getDirection().clone().multiply(relativeOffset.getX()));
 		startLoc.setY(startLoc.getY() + relativeOffset.getY());
 		
-		Entity entity;
-		switch (entityType) {
-			case FALLING_BLOCK:
-				entity = startLoc.getWorld().spawnFallingBlock(startLoc, material.createBlockData());
-				break;
-			case DROPPED_ITEM:
-				entity = startLoc.getWorld().dropItem(startLoc, new ItemStack(material));
-				break;
-			default:
-				entity = startLoc.getWorld().spawnEntity(startLoc, entityType);
-		}
+		Entity entity = switch (entityType) {
+			case FALLING_BLOCK -> startLoc.getWorld().spawnFallingBlock(startLoc, material.createBlockData());
+			case DROPPED_ITEM -> startLoc.getWorld().dropItem(startLoc, new ItemStack(material));
+			default -> startLoc.getWorld().spawnEntity(startLoc, entityType);
+		};
 
 		if (entity instanceof Ageable) {
 			if (isBaby()) ((Ageable) entity).setBaby();
@@ -658,7 +647,7 @@ public class EntityData {
 		if (entity instanceof Phantom) ((Phantom) entity).setSize(getSize());
 
 		switch (entityType) {
-			case ARMOR_STAND:
+			case ARMOR_STAND -> {
 				((ArmorStand) entity).setSmall(small);
 				((ArmorStand) entity).setArms(hasArms);
 				((ArmorStand) entity).setMarker(marker);
@@ -670,66 +659,46 @@ public class EntityData {
 				((ArmorStand) entity).setRightArmPose(rightArmAngle);
 				((ArmorStand) entity).setLeftLegPose(leftLegAngle);
 				((ArmorStand) entity).setRightLegPose(rightLegAngle);
-				break;
-			case ZOMBIE:
-				((Zombie) entity).setBaby(isBaby());
-				break;
-			case CREEPER:
-				((Creeper) entity).setPowered(isPowered());
-				break;
-			case ENDERMAN:
-				((Enderman) entity).setCarriedBlock(material.createBlockData());
-				break;
-			case WOLF:
+			}
+			case ZOMBIE -> {
+				if (isBaby()) ((Ageable) entity).setBaby();
+			}
+			case CREEPER -> ((Creeper) entity).setPowered(isPowered());
+			case ENDERMAN -> ((Enderman) entity).setCarriedBlock(material.createBlockData());
+			case WOLF -> {
 				((Wolf) entity).setAngry(isAngry());
 				((Wolf) entity).setTamed(isTamed());
 				if (isTamed()) ((Wolf) entity).setCollarColor(getDyeColor());
-				break;
-			case VILLAGER:
-				((Villager) entity).setProfession(getProfession());
-				break;
-			case PIG:
-				((Pig) entity).setSaddle(isSaddled());
-				break;
-			case SHEEP:
+			}
+			case VILLAGER -> ((Villager) entity).setProfession(getProfession());
+			case PIG -> ((Pig) entity).setSaddle(isSaddled());
+			case SHEEP -> {
 				((Sheep) entity).setSheared(isSheared());
 				((Sheep) entity).setColor(getDyeColor());
-				break;
-			case RABBIT:
-				((Rabbit) entity).setRabbitType(getRabbitType());
-				break;
-			case HORSE:
+			}
+			case RABBIT -> ((Rabbit) entity).setRabbitType(getRabbitType());
+			case HORSE -> {
 				((Horse) entity).setColor(getHorseColor());
 				((Horse) entity).setStyle(getHorseStyle());
-				break;
-			case LLAMA:
+			}
+			case LLAMA -> {
 				((Llama) entity).setColor(getLlamaColor());
 				((Llama) entity).getInventory().setDecor(new ItemStack(getMaterial()));
-				break;
-			case PUFFERFISH:
-				((PufferFish) entity).setPuffState(getSize());
-				break;
-			case TROPICAL_FISH:
+			}
+			case PUFFERFISH -> ((PufferFish) entity).setPuffState(getSize());
+			case TROPICAL_FISH -> {
 				((TropicalFish) entity).setBodyColor(getDyeColor());
 				((TropicalFish) entity).setPatternColor(getPatternDyeColor());
 				((TropicalFish) entity).setPattern(getFishPattern());
-				break;
-			case PARROT:
-				((Parrot) entity).setVariant(getParrotVariant());
-				break;
-			case FOX:
-				((Fox) entity).setFoxType(getFoxType());
-				break;
-			case CAT:
-				((Cat) entity).setCatType(getCatType());
-				break;
-			case MUSHROOM_COW:
-				((MushroomCow) entity).setVariant(getCowVariant());
-				break;
-			case PANDA:
+			}
+			case PARROT -> ((Parrot) entity).setVariant(getParrotVariant());
+			case FOX -> ((Fox) entity).setFoxType(getFoxType());
+			case CAT -> ((Cat) entity).setCatType(getCatType());
+			case MUSHROOM_COW -> ((MushroomCow) entity).setVariant(getCowVariant());
+			case PANDA -> {
 				((Panda) entity).setMainGene(getMainGene());
 				((Panda) entity).setHiddenGene(getMainGene());
-				break;
+			}
 		}
 
 		return entity;

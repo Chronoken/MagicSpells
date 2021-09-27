@@ -34,11 +34,9 @@ public class MountListener extends PassiveListener {
 	@OverridePriority
 	@EventHandler
 	public void onMount(EntityMountEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity)) return;
+		if (!(event.getEntity() instanceof LivingEntity caster)) return;
 		if (!isCancelStateOk(event.isCancelled())) return;
 		if (!types.isEmpty() && !types.contains(event.getMount().getType())) return;
-
-		LivingEntity caster = (LivingEntity) event.getEntity();
 		if (!hasSpell(caster) || !canTrigger(caster)) return;
 
 		boolean casted = passiveSpell.activate(caster);

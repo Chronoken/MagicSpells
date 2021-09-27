@@ -25,8 +25,8 @@ public class DisplayNameCondition extends Condition {
 
     @Override
     public boolean check(LivingEntity livingEntity, LivingEntity target) {
-        if (!(target instanceof Player)) return false;
-        return ((Player) target).getDisplayName().equalsIgnoreCase(displayName);
+        if (!(target instanceof Player player)) return false;
+        return Util.getStringFromComponent(player.displayName()).equalsIgnoreCase(displayName);
     }
 
     @Override

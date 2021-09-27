@@ -67,8 +67,7 @@ public class BindSpell extends CommandSpell {
 	// DEBUG INFO: level 3, bind successful
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			if (args == null || args.length == 0) {
 				sendMessage(strUsage, player, args);
 				return PostCastAction.ALREADY_HANDLED;
@@ -77,7 +76,7 @@ public class BindSpell extends CommandSpell {
 			Spell spell = MagicSpells.getSpellByInGameName(Util.arrayJoin(args, ' '));
 			Spellbook spellbook = MagicSpells.getSpellbook(player);
 
-			if (spell == null || spellbook == null) {
+			if (spell == null) {
 				sendMessage(strNoSpell, player, args);
 				return PostCastAction.ALREADY_HANDLED;
 			}
@@ -98,7 +97,7 @@ public class BindSpell extends CommandSpell {
 			}
 
 			CastItem castItem = new CastItem(player.getEquipment().getItemInMainHand());
-			MagicSpells.debug(3, "Trying to bind spell '" + spell.getInternalName() + "' to cast item " + castItem.toString() + "...");
+			MagicSpells.debug(3, "Trying to bind spell '" + spell.getInternalName() + "' to cast item " + castItem + "...");
 
 			if (BlockUtils.isAir(castItem.getType()) && !allowBindToFist) {
 				sendMessage(strCantBindItem, player, args);

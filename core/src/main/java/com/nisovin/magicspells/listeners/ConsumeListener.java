@@ -16,13 +16,10 @@ import com.nisovin.magicspells.Spell.SpellCastResult;
 
 public class ConsumeListener implements Listener {
 
-	private MagicSpells plugin;
-
 	private Map<CastItem, Spell> consumeCastItems = new HashMap<>();
 	private Map<String, Long> lastCast = new HashMap<>();
 	
-	public ConsumeListener(MagicSpells plugin) {
-		this.plugin = plugin;
+	public ConsumeListener() {
 		for (Spell spell : MagicSpells.getSpells().values()) {
 			CastItem[] items = spell.getConsumeCastItems();
 			if (items.length <= 0) continue;

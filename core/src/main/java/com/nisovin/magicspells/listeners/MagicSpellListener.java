@@ -62,7 +62,6 @@ public class MagicSpellListener implements Listener {
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if (entity == null) return;
 		if (!isMSEntity(entity)) return;
 		event.setCancelled(true);
 	}

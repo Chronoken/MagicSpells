@@ -21,8 +21,7 @@ public class ManaSpell extends InstantSpell {
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			int amount = Math.round(mana * power);
 			boolean added = MagicSpells.getManaHandler().addMana(player, amount, ManaChangeReason.OTHER);
 			if (!added) return PostCastAction.ALREADY_HANDLED;

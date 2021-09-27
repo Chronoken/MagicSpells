@@ -25,10 +25,8 @@ public class PotionHandler {
 	public static final String POTION_COLOR_CONFIG_NAME = "potion-color";
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof PotionMeta)) return;
-		
-		PotionMeta potionMeta = (PotionMeta) meta;
-		
+		if (!(meta instanceof PotionMeta potionMeta)) return;
+
 		if (config.isList(POTION_EFFECT_CONFIG_NAME)) {
 			potionMeta.clearCustomEffects();
 			List<String> potionEffectStrings = config.getStringList(POTION_EFFECT_CONFIG_NAME);
@@ -47,7 +45,7 @@ public class PotionHandler {
 
 		if (config.isString(POTION_COLOR_CONFIG_NAME)) {
 			try {
-				int color = Integer.parseInt(config.getString(POTION_COLOR_CONFIG_NAME).replace("#", ""), 16);
+				int color = Integer.parseInt(config.getString(POTION_COLOR_CONFIG_NAME, "").replace("#", ""), 16);
 				Color c = Color.fromRGB(color);
 
 				potionMeta.setColor(c);
@@ -58,7 +56,7 @@ public class PotionHandler {
 		}
 
 		if (config.isString(POTION_DATA_CONFIG_NAME)) {
-			String potionDataString = config.getString(POTION_DATA_CONFIG_NAME);
+			String potionDataString = config.getString(POTION_DATA_CONFIG_NAME, "");
 			String[] args = potionDataString.split(" ");
 
 			boolean extended = false, upgraded = false;
@@ -82,9 +80,8 @@ public class PotionHandler {
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof PotionMeta)) return;
+		if (!(meta instanceof PotionMeta potionMeta)) return;
 
-		PotionMeta potionMeta = (PotionMeta) meta;
 		if (data.hasAttribute(POTION_EFFECTS)) {
 			potionMeta.clearCustomEffects();
 			((List<PotionEffect>) data.getAttribute(POTION_EFFECTS)).forEach(potionEffect -> potionMeta.addCustomEffect(potionEffect, true));
@@ -94,9 +91,8 @@ public class PotionHandler {
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof PotionMeta)) return;
+		if (!(meta instanceof PotionMeta potionMeta)) return;
 
-		PotionMeta potionMeta = (PotionMeta) meta;
 		data.setAttribute(POTION_DATA, potionMeta.getBasePotionData());
 		if (potionMeta.hasCustomEffects()) {
 			List<PotionEffect> effects = potionMeta.getCustomEffects();
@@ -106,9 +102,7 @@ public class PotionHandler {
 	}
 
 	public static PotionData getPotionData(ItemMeta meta) {
-		if (!(meta instanceof PotionMeta)) return null;
-
-		PotionMeta potionMeta = (PotionMeta) meta;
+		if (!(meta instanceof PotionMeta potionMeta)) return null;
 		return potionMeta.getBasePotionData();
 	}
 	

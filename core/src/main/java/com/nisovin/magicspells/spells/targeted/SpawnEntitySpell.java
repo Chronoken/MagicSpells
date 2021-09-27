@@ -192,8 +192,7 @@ public class SpawnEntitySpell extends TargetedSpell implements TargetedLocationS
 					if (split.length > 1) duration = Integer.parseInt(split[1]);
 					int strength = 0;
 					if (split.length > 2) strength = Integer.parseInt(split[2]);
-					boolean ambient = false;
-					if (split.length > 3 && split[3].equalsIgnoreCase("ambient")) ambient = true;
+					boolean ambient = split.length > 3 && split[3].equalsIgnoreCase("ambient");
 					potionEffects.add(new PotionEffect(type, duration, strength, ambient));
 				} catch (Exception e) {
 					MagicSpells.error("SpawnMonsterSpell '" + spellName + "' has an invalid potion effect defined: " + data);
@@ -366,8 +365,7 @@ public class SpawnEntitySpell extends TargetedSpell implements TargetedLocationS
 
 		if (removeAI) {
 			if (addLookAtPlayerAI) {
-				if (entity instanceof Mob) {
-					Mob mob = (Mob) entity;
+				if (entity instanceof Mob mob) {
 					MobGoals mobGoals = Bukkit.getMobGoals();
 					mobGoals.removeAllGoals(mob);
 					mobGoals.addGoal(mob, 1, new LookAtEntityGoal(mob, HumanEntity.class, 10.0F, 1.0F));
@@ -446,8 +444,7 @@ public class SpawnEntitySpell extends TargetedSpell implements TargetedLocationS
 
 	@EventHandler
 	private void onEntityDeath(EntityDeathEvent event) {
-		Entity entity = event.getEntity();
-		if (!(entity instanceof LivingEntity)) return;
+		LivingEntity entity = event.getEntity();
 		if (!entities.contains(entity)) return;
 		if (removeMob) entities.remove(entity);
 	}

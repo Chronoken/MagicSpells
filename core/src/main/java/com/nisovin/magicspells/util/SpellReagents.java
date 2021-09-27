@@ -170,9 +170,7 @@ public class SpellReagents {
 		other.money = money;
 		if (variables != null) {
 			other.variables = new HashMap<>();
-			for (Map.Entry<String, Double> entry : variables.entrySet()) {
-				other.variables.put(entry.getKey(), entry.getValue());
-			}
+			other.variables.putAll(variables);
 		}
 		return other;
 	}

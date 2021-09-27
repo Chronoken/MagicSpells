@@ -178,8 +178,7 @@ public class ReplaceSpell extends TargetedSpell implements TargetedLocationSpell
 						// Place block.
 						if (replaceRandom) block.setType(replaceWith.get(Util.getRandomInt(replaceWith.size())));
 						else block.setType(replaceWith.get(i));
-						if (checkPlugins && caster instanceof Player) {
-							Player player = (Player) caster;
+						if (checkPlugins && caster instanceof Player player) {
 							Block against = target.clone().add(target.getDirection()).getBlock();
 							if (block.equals(against)) against = block.getRelative(BlockFace.DOWN);
 							MagicSpellsBlockPlaceEvent event = new MagicSpellsBlockPlaceEvent(block, previousState, against, player.getInventory().getItemInMainHand(), player, true);

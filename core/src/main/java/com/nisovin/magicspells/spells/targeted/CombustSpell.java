@@ -107,15 +107,7 @@ public class CombustSpell extends TargetedSpell implements TargetedEntitySpell {
 	public int getDuration() {
 		return fireTicks;
 	}
-	
-	private class CombustData {
-		
-		private float power;
-		
-		CombustData(float power) {
-			this.power = power;
-		}
-		
-	}
+
+	private record CombustData(float power) {}
 	
 }

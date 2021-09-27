@@ -35,8 +35,7 @@ public class HelpSpell extends CommandSpell {
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			if (args == null || args.length == 0) {
 				sendMessage(strUsage, player, args);
 				return PostCastAction.ALREADY_HANDLED;
@@ -45,7 +44,7 @@ public class HelpSpell extends CommandSpell {
 			Spell spell = MagicSpells.getSpellByInGameName(Util.arrayJoin(args, ' '));
 			Spellbook spellbook = MagicSpells.getSpellbook(player);
 
-			if (spell == null || (requireKnownSpell && (spellbook == null || !spellbook.hasSpell(spell)))) {
+			if (spell == null || requireKnownSpell && !spellbook.hasSpell(spell)) {
 				sendMessage(strNoSpell, player, args);
 				return PostCastAction.ALREADY_HANDLED;
 			}

@@ -57,12 +57,9 @@ public class TakeDamageListener extends PassiveListener {
 	@OverridePriority
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity)) return;
+		if (!(event.getEntity() instanceof LivingEntity caster)) return;
 		if (!isCancelStateOk(event.isCancelled())) return;
-
-		LivingEntity caster = (LivingEntity) event.getEntity();
 		if (!hasSpell(caster) || !canTrigger(caster)) return;
-
 		if (!damageCauses.isEmpty() && !damageCauses.contains(event.getCause())) return;
 
 		LivingEntity attacker = getAttacker(event);

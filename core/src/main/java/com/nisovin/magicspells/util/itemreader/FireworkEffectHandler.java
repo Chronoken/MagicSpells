@@ -20,7 +20,7 @@ public class FireworkEffectHandler {
 	private static final String FADE_COLORS_CONFIG_NAME = "fade-colors";
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof FireworkEffectMeta)) return;
+		if (!(meta instanceof FireworkEffectMeta fireworkMeta)) return;
 
 		String type = "BALL";
 
@@ -31,7 +31,7 @@ public class FireworkEffectHandler {
 		Color[] fadeColors = null;
 
 		if (config.isString(TYPE_CONFIG_NAME)) {
-			type = config.getString(TYPE_CONFIG_NAME).trim().toUpperCase();
+			type = config.getString(TYPE_CONFIG_NAME, "").trim().toUpperCase();
 		}
 
 		if (config.isBoolean(TRAIL_CONFIG_NAME)) {
@@ -70,21 +70,20 @@ public class FireworkEffectHandler {
 				.withFade(fadeColors)
 				.build();
 
-		((FireworkEffectMeta) meta).setEffect(effect);
+		fireworkMeta.setEffect(effect);
 		data.setAttribute(FIREWORK_EFFECT, effect);
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof FireworkEffectMeta)) return;
-
-		if (data.hasAttribute(FIREWORK_EFFECT)) ((FireworkEffectMeta) meta).setEffect((FireworkEffect) data.getAttribute(FIREWORK_EFFECT));
+		if (!(meta instanceof FireworkEffectMeta fireworkMeta)) return;
+		if (!data.hasAttribute(FIREWORK_EFFECT)) return;
+		fireworkMeta.setEffect((FireworkEffect) data.getAttribute(FIREWORK_EFFECT));
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof FireworkEffectMeta)) return;
-
-		FireworkEffectMeta effectMeta = (FireworkEffectMeta) meta;
-		if (effectMeta.hasEffect()) data.setAttribute(FIREWORK_EFFECT, effectMeta.getEffect());
+		if (!(meta instanceof FireworkEffectMeta effectMeta)) return;
+		if (!effectMeta.hasEffect()) return;
+		data.setAttribute(FIREWORK_EFFECT, effectMeta.getEffect());
 	}
 
 }

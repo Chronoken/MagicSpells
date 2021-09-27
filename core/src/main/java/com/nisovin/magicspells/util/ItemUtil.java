@@ -6,21 +6,16 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.persistence.PersistentDataType;
-
-import com.nisovin.magicspells.MagicSpells;
 
 public class ItemUtil {
 
 	public static void addFakeEnchantment(ItemMeta meta) {
 		if (meta == null) return;
-
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.addEnchant(Enchantment.FROST_WALKER, -1, true);
 	}
 
 	public static boolean hasFakeEnchantment(ItemMeta meta) {
-
 		return meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS)
 			&& meta.hasEnchant(Enchantment.FROST_WALKER)
 			&& meta.getEnchantLevel(Enchantment.FROST_WALKER) == 65535;
@@ -63,16 +58,15 @@ public class ItemUtil {
 	}
 
 	public static Recipe createCookingRecipe(String type, NamespacedKey namespaceKey, String group, ItemStack result, Material ingredient, float experience, int cookingTime) {
-		Recipe recipe = null;
+		CookingRecipe<?> recipe = null;
 
 		switch (type.toLowerCase()) {
-			case "smoking": recipe = new SmokingRecipe(namespaceKey, result, ingredient, experience, cookingTime);
-			case "campfire": recipe = new CampfireRecipe(namespaceKey, result, ingredient, experience, cookingTime);
-			case "blasting": recipe = new BlastingRecipe(namespaceKey, result, ingredient, experience, cookingTime);
+			case "smoking" -> recipe = new SmokingRecipe(namespaceKey, result, ingredient, experience, cookingTime);
+			case "campfire" -> recipe = new CampfireRecipe(namespaceKey, result, ingredient, experience, cookingTime);
+			case "blasting" -> recipe = new BlastingRecipe(namespaceKey, result, ingredient, experience, cookingTime);
 		}
 
-		if (recipe instanceof CookingRecipe) ((CookingRecipe) recipe).setGroup(group);
-
+		if (recipe != null) recipe.setGroup(group);
 		return recipe;
 	}
 
@@ -80,17 +74,6 @@ public class ItemUtil {
 		StonecuttingRecipe recipe = new StonecuttingRecipe(namespaceKey, result, ingredient);
 		recipe.setGroup(group);
 		return recipe;
-	}
-
-	public static String getPersistentString(ItemStack itemStack, String key) {
-		return itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(MagicSpells.getInstance(), key), PersistentDataType.STRING);
-	}
-
-	public static ItemStack setPersistentString(ItemStack itemStack, String key, String value) {
-		ItemMeta meta = itemStack.getItemMeta();
-		meta.getPersistentDataContainer().set(new NamespacedKey(MagicSpells.getInstance(), key), PersistentDataType.STRING, value);
-		itemStack.setItemMeta(meta);
-		return itemStack;
 	}
 
 }

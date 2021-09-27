@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.nisovin.magicspells.util.Util;
-import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.spelleffects.SpellEffect;
 
 public class ActionBarTextEffect extends SpellEffect {
@@ -28,7 +27,7 @@ public class ActionBarTextEffect extends SpellEffect {
 	}
 	
 	private void send(Player player) {
-		player.sendActionBar(Util.doVarReplacementAndColorize(player, message));
+		player.sendActionBar(Util.getMiniMessageWithVars(player, message));
 	}
 	
 }

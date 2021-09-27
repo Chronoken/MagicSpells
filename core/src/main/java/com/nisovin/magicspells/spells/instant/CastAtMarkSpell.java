@@ -36,7 +36,7 @@ public class CastAtMarkSpell extends InstantSpell {
 		if (initialized) return;
 
 		Spell spell = MagicSpells.getSpellByInternalName(markSpellName);
-		if (spell == null || !(spell instanceof MarkSpell)) {
+		if (!(spell instanceof MarkSpell)) {
 			MagicSpells.error("CastAtMarkSpell '" + internalName + "' has an invalid mark-spell defined!");
 			return;
 		}

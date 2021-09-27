@@ -14,11 +14,8 @@ public class HasSpellCondition extends Condition {
 
     @Override
     public boolean initialize(String var) {
-        Spell s = MagicSpells.getSpellByInternalName(var);
-        if (s == null) return false;
-        if (!(s instanceof Spell)) return false;
-        spell = s;
-        return true;
+        spell = MagicSpells.getSpellByInternalName(var);
+        return spell != null;
     }
 
     @Override

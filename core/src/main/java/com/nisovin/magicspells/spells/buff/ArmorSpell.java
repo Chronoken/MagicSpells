@@ -27,6 +27,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 
+import net.kyori.adventure.text.Component;
+
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.spells.BuffSpell;
 import com.nisovin.magicspells.util.MagicConfig;
@@ -48,7 +51,7 @@ public class ArmorSpell extends BuffSpell {
 
 	private String strHasArmor;
 
-	private String hiddenLore;
+	private Component hiddenLore;
 
 	public ArmorSpell(MagicConfig config, String spellName) {
 		super(config, spellName);
@@ -74,10 +77,10 @@ public class ArmorSpell extends BuffSpell {
 		if (!permanent) registerEvents(new ArmorListener());
 	}
 
-	public static String getInvisibleLore(String s) {
+	public static Component getInvisibleLore(String s) {
 		String lore = "";
 		for (char c : s.toCharArray()) lore += ChatColor.COLOR_CHAR + "" + c;
-		return lore;
+		return Util.getMiniMessage(lore);
 	}
 
 	private ItemStack getItem(String s) {
@@ -100,14 +103,10 @@ public class ArmorSpell extends BuffSpell {
 
 		if (!permanent) {
 			ItemMeta meta = item.getItemMeta();
-
-			List<String> lore;
-			if (meta.hasLore()) lore = meta.getLore();
-			else lore = new ArrayList<>();
-
+			List<Component> lore = meta.lore();
+			if (lore == null) lore = new ArrayList<>();
 			lore.add(hiddenLore);
-
-			meta.setLore(lore);
+			meta.lore(lore);
 			item.setItemMeta(meta);
 		}
 
@@ -208,11 +207,8 @@ public class ArmorSpell extends BuffSpell {
 		@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 		public void onEntityDamage(EntityDamageEvent event) {
 			Entity entity = event.getEntity();
-			if (!(entity instanceof LivingEntity)) return;
-
-			LivingEntity livingEntity = (LivingEntity) entity;
+			if (!(entity instanceof LivingEntity livingEntity)) return;
 			if (!isActive(livingEntity)) return;
-
 			if (livingEntity.getNoDamageTicks() >= 10) return;
 			addUseAndChargeCost(livingEntity);
 		}
@@ -220,14 +216,9 @@ public class ArmorSpell extends BuffSpell {
 		@EventHandler(ignoreCancelled=true)
 		public void onInventoryClick(InventoryClickEvent event) {
 			if (event.getSlotType() != SlotType.ARMOR) return;
-
 			HumanEntity entity = event.getWhoClicked();
-
-			if (!(entity instanceof Player)) return;
-
-			Player p = (Player)entity;
+			if (!(entity instanceof Player p)) return;
 			if (!isActive(p)) return;
-
 			event.setCancelled(true);
 		}
 
@@ -238,16 +229,9 @@ public class ArmorSpell extends BuffSpell {
 			while (drops.hasNext()) {
 				ItemStack drop = drops.next();
 				if (drop == null) continue;
-				if (!drop.hasItemMeta()) continue;
-
-				ItemMeta dropMeta = drop.getItemMeta();
-				if (dropMeta == null) continue;
-
-				List<String> lore = dropMeta.getLore();
+				List<Component> lore = drop.lore();
 				if (lore == null) continue;
-				if (lore.isEmpty()) continue;
 				if (!lore.get(lore.size() - 1).equals(hiddenLore)) continue;
-
 				drops.remove();
 			}
 		}
@@ -342,11 +326,11 @@ public class ArmorSpell extends BuffSpell {
 		this.strHasArmor = strHasArmor;
 	}
 
-	public String getHiddenLore() {
+	public Component getHiddenLore() {
 		return hiddenLore;
 	}
 
-	public void setHiddenLore(String hiddenLore) {
+	public void setHiddenLore(Component hiddenLore) {
 		this.hiddenLore = hiddenLore;
 	}
 

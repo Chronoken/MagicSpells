@@ -21,10 +21,8 @@ public class FireworkHandler {
 	private static final String POWER_CONFIG_NAME = POWER.toString();
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof FireworkMeta)) return;
+		if (!(meta instanceof FireworkMeta fireworkMeta)) return;
 		if (!config.isList(FIREWORK_EFFECTS_CONFIG_NAME)) return;
-
-		FireworkMeta fireworkMeta = (FireworkMeta) meta;
 
 		int power = 0;
 		if (config.isInt(POWER_CONFIG_NAME)) power = config.getInt(POWER_CONFIG_NAME);
@@ -79,22 +77,18 @@ public class FireworkHandler {
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof FireworkMeta)) return;
+		if (!(meta instanceof FireworkMeta fireworkMeta)) return;
 
-		FireworkMeta fireworkMeta = (FireworkMeta) meta;
 		if (data.hasAttribute(POWER)) fireworkMeta.setPower((int) data.getAttribute(POWER));
 		if (data.hasAttribute(FIREWORK_EFFECTS)) fireworkMeta.addEffects((List<FireworkEffect>) data.getAttribute(FIREWORK_EFFECTS));
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof FireworkMeta)) return;
-
-		FireworkMeta fireworkMeta = (FireworkMeta) meta;
+		if (!(meta instanceof FireworkMeta fireworkMeta)) return;
 		data.setAttribute(POWER, fireworkMeta.getPower());
-		if (fireworkMeta.hasEffects()) {
-			List<FireworkEffect> effects = fireworkMeta.getEffects();
-			if (!effects.isEmpty()) data.setAttribute(FIREWORK_EFFECTS, fireworkMeta.getEffects());
-		}
+		if (!fireworkMeta.hasEffects()) return;
+		List<FireworkEffect> effects = fireworkMeta.getEffects();
+		if (!effects.isEmpty()) data.setAttribute(FIREWORK_EFFECTS, fireworkMeta.getEffects());
 	}
 
 }

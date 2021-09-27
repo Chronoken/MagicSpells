@@ -25,19 +25,13 @@ public class EntityTypeCondition extends Condition {
 		String[] vars = var.replace(" ", "").split(",");
 		for (String v : vars) {
 			switch (v.toLowerCase()) {
-				case "player":
-					player = true;
-					break;
-				case "monster":
-					monster = true;
-					break;
-				case "animal":
-					animal = true;
-					break;
-				default:
+				case "player" -> player = true;
+				case "monster" -> monster = true;
+				case "animal" -> animal = true;
+				default -> {
 					EntityType type = MobUtil.getEntityType(v);
 					if (type != null) types.add(type);
-					break;
+				}
 			}
 		}
 		return player || monster || animal || !types.isEmpty();

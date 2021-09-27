@@ -58,8 +58,7 @@ public class SlotSelectSpell extends TargetedSpell implements TargetedEntitySpel
 	}
 
 	private boolean slotChange(LivingEntity target) {
-		if (!(target instanceof Player)) return false;
-		Player player = (Player) target;
+		if (!(target instanceof Player player)) return false;
 		int newSlot = -1;
 		if (isVariable) {
 			if (variable == null || variable.isEmpty() || MagicSpells.getVariableManager().getVariable(variable) == null) {

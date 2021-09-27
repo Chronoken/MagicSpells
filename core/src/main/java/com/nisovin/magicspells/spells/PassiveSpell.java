@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.EventPriority;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
 
 import com.nisovin.magicspells.Spell;
 import com.nisovin.magicspells.Subspell;
@@ -320,8 +319,6 @@ public class PassiveSpell extends Spell {
 				Location loc = null;
 				if (location != null) loc = location;
 				else if (target != null) loc = target.getLocation();
-
-				if (loc == null) continue;
 
 				SpellTargetLocationEvent targetEvent = new SpellTargetLocationEvent(this, caster, loc, basePower);
 				EventUtil.call(targetEvent);

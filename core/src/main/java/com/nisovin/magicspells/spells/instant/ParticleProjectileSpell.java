@@ -320,7 +320,6 @@ public class ParticleProjectileSpell extends InstantSpell implements TargetedLoc
 					continue;
 				}
 
-				if (params.length <= 1) continue;
 				if (params[1] == null) continue;
 				Subspell collisionSpell = new Subspell(params[1]);
 				if (!collisionSpell.process() || !collisionSpell.isTargetedLocationSpell()) {

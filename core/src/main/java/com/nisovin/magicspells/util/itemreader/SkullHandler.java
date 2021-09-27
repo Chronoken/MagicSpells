@@ -25,15 +25,13 @@ public class SkullHandler {
 	private static final String TEXTURE_CONFIG_NAME = TEXTURE.toString();
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof SkullMeta)) return;
-		
-		SkullMeta skullMeta = (SkullMeta) meta;
+		if (!(meta instanceof SkullMeta skullMeta)) return;
 
 		String signature = null, skullOwner = null, texture = null;
 		UUID uuid = null;
 
 		if (config.isString(UUID_CONFIG_NAME)) {
-			String uuidString = config.getString(UUID_CONFIG_NAME);
+			String uuidString = config.getString(UUID_CONFIG_NAME, "");
 
 			try {
 				uuid = UUID.fromString(uuidString);

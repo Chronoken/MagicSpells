@@ -3,6 +3,10 @@ package com.nisovin.magicspells.util.prompt;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.nisovin.magicspells.util.Util;
+
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.FixedSetPrompt;
 import org.bukkit.conversations.ConversationContext;
@@ -24,12 +28,13 @@ public class MagicFixedSetPrompt extends FixedSetPrompt {
 	}
 	
 	@Override
-	public String getPromptText(ConversationContext context) {
+	@NotNull
+	public String getPromptText(@NotNull ConversationContext context) {
 		return promptText;
 	}
 
 	@Override
-	protected Prompt acceptValidatedInput(ConversationContext context, String input) {
+	protected Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
 		return responder.acceptValidatedInput(context, input);
 	}
 	
@@ -40,7 +45,7 @@ public class MagicFixedSetPrompt extends FixedSetPrompt {
 
 		MagicFixedSetPrompt ret = new MagicFixedSetPrompt(options);
 		ret.responder = new MagicPromptResponder(section);
-		ret.promptText = section.getString("prompt-text", "");
+		ret.promptText = Util.colorize(section.getString("prompt-text", ""));
 		return ret;
 	}
 	

@@ -45,8 +45,8 @@ public class MobUtil {
 	}
 
 	public static void setTarget(LivingEntity mob, LivingEntity target) {
-		if (!(mob instanceof Creature)) return;
-		((Creature) mob).setTarget(target);
+		if (!(mob instanceof Creature creature)) return;
+		creature.setTarget(target);
 	}
 
 	public static EntityType getPigZombieEntityType() {

@@ -115,8 +115,7 @@ public class WindglideSpell extends BuffSpell {
 	@EventHandler
 	public void onEntityGlide(EntityToggleGlideEvent e) {
 		Entity entity = e.getEntity();
-		if (!(entity instanceof LivingEntity)) return;
-		LivingEntity livingEntity = (LivingEntity) entity;
+		if (!(entity instanceof LivingEntity livingEntity)) return;
 		if (!isActive(livingEntity)) return;
 		if (livingEntity.isGliding()) e.setCancelled(true);
 	}
@@ -124,10 +123,8 @@ public class WindglideSpell extends BuffSpell {
 	@EventHandler
 	public void onEntityCollision(EntityDamageEvent e) {
 		if (e.getCause() != EntityDamageEvent.DamageCause.FLY_INTO_WALL) return;
-		if (!(e.getEntity() instanceof LivingEntity)) return;
-		LivingEntity livingEntity = (LivingEntity) e.getEntity();
+		if (!(e.getEntity() instanceof LivingEntity livingEntity)) return;
 		if (!isActive(livingEntity)) return;
-
 		if (blockCollisionDmg) e.setCancelled(true);
 		if (cancelOnCollision) turnOff(livingEntity);
 		if (collisionSpell != null) collisionSpell.castAtLocation(livingEntity, livingEntity.getLocation(), 1F);

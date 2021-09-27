@@ -44,8 +44,7 @@ public class StealthSpell extends BuffSpell {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityTarget(EntityTargetEvent event) {
-		if (!(event.getTarget() instanceof LivingEntity)) return;
-		LivingEntity target = (LivingEntity) event.getTarget();
+		if (!(event.getTarget() instanceof LivingEntity target)) return;
 		if (!isActive(target)) return;
 		if (isExpired(target)) {
 			turnOff(target);

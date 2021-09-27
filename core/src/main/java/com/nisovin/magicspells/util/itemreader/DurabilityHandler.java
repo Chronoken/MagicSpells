@@ -22,20 +22,18 @@ public class DurabilityHandler {
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
 		if (!(meta instanceof Damageable)) return;
-
-		if (data.hasAttribute(DURABILITY)) ((Damageable) meta).setDamage((int) data.getAttribute(DURABILITY));
+		if (!data.hasAttribute(DURABILITY)) return;
+		((Damageable) meta).setDamage((int) data.getAttribute(DURABILITY));
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof Damageable)) return;
-
-		Damageable damageableMeta = (Damageable) meta;
-		if (damageableMeta.hasDamage()) data.setAttribute(DURABILITY, damageableMeta.getDamage());
+		if (!(meta instanceof Damageable damageableMeta)) return;
+		if (!damageableMeta.hasDamage()) return;
+		data.setAttribute(DURABILITY, damageableMeta.getDamage());
 	}
 
 	public static int getDurability(ItemMeta meta) {
 		if (!(meta instanceof Damageable)) return -1;
-
 		return ((Damageable) meta).getDamage();
 	}
 

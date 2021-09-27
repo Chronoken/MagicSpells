@@ -57,19 +57,12 @@ public class ItemSerializeSpell extends CommandSpell {
 	
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
-			if (player == null) {
-				// TODO send error message
-				return PostCastAction.ALREADY_HANDLED;
-			}
-			
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			ItemStack heldItem = player.getInventory().getItemInMainHand();
 			if (InventoryUtil.isNothing(heldItem)) {
 				player.sendMessage("You must be holding an item in your hand");
 				return PostCastAction.ALREADY_HANDLED;
 			}
-			
 			processItem(heldItem);
 		}
 		return PostCastAction.HANDLE_NORMALLY;

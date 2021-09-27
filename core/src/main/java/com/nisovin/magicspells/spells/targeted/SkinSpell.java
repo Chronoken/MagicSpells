@@ -34,15 +34,15 @@ public class SkinSpell extends TargetedSpell implements TargetedEntitySpell {
 
 	@Override
 	public boolean castAtEntity(LivingEntity caster, LivingEntity target, float power) {
-		if (!(target instanceof Player)) return false;
-		Util.setSkin((Player) target, texture, signature);
+		if (!(target instanceof Player player)) return false;
+		Util.setSkin(player, texture, signature);
 		return true;
 	}
 
 	@Override
 	public boolean castAtEntity(LivingEntity target, float power) {
-		if (!(target instanceof Player)) return false;
-		Util.setSkin((Player) target, texture, signature);
+		if (!(target instanceof Player player)) return false;
+		Util.setSkin(player, texture, signature);
 		return true;
 	}
 

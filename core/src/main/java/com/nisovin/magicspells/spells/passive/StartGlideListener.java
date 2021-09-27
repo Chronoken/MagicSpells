@@ -18,11 +18,9 @@ public class StartGlideListener extends PassiveListener {
 	@OverridePriority
 	@EventHandler
 	public void onGlide(EntityToggleGlideEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity)) return;
+		if (!(event.getEntity() instanceof LivingEntity caster)) return;
 		if (!isCancelStateOk(event.isCancelled())) return;
 		if (!event.isGliding()) return;
-
-		LivingEntity caster = (LivingEntity) event.getEntity();
 		if (!hasSpell(caster) || !canTrigger(caster)) return;
 
 		boolean casted = passiveSpell.activate(caster);

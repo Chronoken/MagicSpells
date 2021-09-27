@@ -127,17 +127,7 @@ public class SpawnTntSpell extends TargetedSpell implements TargetedLocationSpel
 
 		spellToCast.castAtLocation(info.caster, event.getEntity().getLocation(), info.power);
 	}
-	
-	private static class TntInfo {
-		
-		private LivingEntity caster;
-		private float power;
-		
-		private TntInfo(LivingEntity caster, float power) {
-			this.caster = caster;
-			this.power = power;
-		}
-		
-	}
+
+	private record TntInfo(LivingEntity caster, float power) {}
 
 }

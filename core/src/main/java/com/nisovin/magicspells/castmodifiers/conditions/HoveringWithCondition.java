@@ -23,9 +23,8 @@ public class HoveringWithCondition extends Condition {
 
 	@Override
 	public boolean check(LivingEntity livingEntity) {
-		if (!(livingEntity instanceof Player)) return false;
+		if (!(livingEntity instanceof Player player)) return false;
 
-		Player player = (Player) livingEntity;
 		ItemStack itemCursor = player.getOpenInventory().getCursor();
 		if (itemCursor == null) return false;
 

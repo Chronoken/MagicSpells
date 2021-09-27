@@ -57,9 +57,7 @@ public class SpellSelectedCondition extends Condition {
 
 	@Override
 	public boolean check(LivingEntity livingEntity) {
-		if (!(livingEntity instanceof Player)) return false;
-
-		Player player = (Player) livingEntity;
+		if (!(livingEntity instanceof Player player)) return false;
 		Spellbook spellbook = MagicSpells.getSpellbook(player);
 		ItemStack item = player.getInventory().getItemInMainHand();
 

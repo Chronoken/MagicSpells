@@ -18,11 +18,8 @@ public class FatalDamageListener extends PassiveListener {
 	@OverridePriority
 	@EventHandler
 	void onDamage(EntityDamageEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity)) return;
+		if (!(event.getEntity() instanceof LivingEntity caster)) return;
 		if (!isCancelStateOk(event.isCancelled())) return;
-
-		LivingEntity caster = (LivingEntity) event.getEntity();
-
 		if (event.getFinalDamage() < caster.getHealth()) return;
 		if (!canTrigger(caster) || !hasSpell(caster)) return;
 

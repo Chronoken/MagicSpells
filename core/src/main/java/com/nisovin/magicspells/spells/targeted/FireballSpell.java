@@ -189,8 +189,7 @@ public class FireballSpell extends TargetedSpell implements TargetedEntityFromLo
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
 	public void onExplosionPrime(ExplosionPrimeEvent event) {
 		Entity entityRaw = event.getEntity();
-		if (!(entityRaw instanceof Fireball)) return;
-		final Fireball fireball = (Fireball) entityRaw;
+		if (!(entityRaw instanceof Fireball fireball)) return;
 		if (!fireballs.containsKey(fireball)) return;
 		
 		playSpellEffects(EffectPosition.TARGET, fireball.getLocation());
@@ -227,8 +226,7 @@ public class FireballSpell extends TargetedSpell implements TargetedEntityFromLo
 				}
 			}
 		} else {
-			if (noFire) event.setFire(false);
-			else event.setFire(true);
+			event.setFire(!noFire);
 			if (explosionSize > 0) event.setRadius(explosionSize);
 		}
 
@@ -240,13 +238,11 @@ public class FireballSpell extends TargetedSpell implements TargetedEntityFromLo
 	public void onEntityDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 		if (!(entity instanceof LivingEntity)) return;
-		if (!(event instanceof EntityDamageByEntityEvent)) return;
-		
-		EntityDamageByEntityEvent evt = (EntityDamageByEntityEvent) event;
+		if (!(event instanceof EntityDamageByEntityEvent evt)) return;
+
 		if (event.getCause() != DamageCause.ENTITY_EXPLOSION && event.getCause() != DamageCause.PROJECTILE) return;
 		Entity damager = evt.getDamager();
-		if (!(damager instanceof Fireball || damager instanceof SmallFireball)) return;
-		Fireball fireball = (Fireball) damager;
+		if (!(damager instanceof Fireball fireball)) return;
 		ProjectileSource shooter = fireball.getShooter();
 		if (!(shooter instanceof Player)) return;
 		if (!fireballs.containsKey(fireball)) return;

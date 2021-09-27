@@ -518,7 +518,7 @@ public enum ModifierType {
 
 			@Override
 			public boolean isValid() {
-				return variable != null && variableOwner != VariableOwner.TARGET && (mod.getVariableOwner() != VariableOwner.TARGET || mod.isConstantValue());
+				return variable != null;
 			}
 
 			@Override
@@ -528,10 +528,12 @@ public enum ModifierType {
 
 		}
 
-		private void modifyVariable(VariableModData data, Player caster, Player targetPlayer) {
-			if (data.isValid()) return;
-			Player owner = data.variableOwner == VariableOwner.CASTER ? caster : targetPlayer;
-			double amount = data.mod.getValue(caster, targetPlayer);
+		private void modifyVariable(VariableModData data, Player caster, Player target) {
+			if (!data.isValid()) return;
+			boolean needsTarget = data.variableOwner == VariableOwner.TARGET || (data.mod.getVariableOwner() == VariableOwner.TARGET && !data.mod.isConstantValue());
+			if (needsTarget && target == null) return;
+			Player owner = data.variableOwner == VariableOwner.CASTER ? caster : target;
+			double amount = data.mod.getValue(caster, target);
 			Variable variable = data.variable;
 			double newAmount = data.mod.getOperation().applyTo(variable.getValue(owner), amount);
 			MagicSpells.getVariableManager().set(variable, owner.getName(), newAmount);
@@ -571,7 +573,7 @@ public enum ModifierType {
 			if (check) modifyVariable((VariableModData) customData, event.getPlayer(), null);
 			return true;
 		}
-		
+
 		@Override
 		public CustomData buildCustomActionData(String text) {
 			//input format

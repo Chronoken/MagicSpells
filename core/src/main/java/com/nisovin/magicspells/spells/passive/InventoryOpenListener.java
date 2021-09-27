@@ -7,6 +7,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.util.OverridePriority;
 import com.nisovin.magicspells.spells.passive.util.PassiveListener;
 
@@ -29,7 +30,7 @@ public class InventoryOpenListener extends PassiveListener {
 	@EventHandler
 	public void onInventoryOpen(InventoryOpenEvent event) {
 		if (!isCancelStateOk(event.isCancelled())) return;
-		if (!inventoryNames.isEmpty() && !inventoryNames.contains(event.getView().getTitle())) return;
+		if (!inventoryNames.contains(Util.getStringFromComponent(event.getView().title()))) return;
 
 		HumanEntity caster = event.getPlayer();
 		if (!hasSpell(caster) || !canTrigger(caster)) return;

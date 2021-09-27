@@ -14,13 +14,11 @@ public class LeatherArmorHandler {
 	private final static String CONFIG_NAME = COLOR.toString();
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof LeatherArmorMeta)) return;
+		if (!(meta instanceof LeatherArmorMeta armorMeta)) return;
 		if (!config.isString(CONFIG_NAME)) return;
 
-		LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
-
 		try {
-			int color = Integer.parseInt(config.getString(CONFIG_NAME).replace("#", ""), 16);
+			int color = Integer.parseInt(config.getString(CONFIG_NAME, "").replace("#", ""), 16);
 			Color c = Color.fromRGB(color);
 
 			armorMeta.setColor(c);
@@ -31,10 +29,8 @@ public class LeatherArmorHandler {
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof LeatherArmorMeta)) return;
+		if (!(meta instanceof LeatherArmorMeta armorMeta)) return;
 		if (!data.hasAttribute(COLOR)) return;
-
-		LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
 		armorMeta.setColor((Color) data.getAttribute(COLOR));
 	}
 

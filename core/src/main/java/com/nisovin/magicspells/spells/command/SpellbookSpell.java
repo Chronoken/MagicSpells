@@ -97,8 +97,7 @@ public class SpellbookSpell extends CommandSpell {
 	
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			if (args == null || args.length < 1 || args.length > 2 || (args.length == 2 && !RegexUtil.matches(PATTERN_CAST_ARG_USAGE, args[1]))) {
 				sendMessage(strUsage, player, args);
 				return PostCastAction.HANDLE_NORMALLY;
@@ -114,7 +113,7 @@ public class SpellbookSpell extends CommandSpell {
 
 			Spellbook spellbook = MagicSpells.getSpellbook(player);
 			Spell spell = MagicSpells.getSpellByInGameName(args[0]);
-			if (spellbook == null || spell == null || !spellbook.hasSpell(spell)) {
+			if (spell == null || !spellbook.hasSpell(spell)) {
 				sendMessage(strNoSpell, player, args);
 				return PostCastAction.ALREADY_HANDLED;
 			}
@@ -168,8 +167,12 @@ public class SpellbookSpell extends CommandSpell {
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (spellbookBlock == null) return;
-		if (!event.hasBlock() || !spellbookBlock.equals(event.getClickedBlock().getType()) || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-		if (event.getHand().equals(EquipmentSlot.OFF_HAND)) return;
+		Block clickedBlock = event.getClickedBlock();
+		if (clickedBlock == null) return;
+		EquipmentSlot slot = event.getHand();
+		if (slot == null) return;
+		if (!event.hasBlock() || !spellbookBlock.equals(clickedBlock.getType()) || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if (slot == EquipmentSlot.OFF_HAND) return;
 		MagicLocation loc = new MagicLocation(event.getClickedBlock().getLocation());
 		if (!bookLocations.contains(loc)) return;
 
@@ -178,7 +181,7 @@ public class SpellbookSpell extends CommandSpell {
 		int i = bookLocations.indexOf(loc);
 		Spellbook spellbook = MagicSpells.getSpellbook(player);
 		Spell spell = MagicSpells.getSpellByInternalName(bookSpells.get(i));
-		if (spellbook == null || spell == null) {
+		if (spell == null) {
 			sendMessage(strLearnError, player, MagicSpells.NULL_ARGS);
 			return;
 		}

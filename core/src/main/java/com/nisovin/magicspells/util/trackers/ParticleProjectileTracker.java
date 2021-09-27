@@ -140,10 +140,6 @@ public class ParticleProjectileTracker implements Runnable, Tracker {
 
 	private static final double ANGLE_Y = FastMath.toRadians(-90);
 
-	public ParticleProjectileTracker() {
-
-	}
-
 	public ParticleProjectileTracker(LivingEntity caster, float power) {
 		this.caster = caster;
 		this.power = power;
@@ -360,8 +356,8 @@ public class ParticleProjectileTracker implements Runnable, Tracker {
 				effectLoc = spellEffect.getSpellEffect().applyOffsets(currentLocation.clone());
 				effect.setLocation(effectLoc);
 
-				if (effect instanceof ModifiedEffect) {
-					Effect modifiedEffect = ((ModifiedEffect) effect).getInnerEffect();
+				if (effect instanceof ModifiedEffect mod) {
+					Effect modifiedEffect = mod.getInnerEffect();
 					if (modifiedEffect != null) modifiedEffect.setLocation(effectLoc);
 				}
 			}

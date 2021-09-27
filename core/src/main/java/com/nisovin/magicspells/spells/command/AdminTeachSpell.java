@@ -43,7 +43,6 @@ public class AdminTeachSpell extends CommandSpell {
 		if (targetPlayer == null) return false;
 		
 		Spellbook spellbook = MagicSpells.getSpellbook(targetPlayer);
-		if (spellbook == null) return false;
 		// No target, TODO add messages
 
 		String[] nodes = Arrays.copyOfRange(args, 1, args.length);

@@ -15,12 +15,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import com.nisovin.magicspells.util.*;
 import com.nisovin.magicspells.MagicSpells;
-import com.nisovin.magicspells.util.TimeUtil;
-import com.nisovin.magicspells.util.BlockUtils;
-import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.spells.TargetedSpell;
-import com.nisovin.magicspells.util.PlayerNameUtils;
 import com.nisovin.magicspells.spells.TargetedEntitySpell;
 import com.nisovin.magicspells.spells.TargetedEntityFromLocationSpell;
 
@@ -62,7 +59,7 @@ public class SummonSpell extends TargetedSpell implements TargetedEntitySpell, T
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			// Get target name and landing location
 			String targetName = "";
 			Location landLoc = null;
@@ -72,8 +69,8 @@ public class SummonSpell extends TargetedSpell implements TargetedEntitySpell, T
 			} else {
 				Block block = getTargetedBlock(caster, 10);
 				if (block != null && (block.getType().name().contains("SIGN"))) {
-					Sign sign = (Sign)block.getState();
-					targetName = sign.getLine(0);
+					Sign sign = (Sign) block.getState();
+					targetName = Util.getStringFromComponent(sign.line(0));
 					landLoc = block.getLocation().add(.5, .25, .5);
 				}
 			}
@@ -86,7 +83,7 @@ public class SummonSpell extends TargetedSpell implements TargetedEntitySpell, T
 			}
 			
 			// Check location
-			if (landLoc == null || !BlockUtils.isSafeToStand(landLoc.clone())) {
+			if (!BlockUtils.isSafeToStand(landLoc.clone())) {
 				sendMessage(strUsage, caster, args);
 				return PostCastAction.ALREADY_HANDLED;
 			}
@@ -98,22 +95,23 @@ public class SummonSpell extends TargetedSpell implements TargetedEntitySpell, T
 				if (target != null && !target.getName().equalsIgnoreCase(targetName)) target = null;
 			} else {
 				List<Player> players = Bukkit.getServer().matchPlayer(targetName);
-				if (players != null && players.size() == 1) {
+				if (players.size() == 1) {
 					target = players.get(0);
 				}
 			}
 			if (target == null) return noTarget(caster);
 
 			// Teleport player
+			String displayName = Util.getStringFromComponent(player.displayName());
 			if (requireAcceptance) {
 				pendingSummons.put(target, landLoc);
 				pendingTimes.put(target, System.currentTimeMillis());
-				sendMessage(strSummonPending, target, args, "%a", ((Player) caster).getDisplayName());
+				sendMessage(strSummonPending, target, args, "%a", displayName);
 			} else {
 				target.teleport(landLoc);
-				sendMessage(strSummonAccepted, target, args, "%a", ((Player) caster).getDisplayName());
+				sendMessage(strSummonAccepted, target, args, "%a", displayName);
 			}
-			
+
 			sendMessages(caster, target, args);
 			return PostCastAction.NO_MESSAGES;
 			

@@ -90,8 +90,7 @@ public class CarpetSpell extends TargetedSpell implements TargetedLocationSpell 
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			Location loc = null;
 			if (targetSelf) loc = player.getLocation();
 			else {

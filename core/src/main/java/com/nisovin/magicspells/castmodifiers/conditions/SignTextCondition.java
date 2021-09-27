@@ -1,12 +1,16 @@
 package com.nisovin.magicspells.castmodifiers.conditions;
 
-import com.nisovin.magicspells.util.Util;
+import java.util.List;
+import java.util.ArrayList;
+
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 
-import com.nisovin.magicspells.MagicSpells;
+import net.kyori.adventure.text.Component;
+
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.util.MagicLocation;
 import com.nisovin.magicspells.handlers.DebugHandler;
 import com.nisovin.magicspells.castmodifiers.Condition;
@@ -16,7 +20,7 @@ public class SignTextCondition extends Condition {
 	//world,x,y,z,text
 
 	private MagicLocation location;
-	private String[] text;
+	private List<Component> text;
 
 	@Override
 	public boolean initialize(String var) {
@@ -24,14 +28,10 @@ public class SignTextCondition extends Condition {
 			String[] vars = var.split(",");
 			location = new MagicLocation(vars[0], Integer.parseInt(vars[1]), Integer.parseInt(vars[2]), Integer.parseInt(vars[3]));
 
-			String[] sign = vars[4].split("\\\\n");
-			text = new String[sign.length];
-
-			for (int i = 0; i < sign.length; i++) {
-				String replaced = sign[i].replaceAll("__", " ");
-				text[i] = Util.colorize(replaced);
+			text = new ArrayList<>();
+			for (String line : vars[4].split("\\\\n")) {
+				text.add(Util.getMiniMessage(line.replaceAll("__", " ")));
 			}
-
 			return true;
 		} catch (Exception e) {
 			DebugHandler.debugGeneral(e);
@@ -59,8 +59,10 @@ public class SignTextCondition extends Condition {
 		if (!block.getType().name().contains("SIGN")) return false;
 
 		Sign sign = (Sign) block.getState();
-		for (int i = 0; i < sign.getLines().length; i++) {
-			if (text.length > i && !sign.getLine(i).contains(text[i])) return false;
+		List<Component> lines = sign.lines();
+		for (int i = 0; i < lines.size(); i++) {
+			if (lines.get(i).equals(text.get(i))) continue;
+			return false;
 		}
 
 		return true;

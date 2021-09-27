@@ -17,17 +17,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.nisovin.magicspells.Perm;
 import com.nisovin.magicspells.Spell;
-import com.nisovin.magicspells.util.Util;
+import com.nisovin.magicspells.util.*;
 import com.nisovin.magicspells.MagicSpells;
-import com.nisovin.magicspells.util.RegexUtil;
-import com.nisovin.magicspells.util.MagicConfig;
-import com.nisovin.magicspells.util.SpellReagents;
 import com.nisovin.magicspells.spells.CommandSpell;
 
 // Advanced perm is for specifying the number of uses if it isn't normally allowed
 
 public class ImbueSpell extends CommandSpell {
 
+	private static final String key = "imbue_data";
 	private static final Pattern CAST_ARG_USES_PATTERN = Pattern.compile("[0-9]+");
 
 	private final Set<Material> allowedItemTypes;
@@ -36,7 +34,6 @@ public class ImbueSpell extends CommandSpell {
 	private int maxUses;
 	private int defaultUses;
 
-	private String key;
 	private String strUsage;
 	private String strItemName;
 	private String strItemLore;
@@ -69,8 +66,6 @@ public class ImbueSpell extends CommandSpell {
 
 		maxUses = getConfigInt("max-uses", 10);
 		defaultUses = getConfigInt("default-uses", 5);
-
-		key = "Imb" + internalName;
 		strUsage = getConfigString("str-usage", "Usage: /cast imbue <spell> [uses]");
 		strItemName = getConfigString("str-item-name", "");
 		strItemLore = getConfigString("str-item-lore", "Imbued: %s");
@@ -89,15 +84,14 @@ public class ImbueSpell extends CommandSpell {
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			if (args == null || args.length == 0) {
 				sendMessage(strUsage, player, args);
 				return PostCastAction.ALREADY_HANDLED;
 			}
 			
 			// Get item
-			ItemStack inHand = player.getEquipment().getItemInMainHand();
+			ItemStack inHand = player.getInventory().getItemInMainHand();
 			if (!allowedItemTypes.contains(inHand.getType())) {
 				sendMessage(strCantImbueItem, player, args);
 				return PostCastAction.ALREADY_HANDLED;
@@ -116,7 +110,7 @@ public class ImbueSpell extends CommandSpell {
 			}
 			
 			// Check for already imbued
-			if (getImbueData(inHand) != null) {
+			if (DataUtil.getString(inHand, key) != null) {
 				sendMessage(strCantImbueItem, player, args);
 				return PostCastAction.ALREADY_HANDLED;
 			}
@@ -153,8 +147,8 @@ public class ImbueSpell extends CommandSpell {
 			}
 			
 			setItemNameAndLore(inHand, spell, uses);
-			setImbueData(inHand, spell.getInternalName() + ',' + uses);
-			player.getEquipment().setItemInMainHand(inHand);
+			DataUtil.setString(inHand, key, spell.getInternalName() + ',' + uses);
+			player.getInventory().setItemInMainHand(inHand);
 		}
 		return PostCastAction.HANDLE_NORMALLY;
 	}
@@ -171,6 +165,7 @@ public class ImbueSpell extends CommandSpell {
 		Action action = event.getAction();
 		if (!actionAllowedForCast(action)) return;
 		ItemStack item = event.getItem();
+		if (item == null) return;
 		if (!allowedItemTypes.contains(item.getType())) return;
 		
 		boolean allowed = false;
@@ -182,59 +177,50 @@ public class ImbueSpell extends CommandSpell {
 		}
 		if (!allowed) return;
 		
-		String imbueData = getImbueData(item);
+		String imbueData = DataUtil.getString(item, key);
 		if (imbueData == null || imbueData.isEmpty()) return;
 		String[] data = imbueData.split(",");
 		Spell spell = MagicSpells.getSpellByInternalName(data[0]);
 		int uses = Integer.parseInt(data[1]);
 
 		if (spell == null || uses <= 0) {
-			Util.removeLoreData(item);
+			DataUtil.remove(item, key);
 			return;
 		}
 
 		spell.castSpell(event.getPlayer(), SpellCastState.NORMAL, 1.0F, MagicSpells.NULL_ARGS);
 		uses--;
 		if (uses <= 0) {
-			if (consumeItem) event.getPlayer().getEquipment().setItemInMainHand(null);
+			if (consumeItem) event.getPlayer().getInventory().setItemInMainHand(null);
 			else {
-				Util.removeLoreData(item);
+				DataUtil.remove(item, key);
 				if (nameAndLoreHaveUses) setItemNameAndLore(item, spell, 0);
 			}
 		} else {
 			if (nameAndLoreHaveUses) setItemNameAndLore(item, spell, uses);
-			setImbueData(item, spell.getInternalName() + ',' + uses);
+			DataUtil.setString(item, key, spell.getInternalName() + ',' + uses);
 		}
 	}
 	
 	private boolean actionAllowedForCast(Action action) {
-		switch (action) {
-			case RIGHT_CLICK_AIR:
-			case RIGHT_CLICK_BLOCK:
-				return rightClickCast;
-			case LEFT_CLICK_AIR:
-			case LEFT_CLICK_BLOCK:
-				return leftClickCast;
-			default:
-				return false;
-		}
+		return switch (action) {
+			case RIGHT_CLICK_AIR, RIGHT_CLICK_BLOCK -> rightClickCast;
+			case LEFT_CLICK_AIR, LEFT_CLICK_BLOCK -> leftClickCast;
+			default -> false;
+		};
 	}
 	
 	private void setItemNameAndLore(ItemStack item, Spell spell, int uses) {
 		ItemMeta meta = item.getItemMeta();
-		if (!strItemName.isEmpty()) meta.setDisplayName(strItemName.replace("%s", spell.getName()).replace("%u", uses+""));
-		if (!strItemLore.isEmpty()) meta.setLore(Collections.singletonList(strItemLore.replace("%s", spell.getName()).replace("%u", uses + "")));
+		if (!strItemName.isEmpty()) {
+			String displayName = strItemName.replace("%s", spell.getName()).replace("%u", uses+"");
+			meta.displayName(Util.getMiniMessage(displayName));
+		}
+		if (!strItemLore.isEmpty()) {
+			String lore = strItemLore.replace("%s", spell.getName()).replace("%u", uses + "");
+			meta.lore(Collections.singletonList(Util.getMiniMessage(lore)));
+		}
 		item.setItemMeta(meta);
-	}
-	
-	private void setImbueData(ItemStack item, String data) {
-		Util.setLoreData(item, key + ':' + data);
-	}
-	
-	private String getImbueData(ItemStack item) {
-		String s = Util.getLoreData(item);
-		if (s != null && s.startsWith(key + ':')) return s.replace(key + ':', "");
-		return null;
 	}
 
 	@Override
@@ -268,14 +254,6 @@ public class ImbueSpell extends CommandSpell {
 
 	public void setDefaultUses(int defaultUses) {
 		this.defaultUses = defaultUses;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
 	}
 
 	public String getStrUsage() {

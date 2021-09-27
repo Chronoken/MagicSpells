@@ -3,10 +3,7 @@ package com.nisovin.magicspells.variables.variabletypes;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
-
 import com.nisovin.magicspells.variables.Variable;
-import com.nisovin.magicspells.util.PlayerNameUtils;
 
 public class PlayerVariable extends Variable {
 
@@ -17,7 +14,8 @@ public class PlayerVariable extends Variable {
 		if (amount > maxValue) amount = maxValue;
 		else if (amount < minValue) amount = minValue;
 		map.put(player, amount);
-		if (objective != null) objective.getScore(PlayerNameUtils.getOfflinePlayer(player)).setScore((int) amount);
+		if (objective == null) return;
+		objective.getScore(player).setScore((int) amount);
 	}
 
 	@Override
@@ -28,7 +26,8 @@ public class PlayerVariable extends Variable {
 	@Override
 	public void reset(String player) {
 		map.remove(player);
-		if (objective != null) objective.getScore(Bukkit.getOfflinePlayer(player)).setScore((int) defaultValue);
+		if (objective == null) return;
+		objective.getScore(player).setScore((int) defaultValue);
 	}
 
 }

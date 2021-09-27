@@ -6,11 +6,12 @@ import java.util.UUID;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import com.nisovin.magicspells.Subspell;
@@ -153,9 +154,9 @@ public class SilenceSpell extends TargetedSpell implements TargetedEntitySpell {
 	}
 	
 	public class ChatListener implements Listener {
-		
-		@EventHandler(ignoreCancelled=true)
-		public void onChat(AsyncPlayerChatEvent event) {
+
+		@EventHandler(ignoreCancelled = true)
+		public void onChat(AsyncChatEvent event) {
 			if (!silenced.containsKey(event.getPlayer().getUniqueId())) return;
 			event.setCancelled(true);
 			if (preventChatSpell != null) preventChatSpell.cast(event.getPlayer(), 1);

@@ -47,40 +47,32 @@ public class ParseSpell extends TargetedSpell implements TargetedEntitySpell {
 			case "translate", "normal", "append" -> {
 				if (expectedValue.isEmpty()) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid expected-value defined!");
-					break;
 				}
 				if (parseToVariable.isEmpty()) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid parse-to-variable defined!");
-					break;
 				}
 				if (variableToParse.isEmpty() || MagicSpells.getVariableManager().getVariable(variableToParse) == null) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid variable-to-parse defined!");
-					break;
 				}
 			}
 			case "difference" -> {
 				if (firstVariable.isEmpty() || MagicSpells.getVariableManager().getVariable(firstVariable) == null) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid first-variable defined!");
-					break;
 				}
 				if (secondVariable.isEmpty() || MagicSpells.getVariableManager().getVariable(secondVariable) == null) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid second-variable defined!");
-					break;
 				}
 			}
 			case "regex", "regexp" -> {
 				if (parseTo.isEmpty()) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid parse-to defined!");
-					break;
 				}
 				regexPattern = Pattern.compile(expectedValue);
 				if (parseToVariable.isEmpty()) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid parse-to-variable defined!");
-					break;
 				}
 				if (variableToParse.isEmpty() || MagicSpells.getVariableManager().getVariable(variableToParse) == null) {
 					MagicSpells.error("ParseSpell '" + internalName + "' has an invalid variable-to-parse defined!");
-					break;
 				}
 			}
 			default -> MagicSpells.error("ParseSpell '" + internalName + "' has invalid operation defined: " + operationName);

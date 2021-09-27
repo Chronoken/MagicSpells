@@ -52,8 +52,7 @@ public class UnbindSpell extends CommandSpell {
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			if (args == null || args.length == 0) {
 				sendMessage(strUsage, player, args);
 				return PostCastAction.ALREADY_HANDLED;
@@ -82,7 +81,7 @@ public class UnbindSpell extends CommandSpell {
 			}
 
 			Spell spell = MagicSpells.getSpellByInGameName(Util.arrayJoin(args, ' '));
-			if (spell == null || spellbook == null) {
+			if (spell == null) {
 				sendMessage(strNoSpell, player, args);
 				return PostCastAction.ALREADY_HANDLED;
 			}

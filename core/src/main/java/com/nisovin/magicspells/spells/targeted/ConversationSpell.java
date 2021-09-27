@@ -46,10 +46,10 @@ public class ConversationSpell extends TargetedSpell implements TargetedEntitySp
 	}
 
 	private void conversate(LivingEntity target) {
-		if (target == null || !(target instanceof Player)) return;
-		Conversation c = conversationFactory.buildConversation((Player) target);
-		ConversationContextUtil.setconversable(c.getContext(), (Player) target);
-		c.begin();
+		if (!(target instanceof Player player)) return;
+		Conversation conversation = conversationFactory.buildConversation(player);
+		ConversationContextUtil.setConversable(conversation.getContext(), player);
+		conversation.begin();
 	}
 
 }

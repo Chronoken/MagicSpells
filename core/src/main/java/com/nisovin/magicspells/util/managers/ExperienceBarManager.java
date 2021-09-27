@@ -7,8 +7,6 @@ import java.util.Objects;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 
-import com.nisovin.magicspells.MagicSpells;
-
 public class ExperienceBarManager {
 
 	private final Map<Player, Object> locks = new HashMap<>();

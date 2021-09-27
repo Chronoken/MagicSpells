@@ -19,10 +19,8 @@ public class BannerHandler {
 	private static final String CONFIG_NAME = PATTERNS.toString();
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof BannerMeta)) return;
+		if (!(meta instanceof BannerMeta bannerMeta)) return;
 		if (!config.isList(CONFIG_NAME)) return;
-
-		BannerMeta bannerMeta = (BannerMeta) meta;
 
 		// patternType dyeColor
 		List<String> strPatterns = config.getStringList(CONFIG_NAME);

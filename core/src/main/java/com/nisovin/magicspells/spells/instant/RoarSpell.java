@@ -40,10 +40,10 @@ public class RoarSpell extends InstantSpell {
 			List<Entity> entities = caster.getNearbyEntities(radius, radius, radius);
 
 			for (Entity entity : entities) {
-				if (!(entity instanceof LivingEntity)) continue;
+				if (!(entity instanceof LivingEntity livingEntity)) continue;
 				if (entity instanceof Player) continue;
 				if (!validTargetList.canTarget(caster, entity)) continue;
-				MobUtil.setTarget((LivingEntity) entity, caster);
+				MobUtil.setTarget(livingEntity, caster);
 				playSpellEffectsTrail(caster.getLocation(), entity.getLocation());
 				playSpellEffects(EffectPosition.TARGET, entity);
 				count++;

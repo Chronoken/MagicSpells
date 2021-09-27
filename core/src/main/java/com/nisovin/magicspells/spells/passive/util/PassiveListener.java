@@ -53,9 +53,7 @@ public abstract class PassiveListener implements Listener {
 	}
 
 	public boolean hasSpell(LivingEntity entity) {
-		if (entity instanceof Player) {
-			return MagicSpells.getSpellbook((Player) entity).hasSpell(passiveSpell);
-		}
+		if (entity instanceof Player player) return MagicSpells.getSpellbook(player).hasSpell(passiveSpell);
 		return true;
 	}
 	

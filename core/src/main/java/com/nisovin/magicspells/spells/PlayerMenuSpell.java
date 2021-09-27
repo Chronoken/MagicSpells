@@ -2,6 +2,8 @@ package com.nisovin.magicspells.spells;
 
 import java.util.*;
 
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -83,22 +85,22 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 	public void initializeModifiers() {
 		super.initializeModifiers();
 
-		if (playerModifiersStrings != null && !playerModifiersStrings.isEmpty()) {
-			playerModifiers = new ModifierSet(playerModifiersStrings, this);
-		}
+		if (playerModifiersStrings == null || playerModifiersStrings.isEmpty()) return;
+		playerModifiers = new ModifierSet(playerModifiersStrings, this);
 	}
 
 	@Override
 	public void initialize() {
 		super.initialize();
 
-		spellOffline = initSubspell(spellOfflineName, "PlayerMenuSpell '" + internalName + "' has an invalid spell-offline defined!");
-		spellRange = initSubspell(spellRangeName, "PlayerMenuSpell '" + internalName + "' has an invalid spell-range defined!");
-		spellOnLeft = initSubspell(spellOnLeftName, "PlayerMenuSpell '" + internalName + "' has an invalid spell-on-left defined!");
-		spellOnRight = initSubspell(spellOnRightName, "PlayerMenuSpell '" + internalName + "' has an invalid spell-on-right defined!");
-		spellOnMiddle = initSubspell(spellOnMiddleName, "PlayerMenuSpell '" + internalName + "' has an invalid spell-on-middle defined!");
-		spellOnSneakLeft = initSubspell(spellOnSneakLeftName, "PlayerMenuSpell '" + internalName + "' has an invalid spell-on-sneak-left defined!");
-		spellOnSneakRight = initSubspell(spellOnSneakRightName, "PlayerMenuSpell '" + internalName + "' has an invalid spell-on-sneak-right defined!");
+		String error = "PlayerMenuSpell '" + internalName + "' has an invalid ";
+		spellOffline = initSubspell(spellOfflineName, error + "spell-offline defined!");
+		spellRange = initSubspell(spellRangeName, error + "spell-range defined!");
+		spellOnLeft = initSubspell(spellOnLeftName, error + "spell-on-left defined!");
+		spellOnRight = initSubspell(spellOnRightName, error + "spell-on-right defined!");
+		spellOnMiddle = initSubspell(spellOnMiddleName, error + "spell-on-middle defined!");
+		spellOnSneakLeft = initSubspell(spellOnSneakLeftName, error + "spell-on-sneak-left defined!");
+		spellOnSneakRight = initSubspell(spellOnSneakRightName, error + "spell-on-sneak-right defined!");
 
 		spellPower = new HashMap<>();
 	}
@@ -117,15 +119,15 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 
 	@Override
 	public boolean castAtEntity(LivingEntity caster, LivingEntity target, float power) {
-		if (!(target instanceof Player)) return false;
-		openDelay((Player) target, power);
+		if (!(target instanceof Player player)) return false;
+		openDelay(player, power);
 		return true;
 	}
 
 	@Override
 	public boolean castAtEntity(LivingEntity target, float power) {
-		if (!(target instanceof Player)) return false;
-		openDelay((Player) target, power);
+		if (!(target instanceof Player player)) return false;
+		openDelay(player, power);
 		return true;
 	}
 
@@ -144,10 +146,10 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 		else open(opener);
 	}
 
-	private String translate(Player player, Player target, String string) {
+	private Component translate(Player player, Player target, String string) {
 		if (target != null) string = string.replaceAll("%t", target.getName());
 		string = string.replaceAll("%a", player.getName());
-		return Util.doVarReplacementAndColorize(player, string);
+		return Util.getMiniMessageWithVars(player, string);
 	}
 
 	private void processClickSpell(Subspell subspell, Player caster, Player target, float power) {
@@ -166,7 +168,7 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 		if (radius > 0) players.removeIf(player -> opener.getLocation().distance(player.getLocation()) > radius);
 
 		int size = (int) Math.ceil((players.size()+1) / 9.0) * 9;
-		Inventory inv = Bukkit.createInventory(opener, size, internalName);
+		Inventory inv = Bukkit.createInventory(opener, size, Component.text(internalName));
 
 		for (int i = 0; i < players.size(); i++) {
 			ItemStack head = new ItemStack(Material.PLAYER_HEAD);
@@ -174,13 +176,13 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 			SkullMeta skullMeta = (SkullMeta) itemMeta;
 			if (skullMeta == null) continue;
 			skullMeta.setOwningPlayer(players.get(i));
-			itemMeta.setDisplayName(translate(opener, players.get(i), skullName));
+			itemMeta.displayName(translate(opener, players.get(i), skullName));
 			if (skullLore != null) {
-				List<String> lore = new ArrayList<>();
+				List<Component> lore = new ArrayList<>();
 				for (String loreLine : skullLore) {
 					lore.add(translate(opener, players.get(i), loreLine));
 				}
-				itemMeta.setLore(lore);
+				itemMeta.lore(lore);
 			}
 			head.setItemMeta(skullMeta);
 			inv.setItem(i, head);
@@ -197,7 +199,7 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 	@EventHandler
 	public void onItemClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		if (!event.getView().getTitle().equals(internalName)) return;
+		if (!Util.getStringFromComponent(event.getView().title()).equals(internalName)) return;
 		event.setCancelled(true);
 		ItemStack item = event.getCurrentItem();
 		if (item == null) return;
@@ -207,7 +209,7 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 		OfflinePlayer target = skullMeta.getOwningPlayer();
 		float power = spellPower.containsKey(player.getUniqueId()) ?  spellPower.get(player.getUniqueId()) : 1;
 		if (target == null || !target.isOnline()) {
-			itemMeta.setDisplayName(translate(player, null, skullNameOffline));
+			itemMeta.displayName(translate(player, null, skullNameOffline));
 			if (spellOffline != null) spellOffline.cast(player, power);
 			if (stayOpen) item.setItemMeta(itemMeta);
 			else {
@@ -216,12 +218,12 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 			}
 			return;
 		} else {
-			itemMeta.setDisplayName(translate(player, (Player) target, skullName));
+			itemMeta.displayName(translate(player, (Player) target, skullName));
 			item.setItemMeta(itemMeta);
 		}
 		Player targetPlayer = (Player) target;
 		if (radius > 0  && targetPlayer.getLocation().distance(player.getLocation()) > radius) {
-			itemMeta.setDisplayName(translate(player, targetPlayer, skullNameRadius));
+			itemMeta.displayName(translate(player, targetPlayer, skullNameRadius));
 			if (spellRange != null) spellRange.cast(player, power);
 			if (stayOpen) item.setItemMeta(itemMeta);
 			else {
@@ -231,11 +233,11 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 			return;
 		}
 		switch (event.getClick()) {
-			case LEFT: processClickSpell(spellOnLeft, player, targetPlayer, power); break;
-			case RIGHT: processClickSpell(spellOnRight, player, targetPlayer, power); break;
-			case MIDDLE: processClickSpell(spellOnMiddle, player, targetPlayer, power); break;
-			case SHIFT_LEFT: processClickSpell(spellOnSneakLeft, player, targetPlayer, power); break;
-			case SHIFT_RIGHT: processClickSpell(spellOnSneakRight, player, targetPlayer, power); break;
+			case LEFT -> processClickSpell(spellOnLeft, player, targetPlayer, power);
+			case RIGHT -> processClickSpell(spellOnRight, player, targetPlayer, power);
+			case MIDDLE -> processClickSpell(spellOnMiddle, player, targetPlayer, power);
+			case SHIFT_LEFT -> processClickSpell(spellOnSneakLeft, player, targetPlayer, power);
+			case SHIFT_RIGHT -> processClickSpell(spellOnSneakRight, player, targetPlayer, power);
 		}
 		if (variableTarget != null && !variableTarget.isEmpty() && MagicSpells.getVariableManager().getVariable(variableTarget) != null) {
 			MagicSpells.getVariableManager().set(variableTarget, player, target.getName());

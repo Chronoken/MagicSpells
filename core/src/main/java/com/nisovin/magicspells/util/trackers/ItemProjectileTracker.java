@@ -79,10 +79,6 @@ public class ItemProjectileTracker implements Runnable, Tracker {
 	private int taskId;
 	private int count = 0;
 
-	public ItemProjectileTracker() {
-
-	}
-
 	public ItemProjectileTracker(LivingEntity caster, Location startLocation, float power) {
 		this.caster = caster;
 		this.power = power;
@@ -204,7 +200,7 @@ public class ItemProjectileTracker implements Runnable, Tracker {
 			if (entity != null) spell.playEffects(EffectPosition.DELAYED, entity.getLocation());
 			if (removeTracker) ItemProjectileSpell.getProjectileTrackers().remove(this);
 		}
-		entity.remove();
+		if (entity != null) entity.remove();
 		MagicSpells.cancelTask(taskId);
 		stopped = true;
 	}

@@ -163,7 +163,7 @@ public class BowSpell extends Spell {
 		ItemStack inHand = event.getBow();
 		if (inHand == null || (inHand.getType() != Material.BOW && inHand.getType() != Material.CROSSBOW)) return;
 
-		String name = inHand.getItemMeta().getDisplayName();
+		String name = Util.getStringFromComponent(inHand.displayName());
 		if (bowNames != null && !bowNames.contains(name)) return;
 		if (disallowedBowNames != null && disallowedBowNames.contains(name)) return;
 		if (bowName != null && !bowName.isEmpty() && !bowName.equals(name)) return;

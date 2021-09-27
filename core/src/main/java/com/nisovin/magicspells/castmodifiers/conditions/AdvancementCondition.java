@@ -65,13 +65,10 @@ public class AdvancementCondition extends Condition {
 	}
 
 	private boolean hasAdvancement(LivingEntity livingEntity) {
-		if (!(livingEntity instanceof Player)) return false;
-		Player player = (Player) livingEntity;
-
+		if (!(livingEntity instanceof Player player)) return false;
 		for (Advancement advancement : advancements) {
 			if (!player.getAdvancementProgress(advancement).isDone()) return false;
 		}
-
 		return true;
 	}
 

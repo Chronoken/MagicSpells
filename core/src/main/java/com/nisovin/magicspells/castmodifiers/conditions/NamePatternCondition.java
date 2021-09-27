@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
 
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.util.RegexUtil;
 import com.nisovin.magicspells.castmodifiers.Condition;
 
@@ -31,8 +32,8 @@ public class NamePatternCondition extends Condition {
 
 	@Override
 	public boolean check(LivingEntity livingEntity, LivingEntity target) {
-		if (!(target instanceof Player)) return false;
-		return RegexUtil.matches(compiledPattern, target.getName()) || RegexUtil.matches(compiledPattern, ((Player) target).getDisplayName());
+		if (!(target instanceof Player player)) return false;
+		return RegexUtil.matches(compiledPattern, target.getName()) || RegexUtil.matches(compiledPattern, Util.getStringFromComponent(player.displayName()));
 	}
 
 	@Override

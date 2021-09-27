@@ -68,7 +68,7 @@ public class RandomSpell extends InstantSpell {
 					if (checkIndividualCooldowns && o.spell.getSpell().onCooldown(caster)) continue;
 					if (checkIndividualModifiers) {
 						ModifierSet modifiers = o.spell.getSpell().getModifiers();
-						if (modifiers != null && caster instanceof Player && !modifiers.check((Player) caster)) continue;
+						if (modifiers != null && caster instanceof Player && !modifiers.check(caster)) continue;
 					}
 					set.add(o);
 				}

@@ -149,18 +149,18 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 			if (commandToExecute != null && !commandToExecute.isEmpty()) {
 
 				Conversation convo = null;
-				if (sender instanceof Player) {
+				if (sender instanceof Player player) {
 					if (blockChatOutput && messageBlocker != null) {
-						messageBlocker.addPlayer((Player) sender);
+						messageBlocker.addPlayer(player);
 					} else if (convoFac != null) {
-						convo = convoFac.buildConversation((Player) sender);
+						convo = convoFac.buildConversation(player);
 						convo.begin();
 					}
 				}
 				
 				int delay = 0;
 				Player varOwner;
-				if (!useTargetVariablesInstead) varOwner = sender instanceof Player ? (Player) sender : null;
+				if (!useTargetVariablesInstead) varOwner = sender instanceof Player player ? player : null;
 				else varOwner = target;
 
 				for (String comm : commandToExecute) {
@@ -184,7 +184,7 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 						Bukkit.dispatchCommand(actualSender, comm);
 					}
 				}
-				if (blockChatOutput && messageBlocker != null && sender instanceof Player) messageBlocker.removePlayer((Player) sender);
+				if (blockChatOutput && messageBlocker != null && sender instanceof Player player) messageBlocker.removePlayer(player);
 				else if (convo != null) convo.abandon();
 			}
 		} catch (Exception e) {
@@ -196,11 +196,11 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 		if (opped) actualSender.setOp(false);
 		
 		// Effects
-		if (sender instanceof Player) {
-			if (target != null) playSpellEffects((Player) sender, target);
-			else playSpellEffects(EffectPosition.CASTER, (Player) sender);
-		} else if (sender instanceof BlockCommandSender) {
-			playSpellEffects(EffectPosition.CASTER, ((BlockCommandSender) sender).getBlock().getLocation());
+		if (sender instanceof Player player) {
+			if (target != null) playSpellEffects(player, target);
+			else playSpellEffects(EffectPosition.CASTER, player);
+		} else if (sender instanceof BlockCommandSender commandBlock) {
+			playSpellEffects(EffectPosition.CASTER, commandBlock.getBlock().getLocation());
 		}
 		// Add delayed command
 		if (commandToExecuteLater != null && !commandToExecuteLater.isEmpty() && !commandToExecuteLater.get(0).isEmpty()) {
@@ -210,8 +210,8 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 
 	@Override
 	public boolean castAtEntity(LivingEntity caster, LivingEntity target, float power) {
-		if (requirePlayerTarget && target instanceof Player) {
-			process(caster, (Player) target, MagicSpells.NULL_ARGS);
+		if (requirePlayerTarget && target instanceof Player player) {
+			process(caster, player, MagicSpells.NULL_ARGS);
 			return true;
 		}
 		return false;
@@ -219,8 +219,8 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 
 	@Override
 	public boolean castAtEntity(LivingEntity target, float power) {
-		if (requirePlayerTarget && target instanceof Player) {
-			process(null, (Player) target, MagicSpells.NULL_ARGS);
+		if (requirePlayerTarget && target instanceof Player player) {
+			process(null, player, MagicSpells.NULL_ARGS);
 			return true;
 		}
 		return false;
@@ -293,11 +293,11 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 			// Run commands
 			try {
 				Conversation convo = null;
-				if (sender instanceof Player) {
+				if (sender instanceof Player player) {
 					if (blockChatOutput && messageBlocker != null) {
-						messageBlocker.addPlayer((Player) sender);
+						messageBlocker.addPlayer(player);
 					} else if (convoFac != null) {
-						convo = convoFac.buildConversation((Player) sender);
+						convo = convoFac.buildConversation(player);
 						convo.begin();
 					}
 				}
@@ -308,7 +308,7 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 					if (target != null) comm = comm.replace("%t", target.getName());
 					Bukkit.dispatchCommand(actualSender, comm);
 				}
-				if (blockChatOutput && messageBlocker != null && sender instanceof Player) messageBlocker.removePlayer((Player) sender);
+				if (blockChatOutput && messageBlocker != null && sender instanceof Player player) messageBlocker.removePlayer(player);
 				else if (convo != null) convo.abandon();
 			} catch (Exception e) {
 				// Catch exceptions to make sure we don't leave someone opped
@@ -320,8 +320,8 @@ public class ExternalCommandSpell extends TargetedSpell implements TargetedEntit
 			
 			// Graphical effect
 			if (sender == null) return;
-			if (sender instanceof Player) playSpellEffects(EffectPosition.DISABLED, (Player) sender);
-			else if (sender instanceof BlockCommandSender) playSpellEffects(EffectPosition.DISABLED, ((BlockCommandSender) sender).getBlock().getLocation());
+			if (sender instanceof Player player) playSpellEffects(EffectPosition.DISABLED, player);
+			else if (sender instanceof BlockCommandSender commandBlock) playSpellEffects(EffectPosition.DISABLED, commandBlock.getBlock().getLocation());
 		}
 		
 	}

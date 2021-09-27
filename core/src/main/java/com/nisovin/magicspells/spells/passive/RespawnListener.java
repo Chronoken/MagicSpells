@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.util.OverridePriority;
 import com.nisovin.magicspells.spells.passive.util.PassiveListener;
 

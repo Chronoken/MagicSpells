@@ -67,8 +67,7 @@ public class CreatureTargetSpell extends TargetedSpell implements TargetedEntity
 	}
 
 	private void castSpells(LivingEntity livingEntity, float power) {
-		if (!(livingEntity instanceof Creature)) return;
-		Creature caster = (Creature) livingEntity;
+		if (!(livingEntity instanceof Creature caster)) return;
 		LivingEntity target = caster.getTarget();
 		if (target == null || !target.isValid()) return;
 

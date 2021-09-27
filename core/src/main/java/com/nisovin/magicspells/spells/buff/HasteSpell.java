@@ -77,8 +77,7 @@ public class HasteSpell extends BuffSpell {
 	protected void turnOff() {
 		for (UUID id : entities.keySet()) {
 			Entity e = Bukkit.getEntity(id);
-			if (!(e instanceof LivingEntity)) continue;
-			LivingEntity livingEntity = (LivingEntity) e;
+			if (!(e instanceof LivingEntity livingEntity)) continue;
 			livingEntity.removePotionEffect(PotionEffectType.SPEED);
 			HasteData data = entities.get(id);
 			if (data != null) MagicSpells.cancelTask(data.task);

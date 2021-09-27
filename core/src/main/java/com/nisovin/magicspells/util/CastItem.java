@@ -11,6 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.enchantments.Enchantment;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.util.magicitems.MagicItems;
 import com.nisovin.magicspells.util.magicitems.MagicItemData;
@@ -23,7 +27,7 @@ import static com.nisovin.magicspells.util.magicitems.MagicItemData.MagicItemAtt
 public class CastItem {
 
 	private Material type = null;
-	private String name = null;
+	private Component name = null;
 
 	private int amount = 0;
 	private int durability = -1;
@@ -36,7 +40,7 @@ public class CastItem {
 	private String author = null;
 
 	private Map<Enchantment, Integer> enchants = null;
-	private List<String> lore = null;
+	private List<Component> lore = null;
 
 	public CastItem() {
 
@@ -49,9 +53,14 @@ public class CastItem {
 		type = item.getType();
 		if (isTypeValid()) {
 			if (!MagicSpells.ignoreCastItemNames()) {
-				if (meta.getDisplayName().isEmpty()) name = null;
-				else if (MagicSpells.ignoreCastItemNameColors()) name = Util.decolorize(meta.getDisplayName());
-				else name = meta.getDisplayName();
+				if (!meta.hasDisplayName()) name = null;
+				else if (MagicSpells.ignoreCastItemNameColors()) {
+					name = MiniMessage.builder()
+							.transformation(TransformationType.DECORATION)
+							.build()
+							.deserialize(Util.getStringFromComponent(meta.displayName()));
+				}
+				else name = meta.displayName();
 			}
 			if (!MagicSpells.ignoreCastItemAmount()) amount = item.getAmount();
 			if (!MagicSpells.ignoreCastItemDurability(type) && ItemUtil.hasDurability(type)) durability = DurabilityHandler.getDurability(meta);
@@ -62,7 +71,7 @@ public class CastItem {
 			if (!MagicSpells.ignoreCastItemTitle()) title = WrittenBookHandler.getTitle(meta);
 			if (!MagicSpells.ignoreCastItemAuthor()) author = WrittenBookHandler.getAuthor(meta);
 			if (!MagicSpells.ignoreCastItemEnchants()) enchants = meta.getEnchants();
-			if (!MagicSpells.ignoreCastItemLore()) lore = meta.getLore();
+			if (!MagicSpells.ignoreCastItemLore()) lore = meta.lore();
 		}
 	}
 
@@ -72,8 +81,11 @@ public class CastItem {
 			type = (Material) data.getAttribute(TYPE);
 			if (isTypeValid()) {
 				if (!MagicSpells.ignoreCastItemNames() && data.hasAttribute(NAME)) {
-					if (MagicSpells.ignoreCastItemNameColors()) name = Util.decolorize((String) data.getAttribute(NAME));
-					else name = (String) data.getAttribute(NAME);
+					if (MagicSpells.ignoreCastItemNameColors()) {
+						String localName = Util.getStringFromComponent((Component) data.getAttribute(NAME));
+						name = Util.getMiniMessage(Util.decolorize(localName));
+					}
+					else name = (Component) data.getAttribute(NAME);
 				}
 
 				if (!MagicSpells.ignoreCastItemAmount() && data.hasAttribute(AMOUNT))
@@ -104,7 +116,7 @@ public class CastItem {
 					enchants = (Map<Enchantment, Integer>) data.getAttribute(ENCHANTS);
 
 				if (!MagicSpells.ignoreCastItemLore() && data.hasAttribute(LORE))
-					lore = (List<String>) data.getAttribute(LORE);
+					lore = (List<Component>) data.getAttribute(LORE);
 			}
 		}
 	}
@@ -119,8 +131,8 @@ public class CastItem {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof CastItem) return equalsCastItem((CastItem) o);
-		if (o instanceof ItemStack) return equalsCastItem(new CastItem((ItemStack) o));
+		if (o instanceof CastItem item) return equalsCastItem(item);
+		if (o instanceof ItemStack item) return equalsCastItem(new CastItem(item));
 		return false;
 	}
 
@@ -160,7 +172,7 @@ public class CastItem {
 
 			output
 				.append("\"name\":\"")
-				.append(TxtUtil.escapeJSON(name))
+				.append(TxtUtil.escapeJSON(Util.getStringFromComponent(name)))
 				.append('"');
 
 			previous = true;
@@ -291,12 +303,12 @@ public class CastItem {
 
 			boolean previousLore = false;
 			output.append("\"lore\":[");
-			for (String line : lore) {
+			for (Component line : lore) {
 				if (previousLore) output.append(',');
 
 				output
 					.append('"')
-					.append(TxtUtil.escapeJSON(line))
+					.append(TxtUtil.escapeJSON(Util.getStringFromComponent(line)))
 					.append('"');
 
 				previousLore = true;

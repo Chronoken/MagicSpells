@@ -126,9 +126,9 @@ public class MagicLogger implements Listener {
 	
 	private String getTeacherName(Object o) {
 		if (o == null) return "none";
-		if (o instanceof Player) return "player-" + ((Player)o).getName();
-		if (o instanceof Spell) return "spell-" + ((Spell)o).getInternalName();
-		if (o instanceof Block) return "block-" + formatLoc(((Block)o).getLocation());
+		if (o instanceof Player player) return "player-" + player.getName();
+		if (o instanceof Spell spell) return "spell-" + spell.getInternalName();
+		if (o instanceof Block block) return "block-" + formatLoc(block.getLocation());
 		return o.toString();
 	}
 	

@@ -10,7 +10,7 @@ public class TimestampMinutesVariable extends MetaVariable {
     public double getValue(String player) {
         Instant instant = Instant.now();
         long mins = instant.getEpochSecond();
-        return Math.floor(mins / 60);
+        return Math.floor(mins / 60F);
     }
 
 }

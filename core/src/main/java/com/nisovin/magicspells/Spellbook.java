@@ -1,9 +1,5 @@
 package com.nisovin.magicspells;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-
 import java.util.Set;
 import java.util.Map;
 import java.util.List;
@@ -14,11 +10,17 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+
 import org.bukkit.World;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.inventory.ItemStack;
+
+import java.nio.charset.StandardCharsets;
 
 import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.util.CastItem;
@@ -37,17 +39,14 @@ public class Spellbook {
 	private String playerName;
 	private String uniqueId;
 
-	private TreeSet<Spell> allSpells = new TreeSet<Spell>() {
+	private TreeSet<Spell> allSpells = new TreeSet<>() {
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public boolean remove(Object o) {
 			boolean ret = super.remove(o);
-			if (o instanceof Spell) {
-				Spell s = (Spell) o;
-				s.unloadPlayerEffectTracker(player);
-			}
+			if (o instanceof Spell spell) spell.unloadPlayerEffectTracker(player);
 			return ret;
 		}
 
@@ -149,7 +148,7 @@ public class Spellbook {
 
 			if (!file.exists()) return;
 
-			Scanner scanner = new Scanner(file, "UTF-8");
+			Scanner scanner = new Scanner(file, StandardCharsets.UTF_8);
 			while (scanner.hasNext()) {
 				String line = scanner.nextLine();
 				if (line.isEmpty()) continue;
@@ -172,7 +171,7 @@ public class Spellbook {
 						e.printStackTrace();
 					}
 				}
-				addSpell(spell, items.toArray(new CastItem[items.size()]));
+				addSpell(spell, items.toArray(new CastItem[0]));
 			}
 			scanner.close();
 
@@ -446,7 +445,7 @@ public class Spellbook {
 	}
 
 	public void removeSpell(Spell spell) {
-		if (spell instanceof BuffSpell) ((BuffSpell) spell).turnOff(player);
+		if (spell instanceof BuffSpell buffSpell) buffSpell.turnOff(player);
 		CastItem[] items = spell.getCastItems();
 		if (customBindings.containsKey(spell)) items = customBindings.remove(spell).toArray(new CastItem[]{});
 		for (CastItem item : items) {
@@ -534,8 +533,8 @@ public class Spellbook {
 
 	public void removeAllSpells() {
 		for (Spell spell : allSpells) {
-			if (!(spell instanceof BuffSpell)) continue;
-			((BuffSpell) spell).turnOff(player);
+			if (!(spell instanceof BuffSpell buffSpell)) continue;
+			buffSpell.turnOff(player);
 		}
 		allSpells.clear();
 		itemSpells.clear();
@@ -566,7 +565,7 @@ public class Spellbook {
 				file = new File(plugin.getDataFolder(), "spellbooks" + File.separator + uniqueId + ".txt");
 			}
 
-			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, false), "UTF-8");
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8);
 			for (Spell spell : allSpells) {
 				if (isTemporary(spell)) continue;
 				writer.append(spell.getInternalName());

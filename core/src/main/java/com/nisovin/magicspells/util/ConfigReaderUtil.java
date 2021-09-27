@@ -67,7 +67,7 @@ public class ConfigReaderUtil {
 		
 		// Handle the prefix
 		String prefix = section.getString("prefix", null);
-		if (prefix != null && !prefix.isEmpty()) ret = ret.withPrefix(new MagicConversationPrefix(prefix));
+		if (prefix != null && !prefix.isEmpty()) ret = ret.withPrefix(new MagicConversationPrefix(Util.colorize(prefix)));
 		
 		// Handle local echo
 		boolean localEcho = section.getBoolean("local-echo", true);

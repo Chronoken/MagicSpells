@@ -111,12 +111,9 @@ public class MissArrowListener extends PassiveListener {
 	
 	@EventHandler
 	public void shoot(ProjectileLaunchEvent event) {
-		if (event.getEntity().getShooter() != null && event.getEntity().getShooter() instanceof LivingEntity
-			&& event.getEntity() instanceof Arrow) {
-			LivingEntity p = (LivingEntity) event.getEntity().getShooter();
-			ArrowParticle arrowParticle = new ArrowParticle(p);
-			event.getEntity().setMetadata("mal-" + p.getUniqueId() + '-' + p.getName(), new FixedMetadataValue(MagicSpells.getInstance(), arrowParticle));
-		}
+		if (event.getEntity().getShooter() == null || !(event.getEntity().getShooter() instanceof LivingEntity p) || !(event.getEntity() instanceof Arrow)) return;
+		ArrowParticle arrowParticle = new ArrowParticle(p);
+		event.getEntity().setMetadata("mal-" + p.getUniqueId() + '-' + p.getName(), new FixedMetadataValue(MagicSpells.getInstance(), arrowParticle));
 	}
 	
 	private static class ArrowParticle {

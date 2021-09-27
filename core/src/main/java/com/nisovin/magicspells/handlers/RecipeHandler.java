@@ -18,12 +18,7 @@ public class RecipeHandler implements Listener {
     private static final Map<String, Recipe> recipes = new HashMap<>();
 
     public static void create(ConfigurationSection config) {
-        String type = config.getString("type", "shaped");
-        if (type == null) {
-            MagicSpells.error("Recipe '" + config.getName() + "' has an invalid 'type' defined.");
-            return;
-        }
-        type = type.toLowerCase();
+        String type = config.getString("type", "shaped").toLowerCase();
 
         String itemString = config.getString("result");
         if (itemString == null || itemString.isEmpty()) {
@@ -60,32 +55,12 @@ public class RecipeHandler implements Listener {
 
         Recipe recipe = null;
         switch (type) {
-            case "shaped":
-                recipe = createShapedRecipe(config, namespaceKey, result, group);
-                break;
-
-            case "shapeless":
-                recipe = createShapelessRecipe(config, namespaceKey, result, group);
-                break;
-
-            case "smoking":
-            case "campfire":
-            case "blasting":
-            case "furnace":
-                recipe = createCookingRecipe(config, type, namespaceKey, result, group);
-                break;
-
-            case "stonecutting":
-                recipe = createStoneCuttingRecipe(config, namespaceKey, result, group);
-                break;
-
-            case "smithing":
-                recipe = createSmithingRecipe(config, namespaceKey, result);
-                break;
-
-            default:
-                MagicSpells.error("Recipe '" + config.getName() + "' has an invalid 'type' defined.");
-                break;
+            case "shaped" -> recipe = createShapedRecipe(config, namespaceKey, result, group);
+            case "shapeless" -> recipe = createShapelessRecipe(config, namespaceKey, result, group);
+            case "smoking", "campfire", "blasting", "furnace" -> recipe = createCookingRecipe(config, type, namespaceKey, result, group);
+            case "stonecutting" -> recipe = createStoneCuttingRecipe(config, namespaceKey, result, group);
+            case "smithing" -> recipe = createSmithingRecipe(config, namespaceKey, result);
+            default -> MagicSpells.error("Recipe '" + config.getName() + "' has an invalid 'type' defined.");
         }
         if (recipe == null) return;
 
@@ -173,9 +148,7 @@ public class RecipeHandler implements Listener {
     private static Recipe createStoneCuttingRecipe(ConfigurationSection config, NamespacedKey namespaceKey, ItemStack result, String group) {
         Material ingredient = getMaterial(config.getString("ingredient"), "Recipe '" + config.getName() + "' has an invalid 'ingredient' defined.");
         if (ingredient == null) return null;
-        Recipe recipe = ItemUtil.createStonecutterRecipe(namespaceKey, group, result, ingredient);
-        if (recipe == null) MagicSpells.error("Recipe type 'stonecutting' on recipe '" + config.getName() + "' is unsupported on this version of spigot.");
-        return recipe;
+        return ItemUtil.createStonecutterRecipe(namespaceKey, group, result, ingredient);
     }
 
     private static Recipe createSmithingRecipe(ConfigurationSection config, NamespacedKey namespaceKey, ItemStack result) {
@@ -183,9 +156,7 @@ public class RecipeHandler implements Listener {
         if (base == null) return null;
         Material addition = getMaterial(config.getString("base"), "Recipe '" + config.getName() + "' has an invalid 'addition' defined.");
         if (addition == null) return null;
-        Recipe recipe = new SmithingRecipe(namespaceKey, result, new RecipeChoice.MaterialChoice(base), new RecipeChoice.MaterialChoice(addition));
-        if (recipe == null) MagicSpells.error("Recipe type 'stonecutting' on recipe '" + config.getName() + "' is unsupported on this version of spigot.");
-        return recipe;
+        return new SmithingRecipe(namespaceKey, result, new RecipeChoice.MaterialChoice(base), new RecipeChoice.MaterialChoice(addition));
     }
 
     public static void clearRecipes() {

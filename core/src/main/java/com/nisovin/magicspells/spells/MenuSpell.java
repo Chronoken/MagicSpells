@@ -4,7 +4,8 @@ import java.util.*;
 
 import co.aikar.commands.ACFUtil;
 
-import com.nisovin.magicspells.util.ItemUtil;
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -19,14 +20,10 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import com.nisovin.magicspells.util.*;
 import com.nisovin.magicspells.Subspell;
-import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.MagicSpells;
-import com.nisovin.magicspells.util.TargetInfo;
-import com.nisovin.magicspells.util.BlockUtils;
-import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.variables.Variable;
-import com.nisovin.magicspells.util.PlayerNameUtils;
 import com.nisovin.magicspells.castmodifiers.ModifierSet;
 import com.nisovin.magicspells.util.magicitems.MagicItem;
 import com.nisovin.magicspells.util.magicitems.MagicItems;
@@ -128,8 +125,8 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 			option.spellName = getConfigString(path + "spell", "");
 			option.spellRightName = getConfigString(path + "spell-right", "");
 			option.spellMiddleName = getConfigString(path + "spell-middle", "");
-			option.spellSneakRightName = getConfigString(path + "spell-sneak-left", "");
-			option.spellSneakLeftName = getConfigString(path + "spell-sneak-right", "");
+			option.spellSneakLeftName = getConfigString(path + "spell-sneak-left", "");
+			option.spellSneakRightName = getConfigString(path + "spell-sneak-right", "");
 			option.power = getConfigFloat(path + "power", 1);
 			option.modifierList = getConfigStringList(path + "modifiers", null);
 			option.stayOpen = getConfigBoolean(path + "stay-open", false);
@@ -154,17 +151,16 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 
 		for (MenuOption option : options.values()) {
 			option.spell = initSubspell(option.spellName, "MenuSpell '" + internalName + "' has an invalid 'spell' defined for: " + option.menuOptionName);
-			option.spellRight = initSubspell(option.spellRightName, "MenuSpell '" + internalName + "' has an invalid 'spell' defined for: " + option.menuOptionName);
-			option.spellMiddle = initSubspell(option.spellMiddleName, "MenuSpell '" + internalName + "' has an invalid 'spell' defined for: " + option.menuOptionName);
-			option.spellSneakLeft = initSubspell(option.spellSneakLeftName, "MenuSpell '" + internalName + "' has an invalid 'spell' defined for: " + option.menuOptionName);
-			option.spellSneakRight = initSubspell(option.spellSneakRightName, "MenuSpell '" + internalName + "' has an invalid 'spell' defined for: " + option.menuOptionName);
+			option.spellRight = initSubspell(option.spellRightName, "MenuSpell '" + internalName + "' has an invalid 'spell-right' defined for: " + option.menuOptionName);
+			option.spellMiddle = initSubspell(option.spellMiddleName, "MenuSpell '" + internalName + "' has an invalid 'spell-middle' defined for: " + option.menuOptionName);
+			option.spellSneakLeft = initSubspell(option.spellSneakLeftName, "MenuSpell '" + internalName + "' has an invalid 'spell-sneak-left' defined for: " + option.menuOptionName);
+			option.spellSneakRight = initSubspell(option.spellSneakRightName, "MenuSpell '" + internalName + "' has an invalid 'spell-sneak-right' defined for: " + option.menuOptionName);
 		}
 	}
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			LivingEntity entityTarget = null;
 			Location locTarget = null;
 			Player opener = player;
@@ -174,8 +170,8 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 				if (targetInfo != null) entityTarget = targetInfo.getTarget();
 				if (entityTarget == null) return noTarget(player);
 				if (targetOpensMenuInstead) {
-					if (!(entityTarget instanceof Player)) return noTarget(player);
-					opener = (Player) entityTarget;
+					if (!(entityTarget instanceof Player targetPlayer)) return noTarget(player);
+					opener = targetPlayer;
 					entityTarget = null;
 				}
 			} else if (requireLocationTarget) {
@@ -192,11 +188,10 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 	@Override
 	public boolean castAtEntity(LivingEntity caster, LivingEntity target, float power) {
 		if (requireEntityTarget && !validTargetList.canTarget(caster, target)) return false;
-		if (!(caster instanceof Player)) return false;
-		Player opener = (Player) caster;
+		if (!(caster instanceof Player opener)) return false;
 		if (targetOpensMenuInstead) {
-			if (!(target instanceof Player)) return false;
-			opener = (Player) target;
+			if (!(target instanceof Player player)) return false;
+			opener = player;
 			target = null;
 		}
 		open((Player) caster, opener, target, null, power, MagicSpells.NULL_ARGS);
@@ -207,15 +202,15 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 	public boolean castAtEntity(LivingEntity target, float power) {
 		if (!targetOpensMenuInstead) return false;
 		if (requireEntityTarget && !validTargetList.canTarget(target)) return false;
-		if (!(target instanceof Player)) return false;
-		open(null, (Player) target, null, null, power, MagicSpells.NULL_ARGS);
+		if (!(target instanceof Player player)) return false;
+		open(null, player, null, null, power, MagicSpells.NULL_ARGS);
 		return true;
 	}
 
 	@Override
 	public boolean castAtLocation(LivingEntity caster, Location target, float power) {
-		if (!(caster instanceof Player)) return false;
-		open((Player) caster, (Player) caster, null, target, power, MagicSpells.NULL_ARGS);
+		if (!(caster instanceof Player player)) return false;
+		open(player, player, null, target, power, MagicSpells.NULL_ARGS);
 		return true;
 	}
 
@@ -248,15 +243,12 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 		return item;
 	}
 
-	private void open(final Player caster, Player opener, LivingEntity entityTarget, Location locTarget, final float power, final String[] args) {
+	private void open(Player caster, Player opener, LivingEntity entityTarget, Location locTarget, float power, String[] args) {
 		if (delay < 0) {
 			openMenu(caster, opener, entityTarget, locTarget, power, args);
 			return;
 		}
-		final Player p = opener;
-		final Location l = locTarget;
-		final LivingEntity e = entityTarget;
-		MagicSpells.scheduleDelayedTask(() -> openMenu(caster, p, e, l, power, args), delay);
+		MagicSpells.scheduleDelayedTask(() -> openMenu(caster, opener, entityTarget, locTarget, power, args), delay);
 	}
 
 	private void openMenu(Player caster, Player opener, LivingEntity entityTarget, Location locTarget, float power, String[] args) {
@@ -264,7 +256,8 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 		if (requireEntityTarget && entityTarget != null) castEntityTarget.put(opener.getUniqueId(), entityTarget);
 		if (requireLocationTarget && locTarget != null) castLocTarget.put(opener.getUniqueId(), locTarget);
 
-		Inventory inv = Bukkit.createInventory(opener, size, internalName);
+
+		Inventory inv = Bukkit.createInventory(opener, size, Component.text(internalName));
 		applyOptionsToInventory(opener, inv, args);
 		opener.openInventory(inv);
 		Util.setInventoryTitle(opener, title);
@@ -289,7 +282,7 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 			}
 			// Select and finalise item to display.
 			ItemStack item = (option.item != null ? option.item : option.items.get(Util.getRandomInt(option.items.size()))).clone();
-			item = ItemUtil.setPersistentString(item, "menuOption", option.menuOptionName);
+			DataUtil.setString(item, "menuOption", option.menuOptionName);
 			item = translateItem(opener, args, item);
 
 			int quantity;
@@ -312,17 +305,23 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 		}
 	}
 
+	private Component translateRawComponent(Component component, Player player, String[] args) {
+		String text = Util.getStringFromComponent(component);
+		text = MagicSpells.doArgumentAndVariableSubstitution(text, player, args);
+		return Util.getMiniMessage(text);
+	}
+
 	private ItemStack translateItem(Player opener, String[] args, ItemStack item) {
 		ItemStack newItem = item.clone();
 		ItemMeta meta = newItem.getItemMeta();
 		if (meta == null) return newItem;
-		meta.setDisplayName(Util.colorize(MagicSpells.doArgumentAndVariableSubstitution(meta.getDisplayName(), opener, args)));
-		List<String> lore = meta.getLore();
+		meta.displayName(translateRawComponent(meta.displayName(), opener, args));
+		List<Component> lore = meta.lore();
 		if (lore != null) {
 			for (int i = 0; i < lore.size(); i++) {
-				lore.set(i, Util.colorize(MagicSpells.doArgumentAndVariableSubstitution(lore.get(i), opener, args)));
+				lore.set(i, translateRawComponent(lore.get(i), opener, args));
 			}
-			meta.setLore(lore);
+			meta.lore(lore);
 		}
 		newItem.setItemMeta(meta);
 		return newItem;
@@ -331,7 +330,7 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 	@EventHandler
 	public void onInvClick(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		if (!event.getView().getTitle().equals(internalName)) return;
+		if (!Util.getStringFromComponent(event.getView().title()).equals(internalName)) return;
 		event.setCancelled(true);
 
 		String closeState = castSpells(player, event.getCurrentItem(), event.getClick());
@@ -347,7 +346,7 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 			return;
 		}
 		// Reopen.
-		Inventory newInv = Bukkit.createInventory(player, event.getView().getTopInventory().getSize(), internalName);
+		Inventory newInv = Bukkit.createInventory(player, event.getView().getTopInventory().getSize(), Component.text(internalName));
 		applyOptionsToInventory(player, newInv, MagicSpells.NULL_ARGS);
 		player.openInventory(newInv);
 		Util.setInventoryTitle(player, title);
@@ -356,18 +355,18 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 	private String castSpells(Player player, ItemStack item, ClickType click) {
 		// Outside inventory.
 		if (item == null) return stayOpenNonOption ? "ignore" : "close";
-		String key = ItemUtil.getPersistentString(item, "menuOption");
+		String key = DataUtil.getString(item, "menuOption");
 		// Probably a filler or air.
 		if (key == null || key.isEmpty() || !options.containsKey(key)) return stayOpenNonOption ? "ignore" : "close";
 		MenuOption option = options.get(key);
-		switch(click) {
-			case LEFT: return processClickSpell(player, option.spell, option);
-			case RIGHT: return processClickSpell(player, option.spellRight, option);
-			case MIDDLE: return processClickSpell(player, option.spellMiddle, option);
-			case SHIFT_LEFT: return processClickSpell(player, option.spellSneakLeft, option);
-			case SHIFT_RIGHT: return processClickSpell(player, option.spellSneakRight, option);
-			default: return option.stayOpen ? "ignore" : "close";
-		}
+		return switch (click) {
+			case LEFT -> processClickSpell(player, option.spell, option);
+			case RIGHT -> processClickSpell(player, option.spellRight, option);
+			case MIDDLE -> processClickSpell(player, option.spellMiddle, option);
+			case SHIFT_LEFT -> processClickSpell(player, option.spellSneakLeft, option);
+			case SHIFT_RIGHT -> processClickSpell(player, option.spellSneakRight, option);
+			default -> option.stayOpen ? "ignore" : "close";
+		};
 	}
 
 	private String processClickSpell(Player player, Subspell spell, MenuOption option) {

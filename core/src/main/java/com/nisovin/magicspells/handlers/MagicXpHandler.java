@@ -117,9 +117,8 @@ public class MagicXpHandler implements Listener {
 
 		if (!autoLearn) return;
 		final LivingEntity caster = event.getCaster();
-		if (!(caster instanceof Player)) return;
+		if (!(caster instanceof Player player)) return;
 
-		Player player = (Player) caster;
 		final Spell castedSpell = event.getSpell();
 		MagicSpells.scheduleDelayedTask(() -> {
 
@@ -222,7 +221,6 @@ public class MagicXpHandler implements Listener {
 		File folder = new File(plugin.getDataFolder(), "xp");
 		if (!folder.exists()) folder.mkdirs();
 		if (MagicSpells.arePlayerSpellsSeparatedPerWorld()) {
-			if (world == null) return;
 			folder = new File(folder, world);
 			if (!folder.exists()) folder.mkdirs();
 		}

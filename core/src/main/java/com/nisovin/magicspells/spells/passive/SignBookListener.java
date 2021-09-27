@@ -1,15 +1,16 @@
 package com.nisovin.magicspells.spells.passive;
 
 import java.util.Set;
-import java.util.List;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.event.player.PlayerEditBookEvent;
 
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.util.OverridePriority;
 import com.nisovin.magicspells.spells.passive.util.PassiveListener;
 
@@ -43,14 +44,11 @@ public class SignBookListener extends PassiveListener {
 			return;
 		}
 
-		BookMeta meta = event.getNewBookMeta();
-		List<String> pages = meta.getPages();
-		for (String page : pages) {
-			if (text.contains(page)) {
-				boolean casted = passiveSpell.activate(player);
-				if (cancelDefaultAction(casted)) event.setCancelled(true);
-				return;
-			}
+		for (Component page : event.getNewBookMeta().pages()) {
+			if (!text.contains(Util.getStringFromComponent(page))) continue;
+			boolean casted = passiveSpell.activate(player);
+			if (cancelDefaultAction(casted)) event.setCancelled(true);
+			return;
 		}
 	}
 

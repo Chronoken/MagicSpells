@@ -17,10 +17,9 @@ public class SuspiciousStewHandler {
 	private static final String CONFIG_NAME = POTION_EFFECTS.toString();
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof SuspiciousStewMeta)) return;
+		if (!(meta instanceof SuspiciousStewMeta stewMeta)) return;
 		if (!config.isList(CONFIG_NAME)) return;
 
-		SuspiciousStewMeta stewMeta = (SuspiciousStewMeta) meta;
 		stewMeta.clearCustomEffects();
 
 		List<String> effects = config.getStringList(CONFIG_NAME);
@@ -36,23 +35,17 @@ public class SuspiciousStewHandler {
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof SuspiciousStewMeta)) return;
-
-		SuspiciousStewMeta stewMeta = (SuspiciousStewMeta) meta;
-		if (data.hasAttribute(POTION_EFFECTS)) {
-			stewMeta.clearCustomEffects();
-			((List<PotionEffect>) data.getAttribute(POTION_EFFECTS)).forEach(potionEffect -> stewMeta.addCustomEffect(potionEffect, true));
-		}
+		if (!(meta instanceof SuspiciousStewMeta stewMeta)) return;
+		if (!data.hasAttribute(POTION_EFFECTS)) return;
+		stewMeta.clearCustomEffects();
+		((List<PotionEffect>) data.getAttribute(POTION_EFFECTS)).forEach(potionEffect -> stewMeta.addCustomEffect(potionEffect, true));
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof SuspiciousStewMeta)) return;
-
-		SuspiciousStewMeta stewMeta = (SuspiciousStewMeta) meta;
-		if (stewMeta.hasCustomEffects()) {
-			List<PotionEffect> effects = stewMeta.getCustomEffects();
-			if (!effects.isEmpty()) data.setAttribute(POTION_EFFECTS, effects);
-		}
+		if (!(meta instanceof SuspiciousStewMeta stewMeta)) return;
+		if (!stewMeta.hasCustomEffects()) return;
+		List<PotionEffect> effects = stewMeta.getCustomEffects();
+		if (!effects.isEmpty()) data.setAttribute(POTION_EFFECTS, effects);
 	}
 
 }

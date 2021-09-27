@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jetbrains.annotations.NotNull;
+
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.MagicSpells;
 
 import org.bukkit.conversations.Prompt;
@@ -43,12 +46,13 @@ public class MagicEnumSetPrompt extends FixedSetPrompt {
 	}
 	
 	@Override
-	public String getPromptText(ConversationContext context) {
+	@NotNull
+	public String getPromptText(@NotNull ConversationContext context) {
 		return promptText;
 	}
 
 	@Override
-	protected Prompt acceptValidatedInput(ConversationContext context, String input) {
+	protected Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
 		return responder.acceptValidatedInput(context, input);
 	}
 	
@@ -69,7 +73,7 @@ public class MagicEnumSetPrompt extends FixedSetPrompt {
 		
 		MagicEnumSetPrompt ret = new MagicEnumSetPrompt(parsedValues);
 		ret.responder = new MagicPromptResponder(section);
-		ret.promptText = section.getString("prompt-text", "");
+		ret.promptText = Util.colorize(section.getString("prompt-text", ""));
 		return ret;
 	}
 	

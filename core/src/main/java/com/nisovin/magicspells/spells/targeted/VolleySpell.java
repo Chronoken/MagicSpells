@@ -174,11 +174,10 @@ public class VolleySpell extends TargetedSpell implements TargetedLocationSpell,
 		if (event.getCause() != DamageCause.PROJECTILE) return;
 		if (!(event.getEntity() instanceof LivingEntity)) return;
 		Entity damagerEntity = event.getDamager();
-		if (!(damagerEntity instanceof Arrow) || !damagerEntity.hasMetadata(METADATA_KEY)) return;
+		if (!(damagerEntity instanceof Arrow a) || !damagerEntity.hasMetadata(METADATA_KEY)) return;
 		MetadataValue meta = damagerEntity.getMetadata(METADATA_KEY).iterator().next();
 		if (!meta.value().equals("VolleySpell" + internalName)) return;
 
-		Arrow a = (Arrow) damagerEntity;
 		event.setDamage(damage);
 		SpellPreImpactEvent preImpactEvent = new SpellPreImpactEvent(thisSpell, thisSpell, (LivingEntity) a.getShooter(), (LivingEntity) event.getEntity(), 1);
 		EventUtil.call(preImpactEvent);

@@ -68,27 +68,26 @@ public class GateSpell extends InstantSpell {
 			
 			if (location == null) {
 				switch (coordinates.toUpperCase()) {
-					case "SPAWN":
+					case "SPAWN" -> {
 						location = effectiveWorld.getSpawnLocation();
 						location = new Location(effectiveWorld, location.getX(), effectiveWorld.getHighestBlockYAt(location) + 1, location.getZ());
-						break;
-					case "EXACTSPAWN":
-						location = effectiveWorld.getSpawnLocation();
-						break;
-					case "CURRENT":
+					}
+					case "EXACTSPAWN" -> location = effectiveWorld.getSpawnLocation();
+					case "CURRENT" -> {
 						Location l = caster.getLocation();
 						location = new Location(effectiveWorld, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getYaw(), l.getPitch());
-						break;
-					default:
+					}
+					default -> {
 						MagicSpells.error("GateSpell '" + internalName + "' has invalid coordinates defined!");
 						sendMessage(strGateFailed, caster, args);
 						return PostCastAction.ALREADY_HANDLED;
+					}
 				}
 			}
 
 			location.setX(location.getX() + .5);
 			location.setZ(location.getZ() + .5);
-			MagicSpells.debug(3, "Gate location: " + location.toString());
+			MagicSpells.debug(3, "Gate location: " + location);
 			
 			Block b = location.getBlock();
 			if (!BlockUtils.isPathable(b) || !BlockUtils.isPathable(b.getRelative(0, 1, 0))) {

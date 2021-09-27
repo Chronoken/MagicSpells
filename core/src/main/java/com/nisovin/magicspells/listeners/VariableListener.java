@@ -51,8 +51,7 @@ public class VariableListener implements Listener {
 		Multimap<String, VariableMod> varMods = event.getSpell().getVariableModsCast();
 		if (varMods == null || varMods.isEmpty()) return;
 		LivingEntity caster = event.getCaster();
-		if (!(caster instanceof Player)) return;
-		Player player = (Player) caster;
+		if (!(caster instanceof Player player)) return;
 		for (Map.Entry<String, VariableMod> entry : varMods.entries()) {
 			VariableMod mod = entry.getValue();
 			if (mod == null) continue;
@@ -69,8 +68,7 @@ public class VariableListener implements Listener {
 		Multimap<String, VariableMod> varMods = event.getSpell().getVariableModsCasted();
 		if (varMods == null || varMods.isEmpty()) return;
 		LivingEntity caster = event.getCaster();
-		if (!(caster instanceof Player)) return;
-		Player player = (Player) caster;
+		if (!(caster instanceof Player player)) return;
 		for (Map.Entry<String, VariableMod> entry : varMods.entries()) {
 			VariableMod mod = entry.getValue();
 			if (mod == null) continue;

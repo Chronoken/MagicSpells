@@ -99,12 +99,10 @@ public class BlockUtils {
 	}
 
 	public static boolean isChest(Material m) {
-		switch (m) {
-			case CHEST:
-			case TRAPPED_CHEST:
-				return true;
-		}
-		return false;
+		return switch (m) {
+			case CHEST, TRAPPED_CHEST -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isLiquid(Block block) {
@@ -112,13 +110,11 @@ public class BlockUtils {
 	}
 
 	public static boolean isLiquid(Material m) {
-		switch (m) {
-			case WATER:
-			case LAVA:
-				return true;
-		}
+		return switch (m) {
+			case WATER, LAVA -> true;
+			default -> false;
+		};
 
-		return false;
 	}
 
 	public static boolean isPathable(Block block) {
@@ -138,104 +134,48 @@ public class BlockUtils {
 	}
 
 	public static boolean isWoodDoor(Material m) {
-		switch (m) {
-			case OAK_DOOR:
-			case ACACIA_DOOR:
-			case JUNGLE_DOOR:
-			case SPRUCE_DOOR:
-			case DARK_OAK_DOOR:
-			case BIRCH_DOOR:
-			case CRIMSON_DOOR:
-			case WARPED_DOOR:
-				return true;
-		}
-		return false;
+		return switch (m) {
+			case OAK_DOOR, ACACIA_DOOR, JUNGLE_DOOR, SPRUCE_DOOR, DARK_OAK_DOOR, BIRCH_DOOR, CRIMSON_DOOR, WARPED_DOOR -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isWoodButton(Material m) {
-		switch (m) {
-			case OAK_BUTTON:
-			case ACACIA_BUTTON:
-			case JUNGLE_BUTTON:
-			case SPRUCE_BUTTON:
-			case DARK_OAK_BUTTON:
-			case BIRCH_BUTTON:
-			case CRIMSON_BUTTON:
-			case WARPED_BUTTON:
-				return true;
-		}
-		return false;
+		return switch (m) {
+			case OAK_BUTTON, ACACIA_BUTTON, JUNGLE_BUTTON, SPRUCE_BUTTON, DARK_OAK_BUTTON, BIRCH_BUTTON, CRIMSON_BUTTON, WARPED_BUTTON -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isWoodPressurePlate(Material m) {
-		switch (m) {
-			case OAK_PRESSURE_PLATE:
-			case ACACIA_PRESSURE_PLATE:
-			case JUNGLE_PRESSURE_PLATE:
-			case SPRUCE_PRESSURE_PLATE:
-			case DARK_OAK_PRESSURE_PLATE:
-			case BIRCH_PRESSURE_PLATE:
-			case CRIMSON_PRESSURE_PLATE:
-			case WARPED_PRESSURE_PLATE:
-				return true;
-		}
-		return false;
+		return switch (m) {
+			case OAK_PRESSURE_PLATE, ACACIA_PRESSURE_PLATE, JUNGLE_PRESSURE_PLATE, SPRUCE_PRESSURE_PLATE, DARK_OAK_PRESSURE_PLATE, BIRCH_PRESSURE_PLATE, CRIMSON_PRESSURE_PLATE, WARPED_PRESSURE_PLATE -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isWoodTrapdoor(Material m) {
-		switch (m) {
-			case OAK_TRAPDOOR:
-			case ACACIA_TRAPDOOR:
-			case JUNGLE_TRAPDOOR:
-			case SPRUCE_TRAPDOOR:
-			case BIRCH_TRAPDOOR:
-			case DARK_OAK_TRAPDOOR:
-			case CRIMSON_TRAPDOOR:
-			case WARPED_TRAPDOOR:
-				return true;
-		}
-		return false;
+		return switch (m) {
+			case OAK_TRAPDOOR, ACACIA_TRAPDOOR, JUNGLE_TRAPDOOR, SPRUCE_TRAPDOOR, BIRCH_TRAPDOOR, DARK_OAK_TRAPDOOR, CRIMSON_TRAPDOOR, WARPED_TRAPDOOR -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isWoodFenceGate(Material m) {
-		switch (m) {
-			case OAK_FENCE_GATE:
-			case ACACIA_FENCE_GATE:
-			case JUNGLE_FENCE_GATE:
-			case SPRUCE_FENCE_GATE:
-			case BIRCH_FENCE_GATE:
-			case DARK_OAK_FENCE_GATE:
-			case CRIMSON_FENCE_GATE:
-			case WARPED_FENCE_GATE:
-				return true;
-		}
-		return false;
+		return switch (m) {
+			case OAK_FENCE_GATE, ACACIA_FENCE_GATE, JUNGLE_FENCE_GATE, SPRUCE_FENCE_GATE, BIRCH_FENCE_GATE, DARK_OAK_FENCE_GATE, CRIMSON_FENCE_GATE, WARPED_FENCE_GATE -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isShulkerBox(Material m) {
-		switch (m) {
-			case BLACK_SHULKER_BOX:
-			case BLUE_SHULKER_BOX:
-			case BROWN_SHULKER_BOX:
-			case CYAN_SHULKER_BOX:
-			case GRAY_SHULKER_BOX:
-			case GREEN_SHULKER_BOX:
-			case LIGHT_BLUE_SHULKER_BOX:
-			case LIGHT_GRAY_SHULKER_BOX:
-			case LIME_SHULKER_BOX:
-			case MAGENTA_SHULKER_BOX:
-			case ORANGE_SHULKER_BOX:
-			case PINK_SHULKER_BOX:
-			case PURPLE_SHULKER_BOX:
-			case RED_SHULKER_BOX:
-			case SHULKER_BOX:
-			case SHULKER_SHELL:
-			case SHULKER_SPAWN_EGG:
-			case WHITE_SHULKER_BOX:
-			case YELLOW_SHULKER_BOX:
-				return true;
-		}
-		return false;
+		return switch (m) {
+			case BLACK_SHULKER_BOX, BLUE_SHULKER_BOX, BROWN_SHULKER_BOX, CYAN_SHULKER_BOX, GRAY_SHULKER_BOX, GREEN_SHULKER_BOX,
+					LIGHT_BLUE_SHULKER_BOX, LIGHT_GRAY_SHULKER_BOX, LIME_SHULKER_BOX, MAGENTA_SHULKER_BOX, ORANGE_SHULKER_BOX,
+					PINK_SHULKER_BOX, PURPLE_SHULKER_BOX, RED_SHULKER_BOX, SHULKER_BOX, SHULKER_SHELL, SHULKER_SPAWN_EGG,
+					WHITE_SHULKER_BOX, YELLOW_SHULKER_BOX -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isWood(Material m) {
@@ -257,54 +197,14 @@ public class BlockUtils {
 		if (name.contains("FAN")) return true;
 		if (name.contains("RAIL")) return true;
 		if (name.contains("_AIR")) return true;
-		switch (mat) {
-			case AIR:
-			case WATER:
-			case LAVA:
-			case TALL_GRASS:
-			case LARGE_FERN:
-			case GRASS:
-			case DEAD_BUSH:
-			case FERN:
-			case SEAGRASS:
-			case TALL_SEAGRASS:
-			case LILY_PAD:
-			case DANDELION:
-			case POPPY:
-			case BLUE_ORCHID:
-			case ALLIUM:
-			case AZURE_BLUET:
-			case OXEYE_DAISY:
-			case SUNFLOWER:
-			case LILAC:
-			case PEONY:
-			case ROSE_BUSH:
-			case BROWN_MUSHROOM:
-			case RED_MUSHROOM:
-			case TORCH:
-			case FIRE:
-			case REDSTONE_WIRE:
-			case WHEAT:
-			case LADDER:
-			case LEVER:
-			case REDSTONE_TORCH:
-			case SNOW:
-			case SUGAR_CANE:
-			case VINE:
-			case NETHER_WART:
-			case TUBE_CORAL:
-			case BRAIN_CORAL:
-			case BUBBLE_CORAL:
-			case FIRE_CORAL:
-			case HORN_CORAL:
-			case DEAD_TUBE_CORAL:
-			case DEAD_BRAIN_CORAL:
-			case DEAD_BUBBLE_CORAL:
-			case DEAD_FIRE_CORAL:
-			case DEAD_HORN_CORAL:
-				return true;
-		}
-		return false;
+		return switch (mat) {
+			case AIR, WATER, LAVA, TALL_GRASS, LARGE_FERN, GRASS, DEAD_BUSH, FERN, SEAGRASS, TALL_SEAGRASS, LILY_PAD,
+					DANDELION, POPPY, BLUE_ORCHID, ALLIUM, AZURE_BLUET, OXEYE_DAISY, SUNFLOWER, LILAC, PEONY, ROSE_BUSH,
+					BROWN_MUSHROOM, RED_MUSHROOM, TORCH, FIRE, REDSTONE_WIRE, WHEAT, LADDER, LEVER, REDSTONE_TORCH, SNOW,
+					SUGAR_CANE, VINE, NETHER_WART, TUBE_CORAL, BRAIN_CORAL, BUBBLE_CORAL, FIRE_CORAL, HORN_CORAL,
+					DEAD_TUBE_CORAL, DEAD_BRAIN_CORAL, DEAD_BUBBLE_CORAL, DEAD_FIRE_CORAL, DEAD_HORN_CORAL -> true;
+			default -> false;
+		};
 	}
 
 	public static boolean isSafeToStand(Location location) {
@@ -314,16 +214,14 @@ public class BlockUtils {
 	}
 
 	public static void activatePowerable(Block block) {
-		if (block.getBlockData() instanceof Powerable) {
-			Powerable powerable = (Powerable) block.getBlockData();
+		if (block.getBlockData() instanceof Powerable powerable) {
 			powerable.setPowered(true);
 			block.setBlockData(powerable, true);
 		}
 
-		if (block.getBlockData() instanceof AnaloguePowerable) {
-			AnaloguePowerable analoguePowerable = (AnaloguePowerable) block.getBlockData();
-			analoguePowerable.setPower(analoguePowerable.getMaximumPower());
-			block.setBlockData(analoguePowerable, true);
+		if (block.getBlockData() instanceof AnaloguePowerable powerable) {
+			powerable.setPower(powerable.getMaximumPower());
+			block.setBlockData(powerable, true);
 		}
 	}
 

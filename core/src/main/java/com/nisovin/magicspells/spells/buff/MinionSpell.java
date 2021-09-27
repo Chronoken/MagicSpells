@@ -124,8 +124,7 @@ public class MinionSpell extends BuffSpell {
 					if (split.length > 1) duration = Integer.parseInt(split[1]);
 					int strength = 0;
 					if (split.length > 2) strength = Integer.parseInt(split[2]);
-					boolean ambient = false;
-					if (split.length > 3 && split[3].equalsIgnoreCase("ambient")) ambient = true;
+					boolean ambient = split.length > 3 && split[3].equalsIgnoreCase("ambient");
 					potionEffects.add(new PotionEffect(type, duration, strength, ambient));
 				} catch (Exception e) {
 					MagicSpells.error("MinionSpell '" + internalName + "' has an invalid potion effect string " + potion);

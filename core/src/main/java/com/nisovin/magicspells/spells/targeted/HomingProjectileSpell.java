@@ -202,12 +202,10 @@ public class HomingProjectileSpell extends TargetedSpell implements TargetedEnti
 	@EventHandler
 	public void onProjectileHit(EntityDamageByEntityEvent event) {
 		if (event.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) return;
-		if (!(event.getEntity() instanceof LivingEntity)) return;
-		LivingEntity entity = (LivingEntity) event.getEntity();
+		if (!(event.getEntity() instanceof LivingEntity entity)) return;
 		Entity damagerEntity = event.getDamager();
-		if (!(damagerEntity instanceof Projectile)) return;
+		if (!(damagerEntity instanceof Projectile projectile)) return;
 
-		Projectile projectile = (Projectile) damagerEntity;
 		for (HomingProjectileMonitor monitor : monitors) {
 			if (monitor.projectile == null) continue;
 			if (!monitor.projectile.equals(projectile)) continue;

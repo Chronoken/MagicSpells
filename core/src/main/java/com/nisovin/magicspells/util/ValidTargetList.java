@@ -125,12 +125,15 @@ public class ValidTargetList {
 		boolean targetIsPlayer = target instanceof Player;
 
 		// Todo, Make it optional for both CREATIVE and SPECTATOR to be no target
-		if (targetIsPlayer && ((Player) target).getGameMode() == GameMode.CREATIVE) return false;
-		if (targetIsPlayer && ((Player) target).getGameMode() == GameMode.SPECTATOR) return false;
+		if (targetIsPlayer) {
+			GameMode gameMode = ((Player) target).getGameMode();
+			if (gameMode == GameMode.CREATIVE) return false;
+			if (gameMode == GameMode.SPECTATOR) return false;
+		}
 		if (targetSelf && target.equals(caster)) return true;
 		if (!targetSelf && target.equals(caster)) return false;
 
-		if (!targetInvisibles && targetIsPlayer && caster instanceof Player && !((Player) caster).canSee((Player) target)) return false;
+		if (!targetInvisibles && targetIsPlayer && caster instanceof Player player && !player.canSee((Player) target)) return false;
 		if (targetPlayers && targetIsPlayer) return true;
 		if (targetNonPlayers && !targetIsPlayer) return true;
 
@@ -142,7 +145,7 @@ public class ValidTargetList {
 		if (targetCasterPassenger && target instanceof LivingEntity && target.isInsideVehicle() && target.getVehicle().equals(caster)) return true;
 		if (targetCasterMount && target instanceof LivingEntity && caster.isInsideVehicle() && caster.getVehicle().equals(target)) return true;
 
-		if (targetEntityTarget && (caster instanceof Creature) && ((Creature) caster).getTarget() != null && ((Creature) caster).getTarget().equals(target)) return true;
+		if (targetEntityTarget && (caster instanceof Creature creature) && creature.getTarget() != null && ((Creature) caster).getTarget().equals(target)) return true;
 		if (types.contains(target.getType())) return true;
 		return false;
 	}

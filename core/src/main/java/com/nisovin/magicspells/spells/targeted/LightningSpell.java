@@ -120,9 +120,10 @@ public class LightningSpell extends TargetedSpell implements TargetedLocationSpe
 		LightningStrike strike = event.getLightning();
 		if (strike == null) return;
 		List<MetadataValue> data = strike.getMetadata("MS" + internalName);
-		if (data == null || data.isEmpty()) return;
-		for (MetadataValue val: data) {
-			ChargeOption option = (ChargeOption)val.value();
+		if (data.isEmpty()) return;
+		for (MetadataValue val : data) {
+			ChargeOption option = (ChargeOption) val.value();
+			if (option == null) continue;
 			if (!option.chargeCreeper) event.setCancelled(true);
 			break;
 		}
@@ -131,25 +132,15 @@ public class LightningSpell extends TargetedSpell implements TargetedLocationSpe
 	@EventHandler
 	public void onPigZap(PigZapEvent event) {
 		LightningStrike strike = event.getLightning();
-		if (strike == null) return;
 		List<MetadataValue> data = strike.getMetadata("MS" + internalName);
-		if (data == null || data.isEmpty()) return;
+		if (data.isEmpty()) return;
 		for (MetadataValue val: data) {
 			ChargeOption option = (ChargeOption) val.value();
+			if (option == null) continue;
 			if (!option.changePig) event.setCancelled(true);
 		}
 	}
-	
-	private static class ChargeOption {
 
-		private boolean changePig;
-		private boolean chargeCreeper;
-
-		private ChargeOption(boolean creeper, boolean pigmen) {
-			changePig = pigmen;
-			chargeCreeper = creeper;
-		}
-		
-	}
+	private record ChargeOption(boolean chargeCreeper, boolean changePig) {}
 	
 }

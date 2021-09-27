@@ -129,9 +129,7 @@ public class ParticleUtil {
 
 			try {
 				particle = Particle.valueOf(particleName.toUpperCase());
-			} catch (IllegalArgumentException ex) {
-				particle = null;
-			}
+			} catch (IllegalArgumentException ignored) {}
 
 			return particle;
 		}

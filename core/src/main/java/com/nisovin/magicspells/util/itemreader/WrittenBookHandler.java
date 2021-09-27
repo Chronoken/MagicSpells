@@ -1,6 +1,9 @@
 package com.nisovin.magicspells.util.itemreader;
 
 import java.util.List;
+import java.util.ArrayList;
+
+import net.kyori.adventure.text.Component;
 
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,9 +22,7 @@ public class WrittenBookHandler {
 	private static final String TITLE_CONFIG_NAME = TITLE.toString();
 
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof BookMeta)) return;
-		
-		BookMeta bookMeta = (BookMeta) meta;
+		if (!(meta instanceof BookMeta bookMeta)) return;
 
 		if (config.isString(TITLE_CONFIG_NAME)) {
 			String title = Util.colorize(config.getString(TITLE_CONFIG_NAME));
@@ -38,35 +39,32 @@ public class WrittenBookHandler {
 		}
 
 		if (config.isList(PAGES_CONFIG_NAME)) {
-			List<String> pages = config.getStringList(PAGES_CONFIG_NAME);
-			for (int i = 0; i < pages.size(); i++) {
-				pages.set(i, Util.colorize(pages.get(i)));
+			List<Component> pages = new ArrayList<>();
+			for (String page : config.getStringList(PAGES_CONFIG_NAME)) {
+				pages.add(Util.getMiniMessage(page));
 			}
 
-			if (!pages.isEmpty()) {
-				bookMeta.setPages(pages);
-				data.setAttribute(PAGES, bookMeta.getPages());
-			}
+			if (pages.isEmpty()) return;
+			bookMeta.pages(pages);
+			data.setAttribute(PAGES, pages);
 		}
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof BookMeta)) return;
+		if (!(meta instanceof BookMeta bookMeta)) return;
 
-		BookMeta bookMeta = (BookMeta) meta;
 		if (data.hasAttribute(TITLE)) bookMeta.setTitle((String) data.getAttribute(TITLE));
 		if (data.hasAttribute(AUTHOR)) bookMeta.setAuthor((String) data.getAttribute(AUTHOR));
-		if (data.hasAttribute(PAGES)) bookMeta.setPages((List<String>) data.getAttribute(PAGES));
+		if (data.hasAttribute(PAGES)) bookMeta.pages((List<Component>) data.getAttribute(PAGES));
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof BookMeta)) return;
+		if (!(meta instanceof BookMeta bookMeta)) return;
 
-		BookMeta bookMeta = (BookMeta) meta;
 		if (bookMeta.hasAuthor()) data.setAttribute(AUTHOR, bookMeta.getAuthor());
 		if (bookMeta.hasTitle()) data.setAttribute(TITLE, bookMeta.getTitle());
 		if (bookMeta.hasPages()) {
-			List<String> pages = bookMeta.getPages();
+			List<Component> pages = bookMeta.pages();
 			if (!pages.isEmpty()) data.setAttribute(PAGES, pages);
 		}
 	}

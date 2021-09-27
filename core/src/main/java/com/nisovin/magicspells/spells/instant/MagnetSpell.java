@@ -65,8 +65,7 @@ public class MagnetSpell extends InstantSpell implements TargetedLocationSpell {
 		Collection<Entity> entities = center.getWorld().getNearbyEntities(center, radius, radius, radius);
 		List<Item> ret = new ArrayList<>();
 		for (Entity e: entities) {
-			if (!(e instanceof Item)) continue;
-			Item i = (Item) e;
+			if (!(e instanceof Item i)) continue;
 			ItemStack stack = i.getItemStack();
 			if (InventoryUtil.isNothing(stack)) continue;
 			if (i.isDead()) continue;

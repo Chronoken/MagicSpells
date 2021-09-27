@@ -76,27 +76,15 @@ public class DurabilityCondition extends Condition {
 	private boolean checkDurability(LivingEntity livingEntity) {
 		EntityEquipment equipment = livingEntity.getEquipment();
 		for (DurabilityChecker d : durabilitySet) {
-			ItemStack item = null;
-			switch (d.slot) {
-				case 0:
-					item = equipment.getHelmet();
-					break;
-				case 1:
-					item = equipment.getChestplate();
-					break;
-				case 2:
-					item = equipment.getLeggings();
-					break;
-				case 3:
-					item = equipment.getBoots();
-					break;
-				case 4:
-					item = equipment.getItemInOffHand();
-					break;
-				case 5:
-					item = equipment.getItemInMainHand();
-					break;
-			}
+			ItemStack item = switch (d.slot) {
+				case 0 -> equipment.getHelmet();
+				case 1 -> equipment.getChestplate();
+				case 2 -> equipment.getLeggings();
+				case 3 -> equipment.getBoots();
+				case 4 -> equipment.getItemInOffHand();
+				case 5 -> equipment.getItemInMainHand();
+				default -> null;
+			};
 
 			if (item == null) return false;
 			ItemMeta meta = item.getItemMeta();

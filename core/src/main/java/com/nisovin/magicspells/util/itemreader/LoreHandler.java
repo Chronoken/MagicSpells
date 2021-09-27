@@ -1,7 +1,9 @@
 package com.nisovin.magicspells.util.itemreader;
 
 import java.util.List;
-import java.util.Collections;
+import java.util.ArrayList;
+
+import net.kyori.adventure.text.Component;
 
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,26 +19,22 @@ public class LoreHandler {
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
 		if (!config.contains(CONFIG_NAME)) return;
 
+		List<Component> lore = new ArrayList<>();
 		if (config.isList(CONFIG_NAME)) {
-			List<String> lore = config.getStringList(CONFIG_NAME);
-			for (int i = 0; i < lore.size(); i++) {
-				lore.set(i, Util.colorize(lore.get(i)));
-			}
-
-			if (!lore.isEmpty()) {
-				meta.setLore(lore);
-				data.setAttribute(LORE, meta.getLore());
+			for (String line : config.getStringList(CONFIG_NAME)) {
+				lore.add(Util.getMiniMessage(line));
 			}
 		} else if (config.isString(CONFIG_NAME)) {
-			List<String> lore = Collections.singletonList(Util.colorize(config.getString(CONFIG_NAME)));
-
-			meta.setLore(lore);
-			data.setAttribute(LORE, lore);
+			lore.add(Util.getMiniMessage(config.getString(CONFIG_NAME)));
 		}
+		if (lore.isEmpty()) return;
+		meta.lore(lore);
+		data.setAttribute(LORE, lore);
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (data.hasAttribute(LORE)) meta.setLore((List<String>) data.getAttribute(LORE));
+		if (!data.hasAttribute(LORE)) return;
+		meta.lore((List<Component>) data.getAttribute(LORE));
 	}
 	
 }

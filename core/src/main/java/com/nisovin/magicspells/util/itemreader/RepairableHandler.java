@@ -21,16 +21,15 @@ public class RepairableHandler {
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof Repairable)) return;
-
-		if (data.hasAttribute(REPAIR_COST)) ((Repairable) meta).setRepairCost((int) data.getAttribute(REPAIR_COST));
+		if (!(meta instanceof Repairable repairable)) return;
+		if (!data.hasAttribute(REPAIR_COST)) return;
+		repairable.setRepairCost((int) data.getAttribute(REPAIR_COST));
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (!(meta instanceof Repairable)) return;
-
-		Repairable repairMeta = (Repairable) meta;
-		if (repairMeta.hasRepairCost()) data.setAttribute(REPAIR_COST, repairMeta.getRepairCost());
+		if (!(meta instanceof Repairable repairable)) return;
+		if (!repairable.hasRepairCost()) return;
+		data.setAttribute(REPAIR_COST, repairable.getRepairCost());
 	}
 	
 }

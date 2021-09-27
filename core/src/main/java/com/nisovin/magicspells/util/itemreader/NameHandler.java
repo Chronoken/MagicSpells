@@ -1,5 +1,7 @@
 package com.nisovin.magicspells.util.itemreader;
 
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -14,17 +16,18 @@ public class NameHandler {
 	public static void process(ConfigurationSection config, ItemMeta meta, MagicItemData data) {
 		if (!config.isString(CONFIG_NAME)) return;
 
-		String name = Util.colorize(config.getString(CONFIG_NAME));
-		meta.setDisplayName(name);
-		data.setAttribute(NAME, meta.getDisplayName());
+		meta.displayName(Util.getMiniMessage(config.getString(CONFIG_NAME)));
+		data.setAttribute(NAME, meta.displayName());
 	}
 
 	public static void processItemMeta(ItemMeta meta, MagicItemData data) {
-		if (data.hasAttribute(NAME)) meta.setDisplayName((String) data.getAttribute(NAME));
+		if (!data.hasAttribute(NAME)) return;
+		meta.displayName((Component) data.getAttribute(NAME));
 	}
 
 	public static void processMagicItemData(ItemMeta meta, MagicItemData data) {
-		if (meta.hasDisplayName()) data.setAttribute(NAME, meta.getDisplayName());
+		if (!meta.hasDisplayName()) return;
+		data.setAttribute(NAME, meta.displayName());
 	}
 	
 }

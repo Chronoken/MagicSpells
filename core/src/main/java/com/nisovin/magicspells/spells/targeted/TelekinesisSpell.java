@@ -2,7 +2,6 @@ package com.nisovin.magicspells.spells.targeted;
 
 import java.util.HashSet;
 
-import com.nisovin.magicspells.util.Util;
 import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

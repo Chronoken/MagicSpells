@@ -6,10 +6,10 @@ import java.util.TreeSet;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.material.Vine;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.block.data.MultipleFacing;
 
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.util.SpellAnimation;
@@ -38,13 +38,13 @@ public class VinesSpell extends TargetedSpell {
 			if (target == null || target.size() != 2) return noTarget(caster);
 			if (target.get(0).getType() != Material.AIR || !target.get(1).getType().isSolid()) return noTarget(caster);
 
-			boolean success = growVines(caster, target.get(0), target.get(1));
+			boolean success = growVines(target.get(0), target.get(1));
 			if (!success) return noTarget(caster);
 		}
 		return PostCastAction.HANDLE_NORMALLY;
 	}
 	
-	private boolean growVines(LivingEntity caster, final Block air, Block solid) {
+	private boolean growVines(final Block air, Block solid) {
 		BlockFace face = air.getFace(solid);
 		int x = 0;
 		int z = 0;
@@ -86,16 +86,14 @@ public class VinesSpell extends TargetedSpell {
 	}
 	
 	private void setBlockToVine(Block block, BlockFace face) {
-		if (block.getType() == Material.AIR) {
-			BlockState state = block.getState();
-			state.setType(Material.VINE);
-			if (state.getData() instanceof Vine) {
-				Vine data = (Vine) state.getData();
-				data.putOnFace(face);
-				state.setData(data);
-			}
-			state.update(true, false);
-		}
+		if (block.getType() != Material.AIR) return;
+		BlockState state = block.getState();
+		state.setType(Material.VINE);
+		MultipleFacing facing = (MultipleFacing) state.getBlockData();
+		if (!facing.getAllowedFaces().contains(face)) return;
+		facing.setFace(face, true);
+		state.setBlockData(facing);
+		state.update(true, false);
 	}
 	
 	private void growVinesVert(Set<VineBlock> blocks, Block air, Block solid, Block center) {

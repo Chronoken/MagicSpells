@@ -10,7 +10,7 @@ public class TimestampDaysVariable extends MetaVariable {
     public double getValue(String player) {
         Instant instant = Instant.now();
         long mins = instant.getEpochSecond();
-        return Math.floor(mins / 60 / 60 / 24);
+        return Math.floor(mins / 60F / 60F / 24F);
     }
 
 }

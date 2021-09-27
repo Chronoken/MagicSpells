@@ -50,10 +50,9 @@ public class ForcepushSpell extends InstantSpell {
 		Vector v;
 		Vector p = livingEntity.getLocation().toVector();
 		for (Entity entity : entities) {
-			if (!(entity instanceof LivingEntity)) continue;
+			if (!(entity instanceof LivingEntity target)) continue;
 			if (!validTargetList.canTarget(livingEntity, entity)) continue;
 
-			LivingEntity target = (LivingEntity) entity;
 			float power = basePower;
 			SpellTargetEvent event = new SpellTargetEvent(this, livingEntity, target, power);
 			EventUtil.call(event);

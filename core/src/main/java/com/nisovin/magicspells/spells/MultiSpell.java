@@ -239,7 +239,8 @@ public final class MultiSpell extends InstantSpell {
 		@Override
 		public void run() {
 			Entity entity = Bukkit.getEntity(casterUUID);
-			if (entity != null && entity.isValid() && entity instanceof LivingEntity) spell.cast((LivingEntity) entity, power);
+			if (entity == null || !entity.isValid() || !(entity instanceof LivingEntity livingEntity)) return;
+			spell.cast(livingEntity, power);
 		}
 		
 	}

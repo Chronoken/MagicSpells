@@ -62,11 +62,11 @@ public abstract class TargetedSpell extends InstantSpell {
 	public void sendMessages(LivingEntity caster, LivingEntity target, String[] args) {
 		String casterName = getTargetName(caster);
 		Player playerCaster = null;
-		if (caster instanceof Player) playerCaster = (Player) caster;
+		if (caster instanceof Player player) playerCaster = player;
 
 		String targetName = getTargetName(target);
 		Player playerTarget = null;
-		if (target instanceof Player) playerTarget = (Player) target;
+		if (target instanceof Player player) playerTarget = player;
 
 		if (playerCaster != null)
 			sendMessage(prepareMessage(strCastSelf, playerCaster, playerTarget), caster, args,
@@ -110,7 +110,8 @@ public abstract class TargetedSpell extends InstantSpell {
 	 * Plays the fizzle sound if it is enabled for this spell.
 	 */
 	protected void fizzle(LivingEntity livingEntity) {
-		if (playFizzleSound && livingEntity instanceof Player) ((Player) livingEntity).playEffect(livingEntity.getLocation(), Effect.EXTINGUISH, null);
+		if (!playFizzleSound || !(livingEntity instanceof Player player)) return;
+		player.playEffect(livingEntity.getLocation(), Effect.EXTINGUISH, null);
 	}
 	
 	@Override

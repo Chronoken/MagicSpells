@@ -59,9 +59,14 @@ public class MagicCommand extends BaseCommand {
 			return spells;
 		});
 		commandManager.getCommandCompletions().registerAsyncCompletion("owned_spells", context -> {
+			Set<Spell> spells = new HashSet<>();
 			Player player = context.getPlayer();
-			if (player == null) return Collections.emptyList();
-			return getSpellNames(MagicSpells.getSpellbook(player).getSpells());
+			Spellbook spellbook = MagicSpells.getSpellbook(player);
+			for (Spell spell : MagicSpells.getSpellsOrdered()) {
+				if (!spellbook.hasSpell(spell)) continue;
+				spells.add(spell);
+			}
+			return getSpellNames(spells);
 		});
 		commandManager.getCommandCompletions().registerAsyncCompletion("players+", context -> {
 			Set<String> players = new HashSet<>();
@@ -92,21 +97,11 @@ public class MagicCommand extends BaseCommand {
 			Location location = block.getLocation();
 			String num = "";
 			switch (config.toLowerCase()) {
-				case "x":
-					num += location.getX();
-					break;
-				case "y":
-					num += location.getY();
-					break;
-				case "z":
-					num += location.getZ();
-					break;
-				case "pitch":
-					num += player.getLocation().getPitch();
-					break;
-				case "yaw":
-					num += player.getLocation().getYaw();
-					break;
+				case "x" -> num += location.getX();
+				case "y" -> num += location.getY();
+				case "z" -> num += location.getZ();
+				case "pitch" -> num += player.getLocation().getPitch();
+				case "yaw" -> num += player.getLocation().getYaw();
 			}
 			if (!num.isEmpty()) completions.add(num);
 			return completions;
@@ -634,13 +629,18 @@ public class MagicCommand extends BaseCommand {
 	}
 
 	@Subcommand("debug")
+	@Syntax("[level]")
 	@Description("Toggle MagicSpells debug mode.")
 	@HelpPermission(permission = Perm.COMMAND_DEBUG)
-	public static void onDebug(CommandIssuer issuer) {
+	public static void onDebug(CommandIssuer issuer, @Optional Integer level) {
 		if (!MagicSpells.isLoaded()) return;
 		if (noPermission(issuer.getIssuer(), Perm.COMMAND_DEBUG)) return;
+
+		int levelFinal = MagicSpells.isDebug() || level == null ? MagicSpells.getDebugLevelOriginal() : level;
+		MagicSpells.setDebugLevel(levelFinal);
 		MagicSpells.setDebug(!MagicSpells.isDebug());
-		issuer.sendMessage(MagicSpells.getTextColor() + "MagicSpells debug mode " + (MagicSpells.isDebug() ? "enabled" : "disabled") + ".");
+
+		issuer.sendMessage(MagicSpells.getTextColor() + "MagicSpells debug mode " + (MagicSpells.isDebug() ? "enabled (level: " + levelFinal + ")" : "disabled") + ".");
 	}
 
 	@Subcommand("magicxp")
@@ -717,8 +717,7 @@ public class MagicCommand extends BaseCommand {
 				return;
 			}
 			// LivingEntity
-			if (sender instanceof LivingEntity) {
-				LivingEntity livingEntity = (LivingEntity) sender;
+			if (sender instanceof LivingEntity livingEntity) {
 				if (!spell.canCastByCommand()) return;
 				EntityEquipment equipment = livingEntity.getEquipment();
 				if (equipment == null) return;
@@ -766,11 +765,10 @@ public class MagicCommand extends BaseCommand {
 			if (target == null) throw new ConditionFailedException("Entity not found.");
 			Spell spell = getSpell(issuer, args[1]);
 			if (spell == null) return;
-			if (!(spell instanceof TargetedEntitySpell)) {
+			if (!(spell instanceof TargetedEntitySpell newSpell)) {
 				throw new ConditionFailedException("Spell is not a targeted entity spell.");
 			}
 
-			TargetedEntitySpell newSpell = ((TargetedEntitySpell) spell);
 			boolean casted;
 			// Handle with or without caster.
 			if (issuer.getIssuer() instanceof LivingEntity) casted = newSpell.castAtEntity(issuer.getIssuer(), target, 1F);
@@ -790,7 +788,7 @@ public class MagicCommand extends BaseCommand {
 			if (args.length < 4) throw new InvalidCommandArgument();
 			Spell spell = getSpell(issuer, args[0]);
 			if (spell == null) return;
-			if (!(spell instanceof TargetedLocationSpell)) {
+			if (!(spell instanceof TargetedLocationSpell newSpell)) {
 				throw new ConditionFailedException("Spell is not a targeted location spell.");
 			}
 
@@ -833,7 +831,6 @@ public class MagicCommand extends BaseCommand {
 			}
 			Location location = new Location(world, x, y, z, pitch, yaw);
 
-			TargetedLocationSpell newSpell = ((TargetedLocationSpell) spell);
 			boolean casted;
 			// Handle with or without caster.
 			if (issuer.getIssuer() instanceof LivingEntity) casted = newSpell.castAtLocation(issuer.getIssuer(), location, 1F);

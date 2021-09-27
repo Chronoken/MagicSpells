@@ -1,26 +1,23 @@
 package com.nisovin.magicspells.listeners;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import com.nisovin.magicspells.Spell;
 import com.nisovin.magicspells.Spellbook;
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.MagicSpells;
 
-public class MagicChatListener implements Listener {
+import io.papermc.paper.event.player.AsyncChatEvent;
 
-	private MagicSpells plugin;
-	
-	public MagicChatListener(MagicSpells plugin) {
-		this.plugin = plugin;
-	}
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
+public class MagicChatListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true)
-	public void onPlayerChat(final AsyncPlayerChatEvent event) {
-		MagicSpells.scheduleDelayedTask(() -> handleIncantation(event.getPlayer(), event.getMessage()), 0);
+	public void onPlayerChat(final AsyncChatEvent event) {
+		handleIncantation(event.getPlayer(), Util.getStringFromComponent(event.message()));
 	}
 	
 	@EventHandler(ignoreCancelled = true)

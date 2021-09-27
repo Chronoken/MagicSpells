@@ -1,13 +1,14 @@
 package com.nisovin.magicspells.spells.targeted.ext;
 
-import com.nisovin.magicspells.MagicSpells;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
+
 import me.clip.placeholderapi.PlaceholderAPI;
+
+import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.util.TargetInfo;
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.spells.TargetedSpell;
-
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 // NOTE: PLACEHOLDERAPI IS REQUIRED FOR THIS
 public class PlaceholderAPIDataSpell extends TargetedSpell {
@@ -45,8 +46,7 @@ public class PlaceholderAPIDataSpell extends TargetedSpell {
 
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			TargetInfo<Player> targetInfo = getTargetedPlayer(player, power);
 			if (targetInfo == null) return noTarget(player);
 			Player target = targetInfo.getTarget();

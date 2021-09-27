@@ -75,8 +75,7 @@ public class BuildSpell extends TargetedSpell implements TargetedLocationSpell {
 	
 	@Override
 	public PostCastAction castSpell(LivingEntity caster, SpellCastState state, float power, String[] args) {
-		if (state == SpellCastState.NORMAL && caster instanceof Player) {
-			Player player = (Player) caster;
+		if (state == SpellCastState.NORMAL && caster instanceof Player player) {
 			ItemStack item = player.getInventory().getItem(slot);
 			if (item == null || !isAllowed(item.getType())) return noTarget(player, strInvalidBlock);
 			

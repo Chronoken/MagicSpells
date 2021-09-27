@@ -51,9 +51,9 @@ public class ConfusionSpell extends InstantSpell implements TargetedLocationSpel
 		List<LivingEntity> monsters = new ArrayList<>();
 
 		for (Entity e : entities) {
-			if (!(e instanceof LivingEntity)) continue;
+			if (!(e instanceof LivingEntity livingEntity)) continue;
 			if (!validTargetList.canTarget(caster, e)) continue;
-			monsters.add((LivingEntity) e);
+			monsters.add(livingEntity);
 		}
 
 		for (int i = 0; i < monsters.size(); i++) {

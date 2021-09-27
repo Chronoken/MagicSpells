@@ -175,9 +175,9 @@ public class Subspell {
 				}
 
 				if (success) {
-					if (spell instanceof TargetedSpell) {
+					if (spell instanceof TargetedSpell targetedSpell) {
 						action = PostCastAction.NO_MESSAGES;
-						((TargetedSpell) spell).sendMessages(caster, target, null);
+						targetedSpell.sendMessages(caster, target, null);
 					}
 				} else action = PostCastAction.ALREADY_HANDLED;
 			}
@@ -317,9 +317,9 @@ public class Subspell {
 					else success = ((TargetedEntityFromLocationSpell) spell).castAtEntityFromLocation(caster, from, target, spellCast.getPower());
 				}
 				if (success) {
-					if (spell instanceof TargetedSpell) {
+					if (spell instanceof TargetedSpell targetedSpell) {
 						action = PostCastAction.NO_MESSAGES;
-						((TargetedSpell) spell).sendMessages(caster, target, null);
+						targetedSpell.sendMessages(caster, target, null);
 					}
 				} else action = PostCastAction.ALREADY_HANDLED;
 			}

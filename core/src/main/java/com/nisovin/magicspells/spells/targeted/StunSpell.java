@@ -113,21 +113,7 @@ public class StunSpell extends TargetedSpell implements TargetedEntitySpell {
 		stunnedLivingEntities.remove(entity.getUniqueId());
 	}
 
-	private static class StunnedInfo {
-
-		private final Long until;
-		private final LivingEntity caster;
-		private final LivingEntity target;
-		private final Location targetLocation;
-
-		private StunnedInfo(LivingEntity caster, LivingEntity target, Long until, Location targetLocation) {
-			this.caster = caster;
-			this.target = target;
-			this.until = until;
-			this.targetLocation = targetLocation;
-		}
-
-	}
+	private record StunnedInfo(LivingEntity caster, LivingEntity target, Long until, Location targetLocation) {}
 
 	private class StunListener implements Listener {
 

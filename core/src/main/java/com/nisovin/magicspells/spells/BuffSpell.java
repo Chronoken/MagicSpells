@@ -474,8 +474,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 			if (!entry.getValue().getUniqueId().equals(livingEntity.getUniqueId())) continue;
 
 			Entity entity = Bukkit.getEntity(entry.getKey());
-			if (!(entity instanceof LivingEntity)) return null;
-			LivingEntity target = (LivingEntity) entity;
+			if (!(entity instanceof LivingEntity target)) return null;
 			return isActiveAndNotExpired(target) ? target : null;
 		}
 
@@ -488,28 +487,26 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 		public void onEntityDamage(EntityDamageEvent e) {
 			if (cancelOnTakeDamage) {
 				Entity entity = e.getEntity();
-				if (!(entity instanceof LivingEntity)) return;
-				LivingEntity target = getWhoToCancel((LivingEntity) entity);
+				if (!(entity instanceof LivingEntity livingEntity)) return;
+				LivingEntity target = getWhoToCancel(livingEntity);
 				if (target == null) return;
 				turnOff(target);
 				return;
 			}
 
 			if (cancelOnGiveDamage) {
-				if (!(e instanceof EntityDamageByEntityEvent)) return;
-				EntityDamageByEntityEvent evt = (EntityDamageByEntityEvent) e;
+				if (!(e instanceof EntityDamageByEntityEvent evt)) return;
 
 				Entity damager = evt.getDamager();
-				if (!(damager instanceof LivingEntity)) return;
-
-				LivingEntity target = getWhoToCancel((LivingEntity) damager);
+				if (!(damager instanceof LivingEntity livingEntity)) return;
+				LivingEntity target = getWhoToCancel(livingEntity);
 				if (target != null) {
 					turnOff(target);
 					return;
 				}
 
-				if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof LivingEntity) {
-					LivingEntity newTarget = getWhoToCancel((LivingEntity) ((Projectile) damager).getShooter());
+				if (damager instanceof Projectile projectile && projectile.getShooter() instanceof LivingEntity shooter) {
+					LivingEntity newTarget = getWhoToCancel(shooter);
 					if (newTarget == null) return;
 					turnOff(newTarget);
 				}

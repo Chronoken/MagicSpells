@@ -47,8 +47,8 @@ public class InvisibilitySpell extends BuffSpell {
 
 	@Override
 	public boolean castBuff(LivingEntity entity, float power, String[] args) {
-		if (!(entity instanceof Player)) return false;
-		makeInvisible(entity);
+		if (!(entity instanceof Player player)) return false;
+		makeInvisible(player);
 		entities.add(entity.getUniqueId());
 		return true;
 	}
@@ -61,7 +61,8 @@ public class InvisibilitySpell extends BuffSpell {
 	@Override
 	public void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
-		if (entity instanceof Player) Util.forEachPlayerOnline(p -> p.showPlayer(MagicSpells.getInstance(), (Player) entity));
+		if (!(entity instanceof Player player)) return;
+		Util.forEachPlayerOnline(p -> p.showPlayer(MagicSpells.getInstance(), player));
 	}
 
 	@Override
@@ -69,18 +70,14 @@ public class InvisibilitySpell extends BuffSpell {
 		entities.clear();
 	}
 
-	private void makeInvisible(LivingEntity entity) {
-		Util.forEachPlayerOnline(p -> p.hidePlayer(MagicSpells.getInstance(), (Player) entity));
-		
-		Creature creature;
-		for (Entity e : entity.getNearbyEntities(mobRadius, mobRadius, mobRadius)) {
-			if (!(e instanceof Creature)) continue;
-			
-			creature = (Creature) e;
+	private void makeInvisible(Player player) {
+		Util.forEachPlayerOnline(p -> p.hidePlayer(MagicSpells.getInstance(), player));
+
+		for (Entity entity : player.getNearbyEntities(mobRadius, mobRadius, mobRadius)) {
+			if (!(entity instanceof Creature creature)) continue;
 			LivingEntity target = creature.getTarget();
 			if (target == null) continue;
-			if (!target.equals(entity)) continue;
-			
+			if (!target.equals(player)) continue;
 			creature.setTarget(null);
 		}
 	}

@@ -125,9 +125,7 @@ public class FlamewalkSpell extends BuffSpell {
 		public void run() {
 			for (UUID id : entities.keySet()) {
 				Entity entity = Bukkit.getEntity(id);
-				if (!(entity instanceof LivingEntity)) continue;
-				LivingEntity livingEntity = (LivingEntity) entity;
-
+				if (!(entity instanceof LivingEntity livingEntity)) continue;
 				if (isExpired(livingEntity)) {
 					turnOff(livingEntity);
 					continue;

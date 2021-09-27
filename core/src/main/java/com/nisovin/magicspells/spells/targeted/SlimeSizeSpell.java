@@ -72,11 +72,9 @@ public class SlimeSizeSpell extends TargetedSpell implements TargetedEntitySpell
 	}
 
 	private void setSize(LivingEntity caster, LivingEntity target) {
-		if (!(target instanceof Slime)) return;
-		if (!(caster instanceof Player)) return;
-
-		Slime slime = (Slime) target;
-		double rawOutputValue = variableMod.getValue((Player) caster, null, slime.getSize());
+		if (!(target instanceof Slime slime)) return;
+		if (!(caster instanceof Player player)) return;
+		double rawOutputValue = variableMod.getValue(player, null, slime.getSize());
 		int finalSize = Util.clampValue(minSize, maxSize, (int) rawOutputValue);
 		slime.setSize(finalSize);
 	}

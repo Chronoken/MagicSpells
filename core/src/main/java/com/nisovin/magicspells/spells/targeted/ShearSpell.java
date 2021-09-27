@@ -1,15 +1,12 @@
 package com.nisovin.magicspells.spells.targeted;
 
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
 import org.bukkit.DyeColor;
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Sheep;
-import org.bukkit.material.Wool;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
+import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.util.TargetInfo;
 import com.nisovin.magicspells.util.MagicConfig;
@@ -21,7 +18,7 @@ import com.nisovin.magicspells.spells.TargetedEntitySpell;
 
 public class ShearSpell extends TargetedSpell implements TargetedEntitySpell {
 
-	private Random random;
+	private static final DyeColor[] colors = DyeColor.values();
 
 	private DyeColor dye;
 
@@ -38,8 +35,6 @@ public class ShearSpell extends TargetedSpell implements TargetedEntitySpell {
 
 	public ShearSpell(MagicConfig config, String spellName) {
 		super(config, spellName);
-
-		random = ThreadLocalRandom.current();
 
 		requestedColor = getConfigString("wool-color", "");
 
@@ -91,7 +86,7 @@ public class ShearSpell extends TargetedSpell implements TargetedEntitySpell {
 	private boolean parseSpell() {
 		if (forceWoolColor && requestedColor != null) {
 			try {
-			  dye = DyeColor.valueOf(requestedColor);
+			  dye = DyeColor.valueOf(requestedColor.toUpperCase());
 			} catch (IllegalArgumentException e) {
 				MagicSpells.error("Invalid wool color defined. Will use sheep's color instead.");
 				requestedColor = null;
@@ -101,40 +96,27 @@ public class ShearSpell extends TargetedSpell implements TargetedEntitySpell {
 		return true;
 	}
 
-	private DyeColor randomizeDyeColor() {
-		DyeColor[] allDyes = DyeColor.values();
-		int dyePosition = random.nextInt(allDyes.length);
-		return allDyes[dyePosition];
-	}
-
 	private boolean shear(Sheep sheep) {
 		if (!configuredCorrectly) return false;
 		if (sheep.isSheared()) return false;
 		if (!sheep.isAdult()) return false;
-		
-		DyeColor color = sheep.getColor();
 
-		Location location = sheep.getLocation();
-		Wool wool;
-		ItemStack woolBlock;
+		DyeColor color = null;
+		if (forceWoolColor) {
+			if (randomWoolColor) color = colors[Util.getRandomInt(colors.length)];
+			else if (dye != null) color = dye;
+		}
+		else color = sheep.getColor();
+		if (color == null) color = DyeColor.WHITE;
+		Material woolColor = Material.getMaterial(color.name() + "_WOOL");
+		if (woolColor == null) woolColor = Material.WHITE_WOOL;
+
 		int count;
-
-		if (forceWoolColor && !randomWoolColor && dye != null) wool = new Wool(dye);
-		else if (forceWoolColor && randomWoolColor) wool = new Wool(randomizeDyeColor());
-		else wool = new Wool(color);
-
-		woolBlock = wool.toItemStack(1);
-
 		if (maxWool != 0) count = random.nextInt((maxWool - minWool) + 1) + minWool;
 		else count = random.nextInt(minWool + 1);
 
 		sheep.setSheared(true);
-		location.add(0, dropOffset, 0);
-
-		for (int i = 0; i < count; i++) {
-			sheep.getWorld().dropItemNaturally(location, woolBlock);
-		}
-
+		sheep.getWorld().dropItemNaturally(sheep.getLocation().add(0, dropOffset, 0), new ItemStack(woolColor, count));
 		return true;
 	}
 
