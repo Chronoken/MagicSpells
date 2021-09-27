@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.EventPriority;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 
 import com.nisovin.magicspells.Spell;
 import com.nisovin.magicspells.Subspell;

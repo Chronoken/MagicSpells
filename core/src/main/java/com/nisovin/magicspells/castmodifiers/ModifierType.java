@@ -12,94 +12,95 @@ import com.nisovin.magicspells.variables.Variable;
 import com.nisovin.magicspells.events.SpellCastEvent;
 import com.nisovin.magicspells.events.ManaChangeEvent;
 import com.nisovin.magicspells.events.SpellTargetEvent;
-import com.nisovin.magicspells.util.managers.VariableManager;
 import com.nisovin.magicspells.util.VariableMod.VariableOwner;
 import com.nisovin.magicspells.events.SpellTargetLocationEvent;
+import com.nisovin.magicspells.castmodifiers.customdata.CustomData;
 import com.nisovin.magicspells.events.MagicSpellsGenericPlayerEvent;
+import com.nisovin.magicspells.castmodifiers.customdata.CustomDataFloat;
 
 public enum ModifierType {
 	
-	REQUIRED(false, false, false, false, "required", "require") {
+	REQUIRED(false, "required", "require") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
 			if (!check) event.setCancelled(true);
 			return check;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			if (!check) event.setNewAmount(event.getOldAmount());
 			return check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
 			if (!check) event.setCancelled(true);
 			return check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			if (!check) event.setCancelled(true);
 			return check;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			if (!check) event.setCancelled(true);
 			return check;
 		}
 		
 	},
 	
-	DENIED(false, false, false, false, "denied", "deny") {
+	DENIED(false, "denied", "deny") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
 			if (check) event.setCancelled(true);
 			return !check;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			if (check) event.setNewAmount(event.getOldAmount());
 			return !check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
 			if (check) event.setCancelled(true);
 			return !check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			if (check) event.setCancelled(true);
 			return !check;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			if (check) event.setCancelled(true);
 			return !check;
 		}
 		
 	},
 	
-	POWER(false, true, false, false, "power", "empower", "multiply") {
+	POWER(true, "power", "empower", "multiply") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) event.increasePower(modifierVarFloat);
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			if (check) event.increasePower((CustomDataFloat.from(customData)));
 			return true;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			if (check) {
 				int gain = event.getNewAmount() - event.getOldAmount();
-				gain = Math.round(gain * modifierVarFloat);
+				gain = Math.round(gain * CustomDataFloat.from(customData));
 				int newAmt = event.getOldAmount() + gain;
 				if (newAmt > event.getMaxMana()) newAmt = event.getMaxMana();
 				event.setNewAmount(newAmt);
@@ -108,35 +109,40 @@ public enum ModifierType {
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) event.increasePower(modifierVarFloat);
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
+			if (check) event.increasePower(CustomDataFloat.from(customData));
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			return true;
+		}
+
+		@Override
+		public CustomData buildCustomActionData(String text) {
+			return new CustomDataFloat(text);
 		}
 		
 	},
 	
-	ADD_POWER(false, true, false, false, "addpower", "add") {
+	ADD_POWER(true, "addpower", "add") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) event.setPower(event.getPower() + modifierVarFloat);
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			if (check) event.setPower(event.getPower() + CustomDataFloat.from(customData));
 			return true;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			if (check) {
-				int newAmt = event.getNewAmount() + (int) modifierVarFloat;
+				int newAmt = event.getNewAmount() + (int) CustomDataFloat.from(customData);
 				if (newAmt > event.getMaxMana()) newAmt = event.getMaxMana();
 				if (newAmt < 0) newAmt = 0;
 				event.setNewAmount(newAmt);
@@ -145,536 +151,565 @@ public enum ModifierType {
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) event.setPower(event.getPower() + modifierVarFloat);
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
+			if (check) event.setPower(event.getPower() + CustomDataFloat.from(customData));
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			return true;
+		}
+
+		@Override
+		public CustomData buildCustomActionData(String text) {
+			return new CustomDataFloat(text);
 		}
 		
 	},
 	
-	COOLDOWN(false, true, false, false, "cooldown") {
+	COOLDOWN(true, "cooldown") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) event.setCooldown(modifierVarFloat);
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			if (check) event.setCooldown(CustomDataFloat.from(customData));
 			return true;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			return true;
-		}
-		
-	},
-	
-	REAGENTS(false, true, false, false, "reagents") {
-		
-		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) event.setReagents(event.getReagents().multiply(modifierVarFloat));
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			return true;
-		}
-
-		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			return true;
-		}
-
-		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			return true;
-		}
-
-		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			return true;
+		public CustomData buildCustomActionData(String text) {
+			return new CustomDataFloat(text);
 		}
 		
 	},
 	
-	CAST_TIME(false, false, true, false, "casttime") {
+	REAGENTS(true, "reagents") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) event.setCastTime(modifierVarInt);
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			if (check) event.setReagents(event.getReagents().multiply(CustomDataFloat.from(customData)));
 			return true;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			return true;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			return true;
+		}
+
+		@Override
+		public CustomData buildCustomActionData(String text) {
+			return new CustomDataFloat(text);
 		}
 		
 	},
 	
-	STOP(false, false, false, false, "stop") {
+	CAST_TIME(true, "casttime") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			if (check) event.setCastTime((int) CustomDataFloat.from(customData));
+			return true;
+		}
+
+		@Override
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
+			return true;
+		}
+
+		@Override
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
+			return true;
+		}
+
+		@Override
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
+			return true;
+		}
+
+		@Override
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
+			return true;
+		}
+
+		@Override
+		public CustomData buildCustomActionData(String text) {
+			return new CustomDataFloat(text);
+		}
+		
+	},
+	
+	STOP(false, "stop") {
+		
+		@Override
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
 			return !check;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			return !check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
 			return !check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			return !check;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			return !check;
 		}
 		
 	},
 	
-	CONTINUE(false, false, false, false, "continue") {
+	CONTINUE(false, "continue") {
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
 			return check;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
 			return check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
 			return check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
 			return check;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
 			return check;
 		}
 		
 	},
 	
-	CAST(true, false, false, true, "cast") {
+	CAST(true, "cast") {
 
-		class CustomData {
+		class CastData extends CustomData {
+
+			public String invalidText;
 
 			public Subspell spell;
 
+			@Override
+			public boolean isValid() {
+				return spell != null;
+			}
+
+			@Override
+			public String getInvalidText() {
+				return invalidText;
+			}
+
 		}
 
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) data.spell.cast(event.getCaster(), event.getPower());
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			CastData data = (CastData) customData;
+			if (check && data.isValid()) {
+				data.spell.cast(event.getCaster(), event.getPower());
 			}
 			return true;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) data.spell.cast(event.getPlayer(), 1f);
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
+			CastData data = (CastData) customData;
+			if (check && data.isValid()) {
+				data.spell.cast(event.getPlayer(), 1f);
 			}
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) {
-					if (data.spell.isTargetedEntitySpell()) data.spell.castAtEntity(event.getCaster(), event.getTarget(), event.getPower());
-					else data.spell.cast(event.getCaster(), event.getPower());
-				}
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
+			CastData data = (CastData) customData;
+			if (check && data.isValid()) {
+				if (data.spell.isTargetedEntitySpell()) data.spell.castAtEntity(event.getCaster(), event.getTarget(), event.getPower());
+				else data.spell.cast(event.getCaster(), event.getPower());
 			}
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) {
-					if (data.spell.isTargetedLocationSpell()) data.spell.castAtLocation(event.getCaster(), event.getTargetLocation(), event.getPower());
-					else data.spell.cast(event.getCaster(), event.getPower());
-				}
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
+			CastData data = (CastData) customData;
+			if (check && data.isValid()) {
+				if (data.spell.isTargetedLocationSpell()) data.spell.castAtLocation(event.getCaster(), event.getTargetLocation(), event.getPower());
+				else data.spell.cast(event.getCaster(), event.getPower());
 			}
 			return true;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) data.spell.cast(event.getPlayer(), 1f);
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
+			CastData data = (CastData) customData;
+			if (check && data.isValid()) {
+				data.spell.cast(event.getPlayer(), 1f);
 			}
 			return true;
 		}
 
 		@Override
-		public Object buildCustomActionData(String text) {
-			CustomData data = new CustomData();
+		public CustomData buildCustomActionData(String text) {
+			CastData data = new CastData();
+			if (text == null) {
+				data.invalidText = "No spell defined.";
+				return data;
+			}
 
 			Subspell spell = new Subspell(text);
 			if (spell.process()) data.spell = spell;
+			else data.invalidText = "Spell '" + text + "' does not exist.";
 
 			return data;
 		}
 
 	},
 	
-	CAST_INSTEAD(true, false, false, true, "castinstead") {
+	CAST_INSTEAD(true, "castinstead") {
 
-		class CustomData {
+		class CustomInsteadData extends CustomData {
+
+			public String invalidText;
 
 			public Subspell spell;
 
+			@Override
+			public boolean isValid() {
+				return spell != null;
+			}
+
+			@Override
+			public String getInvalidText() {
+				return invalidText;
+			}
+
 		}
 
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) data.spell.cast(event.getCaster(), event.getPower());
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			CustomInsteadData data = (CustomInsteadData) customData;
+			if (check && data.isValid()) {
+				data.spell.cast(event.getCaster(), event.getPower());
 				event.setCancelled(true);
 			}
 			return !check;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) data.spell.cast(event.getPlayer(), 1f);
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
+			CustomInsteadData data = (CustomInsteadData) customData;
+			if (check && data.isValid()) {
+				data.spell.cast(event.getPlayer(), 1f);
 			}
 			return !check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) {
-					if (data.spell.isTargetedEntitySpell()) data.spell.castAtEntity(event.getCaster(), event.getTarget(), event.getPower());
-					else data.spell.cast(event.getCaster(), event.getPower());
-				}
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
+			CustomInsteadData data = (CustomInsteadData) customData;
+			if (check && data.isValid()) {
+				if (data.spell.isTargetedEntitySpell()) data.spell.castAtEntity(event.getCaster(), event.getTarget(), event.getPower());
+				else data.spell.cast(event.getCaster(), event.getPower());
 			}
 			return !check;
 		}
 
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (data.spell != null) {
-					if (data.spell.isTargetedLocationSpell()) data.spell.castAtLocation(event.getCaster(), event.getTargetLocation(), event.getPower());
-					else data.spell.cast(event.getCaster(), event.getPower());
-				}
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
+			CustomInsteadData data = (CustomInsteadData) customData;
+			if (check && data.isValid()) {
+				if (data.spell.isTargetedLocationSpell()) data.spell.castAtLocation(event.getCaster(), event.getTargetLocation(), event.getPower());
+				else data.spell.cast(event.getCaster(), event.getPower());
 				event.setCancelled(true);
 			}
 			return !check;
 		}
 
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
+			CustomInsteadData data = (CustomInsteadData) customData;
+			if (check && data.isValid()) {
 				if (data.spell != null) data.spell.cast(event.getPlayer(), 1f);
 			}
 			return !check;
 		}
 
 		@Override
-		public Object buildCustomActionData(String text) {
-			CustomData data = new CustomData();
+		public CustomData buildCustomActionData(String text) {
+			CustomInsteadData data = new CustomInsteadData();
+			if (text == null) {
+				data.invalidText = "No spell defined.";
+				return data;
+			}
 
 			Subspell spell = new Subspell(text);
 			if (spell.process()) data.spell = spell;
+			else data.invalidText = "Spell '" + text + "' does not exist.";
 
 			return data;
 		}
 
 	},
-	
-	
-	VARIABLE_MODIFY(false, false, false, true, "variable") {
+
+	VARIABLE_MODIFY(true, "variable") {
 		
-		class CustomData {
+		class VariableModData extends CustomData {
+
+			private String invalidText = "Variable action is invalid.";
 			
-			public VariableOwner modifiedVariableOwner;
-			public String modifiedVariableName;
+			public VariableOwner variableOwner;
+			public Variable variable;
 			public VariableMod mod;
-			
-			CustomData() {
-				
+
+			@Override
+			public boolean isValid() {
+				return variable != null && variableOwner != VariableOwner.TARGET && (mod.getVariableOwner() != VariableOwner.TARGET || mod.isConstantValue());
 			}
-			
+
+			@Override
+			public String getInvalidText() {
+				return invalidText;
+			}
+
 		}
-		
-		private void modifyVariable(String variableName, VariableOwner modifiedVariableOwner, Player caster, Player targetPlayer, VariableMod.Operation op, double amount) {
-			Player owner = modifiedVariableOwner == VariableOwner.CASTER ? caster : targetPlayer;
-			VariableManager variableManager = MagicSpells.getVariableManager();
-			variableManager.set(variableName, owner, op.applyTo(variableManager.getValue(variableName, owner), amount));
-		}
-		
-		boolean isDataOk(CustomData data, Player caster, Player target) {
-			boolean needsTarget = data.modifiedVariableOwner == VariableOwner.TARGET || (data.mod.getVariableOwner() == VariableOwner.TARGET && !data.mod.isConstantValue());
-			return !needsTarget || target != null;
+
+		private void modifyVariable(VariableModData data, Player caster, Player targetPlayer) {
+			if (data.isValid()) return;
+			Player owner = data.variableOwner == VariableOwner.CASTER ? caster : targetPlayer;
+			double amount = data.mod.getValue(caster, targetPlayer);
+			Variable variable = data.variable;
+			double newAmount = data.mod.getOperation().applyTo(variable.getValue(owner), amount);
+			MagicSpells.getVariableManager().set(variable, owner.getName(), newAmount);
 		}
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (!(event.getCaster() instanceof Player)) return false;
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (isDataOk(data, (Player) event.getCaster(), null)) {
-					double amount = data.mod.getValue((Player) event.getCaster(), null);
-					modifyVariable(data.modifiedVariableName, data.modifiedVariableOwner, (Player) event.getCaster(), null, data.mod.getOperation(), amount);
-				}
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			if (!(event.getCaster() instanceof Player caster)) return false;
+			if (check) modifyVariable((VariableModData) customData, caster, null);
+			return true;
+		}
+
+		@Override
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
+			if (check) modifyVariable((VariableModData) customData, event.getPlayer(), null);
+			return true;
+		}
+
+		@Override
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
+			if (!(event.getCaster() instanceof Player caster)) return false;
+			if (check && event.getTarget() instanceof Player target) {
+				modifyVariable((VariableModData) customData, caster, target);
 			}
 			return true;
 		}
 
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (isDataOk(data, event.getPlayer(), null)) {
-					double amount = data.mod.getValue(event.getPlayer(), null);
-					modifyVariable(data.modifiedVariableName, data.modifiedVariableOwner, event.getPlayer(), null, data.mod.getOperation(), amount);
-				}
-			}
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
+			if (!(event.getCaster() instanceof Player caster)) return false;
+			if (check) modifyVariable((VariableModData) customData, caster, null);
 			return true;
 		}
 
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (!(event.getCaster() instanceof Player)) return false;
-			if (check) {
-				CustomData data = (CustomData) customData;
-				Player targetPlayer = event.getTarget() instanceof Player ? (Player) event.getTarget() : null;
-				if (isDataOk(data, (Player) event.getCaster(), targetPlayer)) {
-					double amount = data.mod.getValue((Player) event.getCaster(), targetPlayer);
-					modifyVariable(data.modifiedVariableName, data.modifiedVariableOwner, (Player) event.getCaster(), targetPlayer, data.mod.getOperation(), amount);
-				}
-			}
-			return true;
-		}
-
-		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (!(event.getCaster() instanceof Player)) return false;
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (isDataOk(data, (Player) event.getCaster(), null)) {
-					double amount = data.mod.getValue((Player) event.getCaster(), null);
-					modifyVariable(data.modifiedVariableName, data.modifiedVariableOwner, (Player) event.getCaster(), null, data.mod.getOperation(), amount);
-				}
-			}
-			return true;
-		}
-
-		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) {
-				CustomData data = (CustomData) customData;
-				if (isDataOk(data, event.getPlayer(), null)) {
-					double amount = data.mod.getValue(event.getPlayer(), null);
-					modifyVariable(data.modifiedVariableName, data.modifiedVariableOwner, event.getPlayer(), null, data.mod.getOperation(), amount);
-				}
-			}
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
+			if (check) modifyVariable((VariableModData) customData, event.getPlayer(), null);
 			return true;
 		}
 		
 		@Override
-		public Object buildCustomActionData(String text) {
+		public CustomData buildCustomActionData(String text) {
 			//input format
 			//[<caster|target>:]<variableToModify>;[=|+|*|/][-]<amount|[<caster|target>:]<modifyingVariableName>>
-			String[] splits = text.split(";");
-			String modifiedVariableData = splits[0];
-			VariableOwner modifiedVariableOwner;
-			String modifiedVariableName;
-			if (modifiedVariableData.contains(":")) {
-				String[] modifiedVariableSplits = modifiedVariableData.split(":");
-				if (modifiedVariableSplits[0].equalsIgnoreCase("target")) modifiedVariableOwner = VariableOwner.TARGET;
-				else modifiedVariableOwner = VariableOwner.CASTER;
-				modifiedVariableName = modifiedVariableSplits[1];
-			} else {
-				modifiedVariableOwner = VariableOwner.CASTER;
-				modifiedVariableName = modifiedVariableData;
+			VariableModData data = new VariableModData();
+			if (text == null) {
+				data.invalidText = "No data action data defined.";
+				return data;
 			}
-			
-			VariableMod variableModifier = new VariableMod(splits[1]);
-			CustomData ret = new CustomData();
-			ret.mod = variableModifier;
-			ret.modifiedVariableName = modifiedVariableName;
-			ret.modifiedVariableOwner = modifiedVariableOwner;
-			return ret;
+
+			if (!text.contains(";")) {
+				data.invalidText = "Data is invalid.";
+				return data;
+			}
+
+			String[] splits = text.split(";");
+			if (splits.length < 2) {
+				data.invalidText = "VarMod is not defined.";
+				return data;
+			}
+
+			String varData = splits[0];
+			VariableOwner variableOwner = VariableOwner.CASTER;
+			String variableName;
+			if (varData.contains(":")) {
+				String[] varDataSplits = varData.split(":");
+				if (varDataSplits[0].startsWith("target")) variableOwner = VariableOwner.TARGET;
+				variableName = varDataSplits[1];
+			}
+			else variableName = varData;
+
+			data.variableOwner = variableOwner;
+			data.mod = new VariableMod(splits[1]);
+			data.variable = MagicSpells.getVariableManager().getVariable(variableName);
+			if (data.variable == null) data.invalidText = "Variable does not exist.";
+			return data;
 		}
 		
 	},
 	
-	STRING(false, false, false, true, "string") {
+	STRING(true, "string") {
 		
-		class CustomData {
+		class StringData extends CustomData {
+
+			public String invalidText;
 			
 			public Variable variable;
 			public String value;
-			
+
+			@Override
+			public boolean isValid() {
+				return variable != null && value != null;
+			}
+
+			@Override
+			public String getInvalidText() {
+				return invalidText;
+			}
+
 		}
 		
-		private void setVariable(Player player, CustomData customData) {
-			customData.variable.parseAndSet(player, customData.value);
+		private void setVariable(Player player, StringData data) {
+			data.variable.parseAndSet(player, data.value);
 		}
 		
 		@Override
-		public boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (!(event.getCaster() instanceof Player)) return false;
-			if (check) setVariable((Player) event.getCaster(), (CustomData) customData);
+		public boolean apply(SpellCastEvent event, boolean check, CustomData customData) {
+			if (!(event.getCaster() instanceof Player caster)) return false;
+			if (check) setVariable(caster, (StringData) customData);
 			return true;
 		}
 		
 		@Override
-		public boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) setVariable(event.getPlayer(), (CustomData) customData);
+		public boolean apply(ManaChangeEvent event, boolean check, CustomData customData) {
+			if (check) setVariable(event.getPlayer(), (StringData) customData);
 			return true;
 		}
 		
 		@Override
-		public boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (!(event.getCaster() instanceof Player)) return false;
-			if (check) setVariable((Player) event.getCaster(), (CustomData) customData);
+		public boolean apply(SpellTargetEvent event, boolean check, CustomData customData) {
+			if (!(event.getCaster() instanceof Player caster)) return false;
+			if (check) setVariable(caster, (StringData) customData);
 			return true;
 		}
 		
 		@Override
-		public boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (!(event.getCaster() instanceof Player)) return false;
-			if (check) setVariable((Player) event.getCaster(), (CustomData) customData);
+		public boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData) {
+			if (!(event.getCaster() instanceof Player caster)) return false;
+			if (check) setVariable(caster, (StringData) customData);
 			return true;
 		}
 		
 		@Override
-		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData) {
-			if (check) setVariable(event.getPlayer(), (CustomData) customData);
+		public boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData) {
+			if (check) setVariable(event.getPlayer(), (StringData) customData);
 			return true;
 		}
 		
 		@Override
-		public Object buildCustomActionData(String text) {
-			if (text == null || text.trim().isEmpty() || !text.contains(" ")) throw new IllegalArgumentException("action \"string\" requires arguments.");
+		public CustomData buildCustomActionData(String text) {
+			StringData data = new StringData();
+			if (text == null || text.trim().isEmpty() || !text.contains(" ")) {
+				data.invalidText = "Data is invalid.";
+				return data;
+			}
 			
 			String[] splits = text.split(" ", 2);
-			Variable variable = MagicSpells.getVariableManager().getVariable(splits[0]);
-			if (variable == null) throw new IllegalArgumentException(splits[0] + " is not a defined variable!");
-			
-			CustomData ret = new CustomData();
-			ret.variable = variable;
-			ret.value = splits[1];
-			return ret;
+			data.variable = MagicSpells.getVariableManager().getVariable(splits[0]);
+			if (data.variable == null) data.invalidText = "Variable does not exist.";
+			data.value = splits[1];
+			return data;
 		}
 		
 	}
 	
 	;
 	
-	private String[] keys;
+	private final String[] keys;
 	private static boolean initialized = false;
 	
-	private boolean usesCustomData;
-	private boolean usesModifierVar;
-	private boolean usesModifierVarFloat;
-	private boolean usesModifierVarInt;
+	private final boolean usesCustomData;
 	
-	ModifierType(boolean usesModVarString, boolean usesModVarFloat, boolean usesModVarInt, boolean usesCustomData, String... keys) {
+	ModifierType(boolean usesCustomData, String... keys) {
 		this.keys = keys;
 		this.usesCustomData = usesCustomData;
-		this.usesModifierVar = usesModVarString;
-		this.usesModifierVarFloat = usesModVarFloat;
-		this.usesModifierVarInt = usesModVarInt;
 	}
 	
 	public boolean usesCustomData() {
 		return usesCustomData;
 	}
 	
-	public boolean usesModifierString() {
-		return usesModifierVar;
-	}
+	public abstract boolean apply(SpellCastEvent event, boolean check, CustomData customData);
+	public abstract boolean apply(ManaChangeEvent event, boolean check, CustomData customData);
+	public abstract boolean apply(SpellTargetEvent event, boolean check, CustomData customData);
+	public abstract boolean apply(SpellTargetLocationEvent event, boolean check, CustomData customData);
+	public abstract boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, CustomData customData);
 	
-	public boolean usesModifierFloat() {
-		return usesModifierVarFloat;
-	}
-	
-	public boolean usesModifierInt() {
-		return usesModifierVarInt;
-	}
-	
-	public abstract boolean apply(SpellCastEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData);
-	public abstract boolean apply(ManaChangeEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData);
-	public abstract boolean apply(SpellTargetEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData);
-	public abstract boolean apply(SpellTargetLocationEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData);
-	public abstract boolean apply(MagicSpellsGenericPlayerEvent event, boolean check, String modifierVar, float modifierVarFloat, int modifierVarInt, Object customData);
-	
-	public Object buildCustomActionData(String text) {
+	public CustomData buildCustomActionData(String text) {
 		return null;
 	}
 	

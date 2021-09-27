@@ -112,7 +112,7 @@ public class HomingProjectileSpell extends TargetedSpell implements TargetedEnti
 		super.initializeModifiers();
 
 		if (homingModifiersStrings != null && !homingModifiersStrings.isEmpty()) {
-			homingModifiers = new ModifierSet(homingModifiersStrings);
+			homingModifiers = new ModifierSet(homingModifiersStrings, this);
 			homingModifiersStrings = null;
 		}
 	}

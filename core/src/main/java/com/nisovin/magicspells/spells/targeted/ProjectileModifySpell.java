@@ -161,7 +161,7 @@ public class ProjectileModifySpell extends TargetedSpell implements TargetedLoca
 		super.initializeModifiers();
 
 		if (projModifiersStrings != null && !projModifiersStrings.isEmpty()) {
-			projModifiers = new ModifierSet(projModifiersStrings);
+			projModifiers = new ModifierSet(projModifiersStrings, this);
 			projModifiersStrings = null;
 		}
 	}

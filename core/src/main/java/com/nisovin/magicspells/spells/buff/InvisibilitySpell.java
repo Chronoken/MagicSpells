@@ -52,14 +52,6 @@ public class InvisibilitySpell extends BuffSpell {
 		entities.add(entity.getUniqueId());
 		return true;
 	}
-	
-	@Override
-	public boolean recastBuff(LivingEntity entity, float power, String[] args) {
-		if (!(entity instanceof Player)) return false;
-		makeInvisible(entity);
-		if (entities.contains(entity.getUniqueId())) entities.add(entity.getUniqueId());
-		return true;
-	}
 
 	@Override
 	public boolean isActive(LivingEntity entity) {

@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.nisovin.magicspells.Spell;
 import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.variables.Variable;
@@ -76,8 +77,8 @@ public class BossBarEffect extends SpellEffect {
 	}
 
 	@Override
-	public void initializeModifiers() {
-		super.initializeModifiers();
+	public void initializeModifiers(Spell spell) {
+		super.initializeModifiers(spell);
 
 		if (remove) return;
 

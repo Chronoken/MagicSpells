@@ -84,7 +84,7 @@ public class PlayerMenuSpell extends TargetedSpell implements TargetedEntitySpel
 		super.initializeModifiers();
 
 		if (playerModifiersStrings != null && !playerModifiersStrings.isEmpty()) {
-			playerModifiers = new ModifierSet(playerModifiersStrings);
+			playerModifiers = new ModifierSet(playerModifiersStrings, this);
 		}
 	}
 

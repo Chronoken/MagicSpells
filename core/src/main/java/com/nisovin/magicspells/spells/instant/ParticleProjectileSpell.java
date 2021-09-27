@@ -241,7 +241,7 @@ public class ParticleProjectileSpell extends InstantSpell implements TargetedLoc
 		super.initializeModifiers();
 
 		if (projModifiersStrings != null && !projModifiersStrings.isEmpty()) {
-			projModifiers = new ModifierSet(projModifiersStrings);
+			projModifiers = new ModifierSet(projModifiersStrings, this);
 			projModifiersStrings = null;
 		}
 	}

@@ -125,7 +125,7 @@ public class ProjectileSpell extends InstantSpell implements TargetedLocationSpe
 		super.initializeModifiers();
 
 		if (projectileModifiersStrings != null && !projectileModifiersStrings.isEmpty()) {
-			projectileModifiers = new ModifierSet(projectileModifiersStrings);
+			projectileModifiers = new ModifierSet(projectileModifiersStrings, this);
 			projectileModifiersStrings = null;
 		}
 	}

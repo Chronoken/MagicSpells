@@ -1,32 +1,40 @@
 package com.nisovin.magicspells.castmodifiers.conditions;
 
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.block.data.BlockData;
 
-import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.util.BlockUtils;
 import com.nisovin.magicspells.castmodifiers.Condition;
 
 public class LookingAtBlockCondition extends Condition {
 
-	private Material blockType;
+	private BlockData blockData;
 	private int dist = 4;
-	
+
 	@Override
 	public boolean initialize(String var) {
+		String[] split = var.split(",(?![^\\[]*])");
+
 		try {
-			String[] split = var.split(",");
-			blockType = Util.getMaterial(split[0]);
-
-			if (blockType == null || !blockType.isBlock()) return false;
-			if (split.length > 1) dist = Integer.parseInt(split[1]);
-
-			return true;
-		} catch (Exception e) {
+			blockData = Bukkit.createBlockData(split[0].trim().toLowerCase());
+		} catch (IllegalArgumentException e) {
 			return false;
 		}
+
+		if (!blockData.getMaterial().isBlock()) return false;
+
+		if (split.length > 1) {
+			try {
+				dist = Integer.parseInt(split[1].trim());
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
@@ -37,12 +45,14 @@ public class LookingAtBlockCondition extends Condition {
 	@Override
 	public boolean check(LivingEntity livingEntity, LivingEntity target) {
 		Block block = BlockUtils.getTargetBlock(null, target, dist);
-		return blockType.equals(block.getType());
+		if (block == null) return false;
+
+		return block.getBlockData().matches(blockData);
 	}
 
 	@Override
 	public boolean check(LivingEntity livingEntity, Location location) {
 		return false;
 	}
-	
+
 }

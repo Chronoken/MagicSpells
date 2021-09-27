@@ -132,7 +132,7 @@ public class HomingMissileSpell extends TargetedSpell implements TargetedEntityS
 		super.initializeModifiers();
 
 		if (homingModifiersStrings != null && !homingModifiersStrings.isEmpty()) {
-			homingModifiers = new ModifierSet(homingModifiersStrings);
+			homingModifiers = new ModifierSet(homingModifiersStrings, this);
 			homingModifiersStrings = null;
 		}
 	}

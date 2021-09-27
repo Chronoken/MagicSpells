@@ -40,7 +40,7 @@ public class StunSpell extends TargetedSpell implements TargetedEntitySpell {
 		super(config, spellName);
 
 		interval = getConfigInt("interval", 5);
-		duration = (int) ((getConfigInt("duration", 200) / 20) * TimeUtil.MILLISECONDS_PER_SECOND);
+		duration = (int) (getConfigInt("duration", 200) * TimeUtil.MILLISECONDS_PER_SECOND / 20);
 		stunMonitor = getConfigBoolean("stun-monitor", true);
 		stunBody = getConfigBoolean("stun-body", true);
 		useTargetLocation = getConfigBoolean("use-target-location", true);

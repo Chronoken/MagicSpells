@@ -34,7 +34,7 @@ public class MagicSpellListener implements Listener {
 		Spell spell = event.getSpell();
 		if (target == null) return;
 
-		if (Perm.NOTARGET.has(target)) event.setCancelled(true);
+		if (Perm.NO_TARGET.has(target)) event.setCancelled(true);
 		if (target instanceof Player && ((Player) target).getGameMode() == GameMode.SPECTATOR) event.setCancelled(true);
 		if (spell != null && noMagicZoneManager != null && noMagicZoneManager.willFizzle(target, spell)) event.setCancelled(true);
 		if (isMSEntity(target)) event.setCancelled(true);

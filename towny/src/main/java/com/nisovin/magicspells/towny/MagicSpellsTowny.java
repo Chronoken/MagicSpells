@@ -57,7 +57,7 @@ public class MagicSpellsTowny extends JavaPlugin implements Listener {
 		
 		Plugin townyPlugin = CompatBasics.getPlugin("Towny");
 		if (townyPlugin != null) {
-			towny = (Towny)townyPlugin;
+			towny = (Towny) townyPlugin;
 			EventUtil.register(this, this);
 		} else {
 			getLogger().severe("Failed to find Towny");

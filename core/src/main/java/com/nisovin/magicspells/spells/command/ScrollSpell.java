@@ -274,7 +274,7 @@ public class ScrollSpell extends CommandSpell {
 		}
 
 		if (ignoreCastPerm && !Perm.CAST.has(player, spell)) player.addAttachment(MagicSpells.plugin, Perm.CAST.getNode(spell), true, 1);
-		if (castForFree && !Perm.NOREAGENTS.has(player)) player.addAttachment(MagicSpells.plugin, Perm.NOREAGENTS.getNode(), true, 1);
+		if (castForFree && !Perm.NO_REAGENTS.has(player)) player.addAttachment(MagicSpells.plugin, Perm.NO_REAGENTS.getNode(), true, 1);
 
 		SpellCastState state;
 		PostCastAction action;

@@ -3,10 +3,12 @@ debug-null: true
 debug-number-format: true
 debug-level: 3
 tab-complete-internal-names: false
+terminate-effectlib-instances: true
 enable-error-logging: true
 enable-profiling: false
 text-color: 3
 broadcast-range: 20
+effectlib-instance-limit: 20000
 ops-have-all-spells: true
 default-all-perms-false: false
 ignore-grant-perms: false

@@ -5,11 +5,11 @@ import org.bukkit.permissions.Permissible;
 public enum Perm {
 	
 	SILENT("magicspells.silent"),
-	NOREAGENTS("magicspells.noreagents"),
-	NOCOOLDOWN("magicspells.nocooldown"),
-	NOCASTTIME("magicspells.nocasttime"),
-	NOTARGET("magicspells.notarget"),
-	ADVANCEDSPELLBOOK("magicspells.advanced.spellbook"),
+	NO_REAGENTS("magicspells.noreagents"),
+	NO_COOLDOWN("magicspells.nocooldown"),
+	NO_CAST_TIME("magicspells.nocasttime"),
+	NO_TARGET("magicspells.notarget"),
+	ADVANCED_SPELLBOOK("magicspells.advanced.spellbook"),
 	ADVANCED_IMBUE("magicspells.advanced.imbue"),
 	CAST("magicspells.cast."),
 	LEARN("magicspells.learn."),

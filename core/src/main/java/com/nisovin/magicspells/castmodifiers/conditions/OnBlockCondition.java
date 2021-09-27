@@ -3,52 +3,73 @@ package com.nisovin.magicspells.castmodifiers.conditions;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.block.data.BlockData;
 
-import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.castmodifiers.Condition;
 
 public class OnBlockCondition extends Condition {
 
-	private Set<Material> materials;
-	private Material material;
+	private Set<BlockData> blockDataSet;
+	private BlockData blockData;
 
 	@Override
 	public boolean initialize(String var) {
-		if (var.contains(",")) {
-			materials = new HashSet<>();
-			String[] split = var.split(",");
+		String[] split = var.split(",(?![^\\[]*])");
+
+		if (split.length > 1) {
+			blockDataSet = new HashSet<>();
+
 			for (String s : split) {
-				Material mat = Util.getMaterial(s);
-				if (mat == null) return false;
-				if (!mat.isBlock()) return false;
-				materials.add(mat);
+				BlockData data;
+				try {
+					data = Bukkit.createBlockData(s.trim().toLowerCase());
+				} catch (IllegalArgumentException e) {
+					return false;
+				}
+
+				if (!data.getMaterial().isBlock()) return false;
+
+				blockDataSet.add(data);
 			}
+
 			return true;
 		}
 
-		material = Util.getMaterial(var);
-		return material != null && material.isBlock();
+		try {
+			blockData = Bukkit.createBlockData(var.trim().toLowerCase());
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+
+		return blockData.getMaterial().isBlock();
 	}
 
 	@Override
 	public boolean check(LivingEntity livingEntity) {
-		return check(livingEntity, livingEntity);
+		return onBlock(livingEntity);
 	}
-	
+
 	@Override
 	public boolean check(LivingEntity livingEntity, LivingEntity target) {
-		Block block = target.getLocation().subtract(0, 1, 0).getBlock();
-		if (material != null) return material.equals(block.getType());
-
-		return materials.contains(block.getType());
+		return onBlock(target);
 	}
-	
+
 	@Override
 	public boolean check(LivingEntity livingEntity, Location location) {
+		return false;
+	}
+
+	private boolean onBlock(LivingEntity entity) {
+		BlockData bd = entity.getLocation().subtract(0, 1, 0).getBlock().getBlockData();
+		if (blockData != null) return bd.matches(blockData);
+
+		for (BlockData data : blockDataSet)
+			if (bd.matches(data))
+				return true;
+
 		return false;
 	}
 

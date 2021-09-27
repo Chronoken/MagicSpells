@@ -144,7 +144,7 @@ public class MenuSpell extends TargetedSpell implements TargetedEntitySpell, Tar
 		super.initializeModifiers();
 
 		for (MenuOption option : options.values()) {
-			if (option.modifierList != null) option.menuOptionModifiers = new ModifierSet(option.modifierList);
+			if (option.modifierList != null) option.menuOptionModifiers = new ModifierSet(option.modifierList, this);
 		}
 	}
 

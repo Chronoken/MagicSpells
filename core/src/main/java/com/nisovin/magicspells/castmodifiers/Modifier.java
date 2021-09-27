@@ -8,11 +8,11 @@ import org.bukkit.entity.LivingEntity;
 
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.util.RegexUtil;
-import com.nisovin.magicspells.handlers.DebugHandler;
 import com.nisovin.magicspells.events.SpellCastEvent;
 import com.nisovin.magicspells.events.ManaChangeEvent;
 import com.nisovin.magicspells.events.SpellTargetEvent;
 import com.nisovin.magicspells.events.SpellTargetLocationEvent;
+import com.nisovin.magicspells.castmodifiers.customdata.CustomData;
 import com.nisovin.magicspells.events.MagicSpellsGenericPlayerEvent;
 
 public class Modifier implements IModifier {
@@ -25,11 +25,7 @@ public class Modifier implements IModifier {
 	private String modifierVar;
 	private String strModifierFailed = null;
 
-	private Object customActionData = null;
-
-	private int modifierVarInt;
-
-	private float modifierVarFloat;
+	private CustomData customActionData = null;
 
 	// Is this a condition that will want to access the events directly?
 	private boolean alertCondition = false;
@@ -64,27 +60,22 @@ public class Modifier implements IModifier {
 		if (type == null && data.length > 2) {
 			boolean init = condition.initialize(data[1]);
 			if (!init) return false;
-
 			type = getTypeByName(data[2]);
 			if (data.length > 3) modifierVar = data[3];
 		} else if (data.length > 2) {
 			modifierVar = data[2];
+		} else {
+			boolean init = condition.initialize("");
+			if (!init) return false;
 		}
 
 		// Check type
 		if (type == null) return false;
 
 		// Process modifierVar
-		try {
-			if (type.usesModifierFloat()) modifierVarFloat = Float.parseFloat(modifierVar);
-			else if (type.usesModifierInt()) modifierVarInt = Integer.parseInt(modifierVar);
-			else if (type.usesCustomData()) {
-				customActionData = type.buildCustomActionData(modifierVar);
-				if (customActionData == null) return false;
-			}
-		} catch (NumberFormatException e) {
-			DebugHandler.debugNumberFormat(e);
-			return false;
+		if (type.usesCustomData()) {
+			customActionData = type.buildCustomActionData(modifierVar);
+			if (customActionData == null || !customActionData.isValid()) return false;
 		}
 
 		// Check for failed string
@@ -105,6 +96,10 @@ public class Modifier implements IModifier {
 		return strModifierFailed;
 	}
 
+	public CustomData getCustomActionData() {
+		return customActionData;
+	}
+
 	@Override
 	public boolean apply(SpellCastEvent event) {
 		LivingEntity caster = event.getCaster();
@@ -112,7 +107,7 @@ public class Modifier implements IModifier {
 		if (alertCondition) check = ((IModifier) condition).apply(event);
 		else check = condition.check(caster);
 		if (negated) check = !check;
-		return type.apply(event, check, modifierVar, modifierVarFloat, modifierVarInt, customActionData);
+		return type.apply(event, check, customActionData);
 	}
 
 	@Override
@@ -122,7 +117,7 @@ public class Modifier implements IModifier {
 		if (alertCondition) check = ((IModifier) condition).apply(event);
 		else check = condition.check(player);
 		if (negated) check = !check;
-		return type.apply(event, check, modifierVar, modifierVarFloat, modifierVarInt, customActionData);
+		return type.apply(event, check, customActionData);
 	}
 
 	@Override
@@ -132,7 +127,7 @@ public class Modifier implements IModifier {
 		if (alertCondition) check = ((IModifier) condition).apply(event);
 		else check = condition.check(caster, event.getTarget());
 		if (negated) check = !check;
-		return type.apply(event, check, modifierVar, modifierVarFloat, modifierVarInt, customActionData);
+		return type.apply(event, check, customActionData);
 	}
 
 	@Override
@@ -142,14 +137,14 @@ public class Modifier implements IModifier {
 		if (alertCondition) check = ((IModifier) condition).apply(event);
 		else check = condition.check(caster, event.getTargetLocation());
 		if (negated) check = !check;
-		return type.apply(event, check, modifierVar, modifierVarFloat, modifierVarInt, customActionData);
+		return type.apply(event, check, customActionData);
 	}
 
 	@Override
 	public boolean apply(MagicSpellsGenericPlayerEvent event) {
 		boolean check = condition.check(event.getPlayer());
 		if (negated) check = !check;
-		return type.apply(event, check, modifierVar, modifierVarFloat, modifierVarInt, customActionData);
+		return type.apply(event, check, customActionData);
 	}
 
 	@Override

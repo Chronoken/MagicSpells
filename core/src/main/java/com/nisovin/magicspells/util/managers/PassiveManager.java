@@ -63,7 +63,7 @@ public class PassiveManager {
 		}
 		return null;
 	}
-	
+
 	private void initialize() {
 		// initialize priorities
 		for (EventPriority priority : EventPriority.values()) {
@@ -77,6 +77,9 @@ public class PassiveManager {
 		addListener("death", DeathListener.class);
 		addListener("dropitem", DropItemListener.class);
 		addListener("enterbed", EnterBedListener.class);
+		addListener("dismount", DismountListener.class);
+		addListener("mount", MountListener.class);
+		addListener("equip", EquipListener.class);
 		addListener("fataldamage", FatalDamageListener.class);
 		addListener("fish", FishListener.class);
 		addListener("foodlevelchange", FoodLevelChangeListener.class);
@@ -133,7 +136,8 @@ public class PassiveManager {
 		addListener("takedamage", TakeDamageListener.class);
 		addListener("teleport", TeleportListener.class);
 		addListener("ticks", TicksListener.class);
+		addListener("unequip", UnequipListener.class);
 		addListener("worldchange", WorldChangeListener.class);
 	}
-	
+
 }

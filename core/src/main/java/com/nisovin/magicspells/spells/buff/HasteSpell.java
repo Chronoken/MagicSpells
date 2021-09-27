@@ -124,11 +124,12 @@ public class HasteSpell extends BuffSpell {
 		}
 	}
 
-	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	@EventHandler
 	public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
 		Player pl = event.getPlayer();
 		if (!isActive(pl)) return;
-		if (!pl.isSprinting()) return;
+
+		pl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1, 0, false, !hidden));
 		pl.removePotionEffect(PotionEffectType.SPEED);
 
 		HasteData data = entities.get(pl.getUniqueId());

@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.configuration.ConfigurationSection;
@@ -143,6 +144,18 @@ public class VariableManager {
 		addMetaVariableType("attribute_generic_armor_base", new AttributeBaseValueVariable("GENERIC_ARMOR"));
 		addMetaVariableType("attribute_generic_armor_toughness_base", new AttributeBaseValueVariable("GENERIC_ARMOR_TOUGHNESS"));
 		addMetaVariableType("attribute_generic_luck_base", new AttributeBaseValueVariable("GENERIC_LUCK"));
+
+		addMetaVariableType("attribute_generic_max_health", new AttributeVariable(Attribute.GENERIC_MAX_HEALTH));
+		addMetaVariableType("attribute_generic_follow_range", new AttributeVariable(Attribute.GENERIC_FOLLOW_RANGE));
+		addMetaVariableType("attribute_generic_knockback_resistance", new AttributeVariable(Attribute.GENERIC_KNOCKBACK_RESISTANCE));
+		addMetaVariableType("attribute_generic_movement_speed", new AttributeVariable(Attribute.GENERIC_MOVEMENT_SPEED));
+		addMetaVariableType("attribute_generic_flying_speed", new AttributeVariable(Attribute.GENERIC_FLYING_SPEED));
+		addMetaVariableType("attribute_generic_attack_damage", new AttributeVariable(Attribute.GENERIC_ATTACK_DAMAGE));
+		addMetaVariableType("attribute_generic_attack_knockback", new AttributeVariable(Attribute.GENERIC_ATTACK_KNOCKBACK));
+		addMetaVariableType("attribute_generic_attack_speed", new AttributeVariable(Attribute.GENERIC_ATTACK_SPEED));
+		addMetaVariableType("attribute_generic_armor", new AttributeVariable(Attribute.GENERIC_ARMOR));
+		addMetaVariableType("attribute_generic_armor_toughness", new AttributeVariable(Attribute.GENERIC_ARMOR_TOUGHNESS));
+		addMetaVariableType("attribute_generic_luck", new AttributeVariable(Attribute.GENERIC_LUCK));
 	}
 
 	// DEBUG INFO: level 2, loaded variable (name)

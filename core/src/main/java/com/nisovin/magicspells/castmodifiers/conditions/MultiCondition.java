@@ -80,7 +80,11 @@ public class MultiCondition extends Condition implements IModifier {
 			m.process(modString);
 
 			if (m.isInitialized()) modifiers.add(m);
-			else MagicSpells.error("Problem in reading predefined modifier: \"" + modString + "\" from \"" + var + '\"');
+			else {
+				String extra = "";
+				if (m.getCustomActionData() != null) extra = ": " + m.getCustomActionData().getInvalidText();
+				MagicSpells.error("Problem in reading predefined modifier '" + modString + "' from '" + var + "'" + extra);
+			}
 		}
 		
 		if (modifiers == null || modifiers.isEmpty()) {

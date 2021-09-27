@@ -43,7 +43,7 @@ import com.nisovin.magicspells.util.magicitems.MagicItemData;
 
 public class Util {
 
-	private static Random random = ThreadLocalRandom.current();
+	private static final Random random = ThreadLocalRandom.current();
 
 	public static int getRandomInt(int bound) {
 		return random.nextInt(bound);
@@ -509,7 +509,7 @@ public class Util {
 		}
 	}
 
-	private static Map<String, String> uniqueIds = new HashMap<>();
+	private static final Map<String, String> uniqueIds = new HashMap<>();
 
 	public static String getUniqueId(Player player) {
 		String uid = player.getUniqueId().toString().replace("-", "");
@@ -728,4 +728,5 @@ public class Util {
 		}
 		return nearestEntity;
 	}
+
 }

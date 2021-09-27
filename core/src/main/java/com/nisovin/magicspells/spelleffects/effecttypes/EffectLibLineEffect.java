@@ -20,14 +20,14 @@ public class EffectLibLineEffect extends EffectLibEffect {
 	
 	@Override
 	public Runnable playEffect(Location location1, Location location2) {
-		updateManager();
+		if (!initialize()) return null;
 		manager.start(className, effectLibSection, new DynamicLocation(location1), new DynamicLocation(location2), (ConfigurationSection) null, null);
 		return null;
 	}
 	
 	@Override
 	public void playTrackingLinePatterns(Location origin, Location target, Entity originEntity, Entity targetEntity) {
-		updateManager();
+		if (!initialize()) return;
 		if (forceStaticOriginLocation) {
 			if (origin == null && originEntity != null) origin = originEntity.getLocation();
 			originEntity = null;

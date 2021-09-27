@@ -261,8 +261,7 @@ public class MagicCommand extends BaseCommand {
 	public static void onReloadEffectLib(CommandIssuer issuer) {
 		if (!MagicSpells.isLoaded()) return;
 		if (noPermission(issuer.getIssuer(), Perm.COMMAND_RELOAD_EFFECTLIB)) return;
-		MagicSpells.disposeEffectlib();
-		MagicSpells.setupEffectlib();
+		MagicSpells.resetEffectlib();
 		issuer.sendMessage(MagicSpells.getTextColor() + "Effectlib reloaded.");
 	}
 

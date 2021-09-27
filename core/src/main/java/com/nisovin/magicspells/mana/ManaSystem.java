@@ -102,7 +102,7 @@ public class ManaSystem extends ManaHandler {
 	public void initialize() {
 		if (modifierList != null && !modifierList.isEmpty()) {
 			MagicSpells.debug(2, "Adding mana modifiers");
-			modifiers = new ModifierSet(modifierList);
+			modifiers = new ModifierSet(modifierList, true);
 			modifierList = null;
 		}
 	}

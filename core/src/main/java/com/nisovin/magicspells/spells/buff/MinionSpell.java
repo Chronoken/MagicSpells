@@ -1,12 +1,6 @@
 package com.nisovin.magicspells.spells.buff;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.List;
-import java.util.UUID;
-import java.util.Random;
-import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,16 +8,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.nisovin.magicspells.Subspell;
 import com.nisovin.magicspells.util.Util;
@@ -99,8 +91,7 @@ public class MinionSpell extends BuffSpell {
 		targets = new ConcurrentHashMap<>();
 
 		// Formatted as <entity type> <chance>
-		List<String> c = getConfigStringList("mob-chances", null);
-		if (c == null) c = new ArrayList<>();
+		List<String> c = getConfigStringList("mob-chances", new ArrayList<>());
 		if (c.isEmpty()) c.add("Zombie 100");
 
 		creatureTypes = new EntityType[c.size()];
@@ -244,8 +235,7 @@ public class MinionSpell extends BuffSpell {
 
 	@Override
 	public boolean castBuff(LivingEntity entity, float power, String[] args) {
-		if (!(entity instanceof Player)) return true;
-		Player player = (Player) entity;
+		if (!(entity instanceof Player player)) return true;
 		// Selecting the mob
 		EntityType creatureType = null;
 		int num = random.nextInt(100);
@@ -254,10 +244,11 @@ public class MinionSpell extends BuffSpell {
 			if (num < chances[i] + n) {
 				creatureType = creatureTypes[i];
 				break;
-			} else {
-				n += chances[i];
 			}
+
+			n += chances[i];
 		}
+
 		if (creatureType == null) return false;
 
 		// Spawn location
@@ -360,11 +351,12 @@ public class MinionSpell extends BuffSpell {
 	@EventHandler
 	public void onEntityTarget(EntityTargetEvent e) {
 		if (minions.isEmpty() || e.getTarget() == null) return;
-		if (!(e.getEntity() instanceof LivingEntity)) return;
+		if (!(e.getEntity() instanceof LivingEntity minion)) return;
 		if (!isMinion(e.getEntity())) return;
 
-		LivingEntity minion = (LivingEntity) e.getEntity();
 		Player pl = Bukkit.getPlayer(players.get(minion));
+		if (pl == null) return;
+
 		if (targets.get(pl.getUniqueId()) == null || !targets.containsKey(pl.getUniqueId()) || !targets.get(pl.getUniqueId()).isValid()) {
 			e.setCancelled(true);
 			return;
@@ -396,13 +388,11 @@ public class MinionSpell extends BuffSpell {
 	public void onEntityDamage(EntityDamageByEntityEvent e) {
 		Entity entity = e.getEntity();
 		Entity damager = e.getDamager();
-		if (damager == null || entity == null) return;
 		if (damager.isDead() || !damager.isValid()) return;
 		if (entity.isDead() || !entity.isValid()) return;
 		if (!(entity instanceof LivingEntity)) return;
 		// Check if the damaged entity is a player
-		if (entity instanceof Player && isActive((Player) entity)) {
-			Player pl = (Player) entity;
+		if (entity instanceof Player pl && isActive((Player) entity)) {
 			// If a Minion tries to attack his owner, cancel the damage and stop the minion
 			if (minions.get(pl.getUniqueId()).equals(damager)) {
 				targets.remove(pl.getUniqueId());
@@ -454,9 +444,8 @@ public class MinionSpell extends BuffSpell {
 			if (targets.get(owner.getUniqueId()) == null || targets.get(owner.getUniqueId()).isDead() || !targets.get(owner.getUniqueId()).isValid()) {
 				// Check if the minion damager is an arrow, if so, get the shooter, otherwise get the living damager
 				LivingEntity minionDamager = null;
-				if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof LivingEntity) {
+				if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof LivingEntity shooter) {
 					// Check if the shooter is alive
-					LivingEntity shooter = (LivingEntity) ((Projectile) damager).getShooter();
 					if (shooter.isValid() && !shooter.isDead()) minionDamager = shooter;
 
 				} else if (damager instanceof LivingEntity) {
@@ -469,9 +458,8 @@ public class MinionSpell extends BuffSpell {
 			}
 		}
 
-		if (damager instanceof Player) {
+		if (damager instanceof Player pl) {
 			// Check if player's damaged target is his minion, if its not, make him attack your target
-			Player pl = (Player) damager;
 			if (!isActive(pl)) return;
 			for (BuffSpell buff : MagicSpells.getBuffManager().getActiveBuffs(pl)) {
 				if (!(buff instanceof MinionSpell)) continue;
@@ -590,6 +578,24 @@ public class MinionSpell extends BuffSpell {
 		if (!preventCombust || !isMinion(e.getEntity())) return;
 		e.setCancelled(true);
 	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onEntityUnload(ChunkUnloadEvent event) {
+		List<Entity> entities = Arrays.asList(event.getChunk().getEntities());
+		Player owner;
+
+		for (LivingEntity minion : minions.values()) {
+			if (!entities.contains(minion)) continue;
+
+			owner = Bukkit.getPlayer(players.get(minion));
+			if (owner == null) continue;
+			if (!owner.isOnline()) continue;
+			if (owner.isDead()) continue;
+
+			minion.teleport(owner);
+		}
+	}
+
 
 	public Map<UUID, LivingEntity> getMinions() {
 		return minions;

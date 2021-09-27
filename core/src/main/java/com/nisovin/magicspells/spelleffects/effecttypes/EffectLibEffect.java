@@ -24,15 +24,26 @@ public class EffectLibEffect extends SpellEffect {
 
 	@Override
 	protected Runnable playEffectLocation(Location location) {
-		updateManager();
+		if (!initialize()) return null;
 		manager.start(className, effectLibSection, location);
 		return null;
 	}
 
 	@Override
 	protected Effect playEffectLibLocation(Location location) {
-		updateManager();
+		if (!initialize()) return null;
 		return manager.start(className, effectLibSection, location);
+	}
+
+	protected boolean initialize() {
+		updateManager();
+		if (manager.getEffects().size() >= MagicSpells.getEffectlibInstanceLimit()) {
+			if (MagicSpells.shouldTerminateEffectlibEffects()) {
+				MagicSpells.resetEffectlib();
+				updateManager();
+			} else return false;
+		}
+		return true;
 	}
 
 	protected void updateManager() {

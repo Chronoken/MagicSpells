@@ -107,6 +107,20 @@ public class BlockUtils {
 		return false;
 	}
 
+	public static boolean isLiquid(Block block) {
+		return isLiquid(block.getType());
+	}
+
+	public static boolean isLiquid(Material m) {
+		switch (m) {
+			case WATER:
+			case LAVA:
+				return true;
+		}
+
+		return false;
+	}
+
 	public static boolean isPathable(Block block) {
 		return isPathable(block.getType());
 	}
@@ -246,6 +260,7 @@ public class BlockUtils {
 		switch (mat) {
 			case AIR:
 			case WATER:
+			case LAVA:
 			case TALL_GRASS:
 			case LARGE_FERN:
 			case GRASS:

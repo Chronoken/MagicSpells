@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.nisovin.magicspells.Subspell;
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.util.TargetInfo;
+import com.nisovin.magicspells.mana.ManaHandler;
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.spells.TargetedSpell;
 import com.nisovin.magicspells.events.SpellCastEvent;
@@ -135,8 +136,12 @@ public class RewindSpell extends TargetedSpell implements TargetedEntitySpell {
 			this.caster = caster;
 			this.power = power;
 			this.entity = entity;
-			if (entity instanceof Player) this.startMana = MagicSpells.getManaHandler().getMana((Player) entity);
+
 			this.startHealth = entity.getHealth();
+			if (MagicSpells.isManaSystemEnabled() && entity instanceof Player player) {
+				ManaHandler handler = MagicSpells.getManaHandler();
+				if (handler != null) this.startMana = handler.getMana(player);
+			}
 
 			entities.put(entity, this);
 			this.taskId = MagicSpells.scheduleRepeatingTask(this, 0, tickInterval);
@@ -209,7 +214,10 @@ public class RewindSpell extends TargetedSpell implements TargetedEntitySpell {
 		private void stop() {
 			MagicSpells.cancelTask(taskId);
 			if (rewindHealth) entity.setHealth(startHealth);
-			if (entity instanceof Player && rewindMana) MagicSpells.getManaHandler().setMana((Player) entity, startMana, ManaChangeReason.OTHER);
+			if (rewindMana && MagicSpells.isManaSystemEnabled() && entity instanceof Player player) {
+				ManaHandler handler = MagicSpells.getManaHandler();
+				if (handler != null) handler.setMana(player, startMana, ManaChangeReason.OTHER);
+			}
 		}
 
 		private void cancel() {

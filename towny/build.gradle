@@ -1,6 +1,6 @@
 dependencies {
     implementation project(":core")
-    implementation "com.github.TownyAdvanced:Towny:master-SNAPSHOT"
+    implementation "com.github.TownyAdvanced:Towny:0.97.1.0"
     implementation "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
 }
 

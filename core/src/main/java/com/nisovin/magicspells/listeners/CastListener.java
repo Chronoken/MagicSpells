@@ -179,8 +179,7 @@ public class CastListener implements Listener {
 		if (spell instanceof BowSpell) {
 			BowSpell bowSpell = (BowSpell) spell;
 
-			if (bowSpell.canCastWithItem() && bowSpell.isBindRequired() && checkGlobalCooldown(player, spell))
-				bowSpell.handleBowCast(event);
+			if (bowSpell.canCastWithItem() && bowSpell.isBindRequired() && checkGlobalCooldown(player, spell)) bowSpell.handleBowCast(event);
 		} else castSpell(player, spell);
 
 		event.getProjectile().setMetadata("bow-draw-strength", new FixedMetadataValue(plugin, event.getForce()));

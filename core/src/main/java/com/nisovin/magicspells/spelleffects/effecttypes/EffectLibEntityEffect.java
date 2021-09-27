@@ -6,7 +6,7 @@ public class EffectLibEntityEffect extends EffectLibEffect {
 	
 	@Override
 	protected Runnable playEffectEntity(final Entity e) {
-		updateManager();
+		if (!initialize()) return null;
 		return manager.start(className, effectLibSection, e);
 	}
 

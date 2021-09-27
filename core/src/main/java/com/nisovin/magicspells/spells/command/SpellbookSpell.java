@@ -217,7 +217,7 @@ public class SpellbookSpell extends CommandSpell {
 		MagicLocation loc = new MagicLocation(event.getBlock().getLocation());
 		if (!bookLocations.contains(loc)) return;
 		Player pl = event.getPlayer();
-		if (pl.isOp() || Perm.ADVANCEDSPELLBOOK.has(pl)) {
+		if (pl.isOp() || Perm.ADVANCED_SPELLBOOK.has(pl)) {
 			int i = bookLocations.indexOf(loc);
 			removeSpellbook(i);
 			return;

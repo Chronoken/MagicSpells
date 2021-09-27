@@ -638,17 +638,17 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 		// Modifiers
 		if (modifierStrings != null && !modifierStrings.isEmpty()) {
 			debug(2, "Adding modifiers to " + internalName + " spell");
-			modifiers = new ModifierSet(modifierStrings);
+			modifiers = new ModifierSet(modifierStrings, this);
 			modifierStrings = null;
 		}
 		if (targetModifierStrings != null && !targetModifierStrings.isEmpty()) {
 			debug(2, "Adding target modifiers to " + internalName + " spell");
-			targetModifiers = new ModifierSet(targetModifierStrings);
+			targetModifiers = new ModifierSet(targetModifierStrings, this);
 			targetModifierStrings = null;
 		}
 		if (locationModifierStrings != null && !locationModifierStrings.isEmpty()) {
 			debug(2, "Adding location modifiers to " + internalName + " spell");
-			locationModifiers = new ModifierSet(locationModifierStrings);
+			locationModifiers = new ModifierSet(locationModifierStrings, this);
 			locationModifierStrings = null;
 		}
 
@@ -658,7 +658,7 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 
 				List<SpellEffect> spellEffects = effects.get(position);
 				if (spellEffects == null || spellEffects.isEmpty()) continue;
-				spellEffects.forEach(SpellEffect::initializeModifiers);
+				spellEffects.forEach(spellEffect -> spellEffect.initializeModifiers(this));
 			}
 		}
 	}
@@ -890,7 +890,7 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 		}
 
 		if (event.hasSpellCastStateChanged()) debug(2, "    Spell cast state changed: " + state);
-		if (Perm.NOCASTTIME.has(livingEntity)) event.setCastTime(0);
+		if (Perm.NO_CAST_TIME.has(livingEntity)) event.setCastTime(0);
 		return event;
 	}
 
@@ -1072,7 +1072,7 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 	 * @return whether the spell is on cooldown
 	 */
 	public boolean onCooldown(LivingEntity livingEntity) {
-		if (Perm.NOCOOLDOWN.has(livingEntity)) return false;
+		if (Perm.NO_COOLDOWN.has(livingEntity)) return false;
 		if (charges > 0) return chargesConsumed.get(livingEntity.getUniqueId()) >= charges;
 		if (serverCooldown > 0 && nextCastServer > System.currentTimeMillis()) return true;
 
@@ -1195,7 +1195,7 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 	 */
 	private boolean hasReagents(LivingEntity livingEntity, SpellReagents.ReagentItem[] reagents, int healthCost, int manaCost, int hungerCost, int experienceCost, int levelsCost, int durabilityCost, float moneyCost, Map<String, Double> variables) {
 		// Is the livingEntity exempt from reagent costs?
-		if (Perm.NOREAGENTS.has(livingEntity)) return true;
+		if (Perm.NO_REAGENTS.has(livingEntity)) return true;
 
 		// player reagents
 		if (livingEntity instanceof Player) {
@@ -1302,7 +1302,7 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 	 * @param manaCost     the mana to remove
 	 */
 	private void removeReagents(LivingEntity livingEntity, SpellReagents.ReagentItem[] reagents, int healthCost, int manaCost, int hungerCost, int experienceCost, int levelsCost, int durabilityCost, float moneyCost, Map<String, Double> variables) {
-		if (Perm.NOREAGENTS.has(livingEntity)) return;
+		if (Perm.NO_REAGENTS.has(livingEntity)) return;
 
 		if (reagents != null) {
 			for (SpellReagents.ReagentItem item : reagents) {

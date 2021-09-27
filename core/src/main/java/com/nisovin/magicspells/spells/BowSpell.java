@@ -161,7 +161,7 @@ public class BowSpell extends Spell {
 		}
 
 		ItemStack inHand = event.getBow();
-		if (inHand == null || inHand.getType() != Material.BOW) return;
+		if (inHand == null || (inHand.getType() != Material.BOW && inHand.getType() != Material.CROSSBOW)) return;
 
 		String name = inHand.getItemMeta().getDisplayName();
 		if (bowNames != null && !bowNames.contains(name)) return;
@@ -236,8 +236,7 @@ public class BowSpell extends Spell {
 				if (!MagicSpells.plugin.equals(meta.getOwningPlugin())) continue;
 
 				ProjectileSource shooter = proj.getShooter();
-				if (!(shooter instanceof LivingEntity)) break;
-				LivingEntity caster = (LivingEntity) shooter;
+				if (!(shooter instanceof LivingEntity caster)) break;
 
 				List<ArrowData> arrowDataList = (List<ArrowData>) meta.value();
 				if (arrowDataList == null || arrowDataList.isEmpty()) break;
@@ -248,9 +247,7 @@ public class BowSpell extends Spell {
 
 					SpellTargetLocationEvent targetLocationEvent = new SpellTargetLocationEvent(data.bowSpell, caster, proj.getLocation(), data.power);
 					EventUtil.call(targetLocationEvent);
-					if (targetLocationEvent.isCancelled()) {
-						break;
-					}
+					if (targetLocationEvent.isCancelled()) continue;
 
 					if (groundSpell.isTargetedLocationSpell())
 						groundSpell.castAtLocation(caster, targetLocationEvent.getTargetLocation(), targetLocationEvent.getPower());
@@ -278,12 +275,10 @@ public class BowSpell extends Spell {
 				if (!MagicSpells.plugin.equals(meta.getOwningPlugin())) continue;
 
 				Entity damaged = event.getEntity();
-				if (!(damaged instanceof LivingEntity)) break;
-				LivingEntity target = (LivingEntity) damaged;
+				if (!(damaged instanceof LivingEntity target)) break;
 
 				ProjectileSource shooter = ((Arrow) damager).getShooter();
-				if (!(shooter instanceof LivingEntity)) break;
-				LivingEntity caster = (LivingEntity) shooter;
+				if (!(shooter instanceof LivingEntity caster)) break;
 
 				List<ArrowData> arrowDataList = (List<ArrowData>) meta.value();
 				if (arrowDataList == null || arrowDataList.isEmpty()) break;
@@ -294,9 +289,8 @@ public class BowSpell extends Spell {
 
 					SpellTargetEvent targetEvent = new SpellTargetEvent(data.bowSpell, caster, target, data.power);
 					EventUtil.call(targetEvent);
-					if (targetEvent.isCancelled()) {
-						continue;
-					}
+					if (targetEvent.isCancelled()) continue;
+
 					target = targetEvent.getTarget();
 
 					if (entitySpell.isTargetedEntityFromLocationSpell())
@@ -319,15 +313,7 @@ public class BowSpell extends Spell {
 
 	}
 
-	private static class ArrowData {
-
-		private final BowSpell bowSpell;
-		private final float power;
-
-		ArrowData(BowSpell bowSpell, float power) {
-			this.bowSpell = bowSpell;
-			this.power = power;
-		}
+	private record ArrowData(BowSpell bowSpell, float power) {
 
 	}
 

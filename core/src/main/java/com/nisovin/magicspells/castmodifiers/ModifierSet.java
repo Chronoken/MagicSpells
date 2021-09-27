@@ -56,21 +56,40 @@ public class ModifierSet {
 		}
 	}
 
-	private List<Modifier> modifiers;
+	private final List<Modifier> modifiers;
 
 	public ModifierSet(List<String> data) {
+		this(data, null, false);
+	}
+
+	public ModifierSet(List<String> data, Spell spell) {
+		this(data, spell, false);
+	}
+
+	public ModifierSet(List<String> data, boolean isFromManaSystem) {
+		this(data, null, isFromManaSystem);
+	}
+
+	private ModifierSet(List<String> data, Spell spell, boolean isFromManaSystem) {
 		modifiers = new ArrayList<>();
 		for (String s : data) {
 			Modifier m = new Modifier();
 			m.process(s);
 
 			if (!m.isInitialized()) {
-				MagicSpells.error("Problem with modifier: " + s);
+				String extra = "";
+				if (m.getCustomActionData() != null) extra = ": " + m.getCustomActionData().getInvalidText();
+
+				if (isFromManaSystem) MagicSpells.error("Mana system has a problem with modifier '" + s + "'" + extra);
+				else if (spell != null) MagicSpells.error("Spell '" + spell.getInternalName() + "' has a problem with modifier '" + s + "'" + extra);
+				else MagicSpells.error("Problem with modifier: " + s + "'" + extra);
 				continue;
 			}
 
 			modifiers.add(m);
-			MagicSpells.debug(3, "    Modifier added: " + s);
+			if (isFromManaSystem) MagicSpells.debug(3, "    Modifier added for mana system: " + s);
+			else if (spell != null) MagicSpells.debug(3, "    Modifier added for spell '" + spell.getInternalName() + "': " + s);
+			else MagicSpells.debug(3, "    Modifier added: " + s);
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.nisovin.magicspells.Spell;
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.util.TimeUtil;
 import com.nisovin.magicspells.castmodifiers.ModifierSet;
@@ -112,9 +113,9 @@ public abstract class SpellEffect {
 		loadFromConfig(config);
 	}
 
-	public void initializeModifiers() {
-		if (modifiersList != null) modifiers = new ModifierSet(modifiersList);
-		if (locationModifiersList != null) locationModifiers = new ModifierSet(locationModifiersList);
+	public void initializeModifiers(Spell spell) {
+		if (modifiersList != null) modifiers = new ModifierSet(modifiersList, spell);
+		if (locationModifiersList != null) locationModifiers = new ModifierSet(locationModifiersList, spell);
 	}
 	
 	protected abstract void loadFromConfig(ConfigurationSection config);

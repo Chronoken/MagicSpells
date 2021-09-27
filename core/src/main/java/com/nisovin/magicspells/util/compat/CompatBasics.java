@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import com.nisovin.magicspells.MagicSpells;
-import com.nisovin.magicspells.util.compat.nocheatplus.NoCheatPlusExemptionAid;
 
 public class CompatBasics {
 	
@@ -62,7 +61,7 @@ public class CompatBasics {
 		}
 		
 		if (pluginEnabled("NoCheatPlus")) {
-			activeExemptionAssistant = new NoCheatPlusExemptionAid();
+			//activeExemptionAssistant = new NoCheatPlusExemptionAid();
 			return;
 		}
 		

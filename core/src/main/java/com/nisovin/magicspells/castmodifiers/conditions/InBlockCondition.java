@@ -3,57 +3,74 @@ package com.nisovin.magicspells.castmodifiers.conditions;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.LivingEntity;
 
-import com.nisovin.magicspells.util.Util;
 import com.nisovin.magicspells.castmodifiers.Condition;
 
 public class InBlockCondition extends Condition {
 
-	private Set<Material> materials;
-	private Material material;
+	private Set<BlockData> blockDataSet;
+	private BlockData blockData;
 
 	@Override
 	public boolean initialize(String var) {
-		if (var.contains(",")) {
-			materials = new HashSet<>();
-			String[] split = var.split(",");
+		String[] split = var.split(",(?![^\\[]*])");
+
+		if (split.length > 1) {
+			blockDataSet = new HashSet<>();
+
 			for (String s : split) {
-				Material mat = Util.getMaterial(s);
-				if (mat == null) return false;
-				if (!mat.isBlock()) return false;
-				materials.add(mat);
+				BlockData data;
+				try {
+					data = Bukkit.createBlockData(s.trim().toLowerCase());
+				} catch (IllegalArgumentException e) {
+					return false;
+				}
+
+				if (!data.getMaterial().isBlock()) return false;
+
+				blockDataSet.add(data);
 			}
+
 			return true;
 		}
 
-		material = Util.getMaterial(var);
-		if (material == null) return false;
-		return material.isBlock();
+		try {
+			blockData = Bukkit.createBlockData(var.trim().toLowerCase());
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+
+		return blockData.getMaterial().isBlock();
 	}
-	
+
 	@Override
 	public boolean check(LivingEntity livingEntity) {
 		return inBlock(livingEntity.getLocation());
 	}
-	
+
 	@Override
 	public boolean check(LivingEntity livingEntity, LivingEntity target) {
 		return inBlock(target.getLocation());
 	}
-	
+
 	@Override
 	public boolean check(LivingEntity livingEntity, Location location) {
 		return inBlock(location);
 	}
 
 	private boolean inBlock(Location location) {
-		Block block = location.getBlock();
-		if (material != null) return material.equals(block.getType());
-		return materials.contains(block.getType());
+		BlockData bd = location.getBlock().getBlockData();
+		if (blockData != null) return bd.matches(blockData);
+
+		for (BlockData data : blockDataSet)
+			if (bd.matches(data))
+				return true;
+
+		return false;
 	}
 
 }

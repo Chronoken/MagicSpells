@@ -1,6 +1,5 @@
 package com.nisovin.magicspells.util;
 
-import com.nisovin.magicspells.MagicSpells;
 import org.bukkit.Material;
 import org.bukkit.inventory.*;
 import org.bukkit.NamespacedKey;
@@ -8,6 +7,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.persistence.PersistentDataType;
+
+import com.nisovin.magicspells.MagicSpells;
 
 public class ItemUtil {
 
@@ -88,6 +89,8 @@ public class ItemUtil {
 	public static ItemStack setPersistentString(ItemStack itemStack, String key, String value) {
 		ItemMeta meta = itemStack.getItemMeta();
 		meta.getPersistentDataContainer().set(new NamespacedKey(MagicSpells.getInstance(), key), PersistentDataType.STRING, value);
+		itemStack.setItemMeta(meta);
 		return itemStack;
 	}
+
 }

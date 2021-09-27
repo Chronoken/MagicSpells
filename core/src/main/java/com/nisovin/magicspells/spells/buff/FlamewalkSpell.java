@@ -142,7 +142,7 @@ public class FlamewalkSpell extends BuffSpell {
 					if (validTargetList != null && !validTargetList.canTarget(target)) continue;
 					if (livingEntity.equals(target)) continue;
 					if (checkPlugins) {
-						MagicSpellsEntityDamageByEntityEvent event = new MagicSpellsEntityDamageByEntityEvent(livingEntity, entity, DamageCause.ENTITY_ATTACK, 1, FlamewalkSpell.this);
+						MagicSpellsEntityDamageByEntityEvent event = new MagicSpellsEntityDamageByEntityEvent(livingEntity, target, DamageCause.ENTITY_ATTACK, 1, FlamewalkSpell.this);
 						EventUtil.call(event);
 						if (event.isCancelled()) continue;
 					}
