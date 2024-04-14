@@ -61,12 +61,12 @@ public class WalkwaySpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		Platform platform = entities.remove(entity.getUniqueId());
 		if (platform == null) return;
 
@@ -75,7 +75,7 @@ public class WalkwaySpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.values().forEach(Platform::remove);
 		entities.clear();
 		unregisterListener();

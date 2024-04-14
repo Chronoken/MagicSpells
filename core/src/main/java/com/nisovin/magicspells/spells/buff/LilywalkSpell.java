@@ -44,19 +44,19 @@ public class LilywalkSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		Lilies lilies = entities.remove(entity.getUniqueId());
 		if (lilies == null) return;
 		lilies.remove();
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.values().forEach(Lilies::remove);
 		entities.clear();
 	}

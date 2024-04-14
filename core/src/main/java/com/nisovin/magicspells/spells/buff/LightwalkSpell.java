@@ -74,12 +74,12 @@ public class LightwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return players.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		if (!(entity instanceof Player player)) return;
 
 		LightWalkData data = players.remove(player.getUniqueId());
@@ -87,7 +87,7 @@ public class LightwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		for (UUID id : players.keySet()) {
 			Player player = Bukkit.getPlayer(id);
 			if (player == null) continue;

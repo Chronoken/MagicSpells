@@ -149,7 +149,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 		} else data = data.target(data.caster());
 
 		if (state != SpellCastState.NORMAL) {
-			if (isActive(data.target())) turnOff(data.target());
+			if (isActiveBuff(data.target())) turnOff(data.target());
 			return new CastResult(PostCastAction.HANDLE_NORMALLY, data);
 		}
 
@@ -163,7 +163,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	@Override
 	public CastResult castAtEntity(SpellData data) {
-		boolean active = isActive(data.target());
+		boolean active = isActiveBuff(data.target());
 		if (active && toggle) {
 			turnOff(data.target());
 			return new CastResult(PostCastAction.ALREADY_HANDLED, data);
@@ -222,7 +222,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 			}, Math.round(dur * TimeUtil.TICKS_PER_SECOND) + 1); // overestimate ticks, since the duration is real-time ms based
 		}
 
-		playSpellEffectsBuff(data.target(), entity -> isActiveAndNotExpired((LivingEntity) entity), data);
+		playSpellEffectsBuff(data.target(), entity -> isActive((LivingEntity) entity), data);
 
 		BuffManager manager = MagicSpells.getBuffManager();
 		if (manager != null) manager.startBuff(data.target(), this);
@@ -243,8 +243,44 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 		return duration;
 	}
 
+	public boolean isTargeted() {
+		return targeted;
+	}
+
 	public LivingEntity getLastCaster(LivingEntity target) {
 		return lastCaster.get(target.getUniqueId());
+	}
+
+	/**
+	 * An abstract logic function to check if the buff is still active for the target
+	 *
+	 * @param entity the livingEntity to check
+	 * @return true if the spell is active, false otherwise
+	 */
+	protected abstract boolean isActiveBuff(LivingEntity entity);
+
+	/**
+	 * An abstract logic function to call when the buff spell is supposed to be turned off for the livingEntity
+	 *
+	 * @param entity the livingEntity to check
+	 */
+	protected abstract void turnOffBuff(LivingEntity entity);
+
+	/**
+	 * An abstract logic function to call when the buff spell is supposed to be turned off globally
+	 */
+	protected abstract void turnOffBuff();
+
+	@Override
+	protected void turnOff() {
+		super.turnOff();
+
+		turnOffBuff();
+
+		for (EffectPosition pos : EffectPosition.values()) {
+			cancelEffectForAllPlayers(pos);
+		}
+		stopAllEffects();
 	}
 
 	/**
@@ -261,18 +297,16 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 		return endTime <= System.currentTimeMillis();
 	}
 
-	public boolean isActiveAndNotExpired(LivingEntity entity) {
-		if (duration > 0 && isExpired(entity)) return false;
-		return isActive(entity);
-	}
-
 	/**
 	 * Checks if this buff spell is active for the specified livingEntity
 	 *
 	 * @param entity the livingEntity to check
 	 * @return true if the spell is active, false otherwise
 	 */
-	public abstract boolean isActive(LivingEntity entity);
+	public boolean isActive(LivingEntity entity) {
+		if (duration > 0 && isExpired(entity)) return false;
+		return isActiveBuff(entity);
+	}
 
 	/**
 	 * Adds a use to the spell for the livingEntity. If the number of uses exceeds the amount allowed, the spell will immediately expire.
@@ -282,7 +316,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 	 * @param entity The livingEntity to add the use and remove the reagents from.
 	 */
 	protected void addUseAndChargeCost(LivingEntity entity) {
-		if (!isActive(entity)) return;
+		if (!isActiveBuff(entity)) return;
 
 		boolean hasNoCost = reagents == null && useCostInterval <= 0;
 		if (numUses <= 0 && hasNoCost) return;
@@ -312,7 +346,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 	}
 
 	public final void turnOff(LivingEntity entity, boolean removeFromMap) {
-		if (!isActive(entity)) return;
+		if (!isActiveBuff(entity)) return;
 
 		if (useCounter != null) useCounter.remove(entity.getUniqueId());
 		if (durationEndTime != null) durationEndTime.remove(entity.getUniqueId());
@@ -331,7 +365,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 		lastCaster.remove(entity.getUniqueId());
 	}
 
-	public void stopEffects(LivingEntity livingEntity) {
+	protected void stopEffects(LivingEntity livingEntity) {
 		Iterator<EffectTracker> trackerIterator = getEffectTrackers().iterator();
 		EffectTracker tracker;
 		while (trackerIterator.hasNext()) {
@@ -351,7 +385,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 		}
 	}
 
-	public void stopAllEffects() {
+	private void stopAllEffects() {
 		Iterator<EffectTracker> trackerIterator = getEffectTrackers().iterator();
 		EffectTracker effectTracker;
 		while (trackerIterator.hasNext()) {
@@ -369,18 +403,9 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 		}
 	}
 
-	protected abstract void turnOffBuff(LivingEntity entity);
-
-	@Override
-	protected abstract void turnOff();
-
-	public boolean isTargeted() {
-		return targeted;
-	}
-
 	private LivingEntity getWhoToCancel(LivingEntity livingEntity) {
 		// If the target was affected by the event, cancel them.
-		if (!targeted || cancelAffectsTarget) return isActiveAndNotExpired(livingEntity) ? livingEntity : null;
+		if (!targeted || cancelAffectsTarget) return isActive(livingEntity) ? livingEntity : null;
 
 		// targeted && !cancelAffectsTarget
 		// If the caster was affected by the event, cancel the target if they have the buff.
@@ -393,13 +418,13 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 			Entity entity = Bukkit.getEntity(entry.getKey());
 			if (!(entity instanceof LivingEntity target)) return null;
-			return isActiveAndNotExpired(target) ? target : null;
+			return isActive(target) ? target : null;
 		}
 
 		return null;
 	}
 
-	public class DamageListener implements Listener {
+	private class DamageListener implements Listener {
 
 		@EventHandler(ignoreCancelled = true)
 		public void onEntityDamage(EntityDamageEvent e) {
@@ -433,7 +458,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class EntityDeathListener implements Listener {
+	private class EntityDeathListener implements Listener {
 
 		// Entity only
 		@EventHandler(ignoreCancelled = true)
@@ -446,7 +471,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class PlayerDeathListener implements Listener {
+	private class PlayerDeathListener implements Listener {
 
 		@EventHandler(ignoreCancelled = true)
 		public void onPlayerDeath(PlayerDeathEvent event) {
@@ -457,7 +482,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class TeleportListener implements Listener {
+	private class TeleportListener implements Listener {
 
 		// player only
 		@EventHandler(ignoreCancelled = true)
@@ -480,7 +505,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class ChangeWorldListener implements Listener {
+	private class ChangeWorldListener implements Listener {
 
 		// player only
 		@EventHandler(priority = EventPriority.LOWEST)
@@ -507,7 +532,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class SpellCastListener implements Listener {
+	private class SpellCastListener implements Listener {
 
 		@EventHandler(ignoreCancelled = true)
 		public void onSpellCast(SpellCastEvent event) {
@@ -522,7 +547,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class PlayerQuitListener implements Listener {
+	private class PlayerQuitListener implements Listener {
 
 		@EventHandler
 		public void onQuit(PlayerQuitEvent event) {
@@ -533,7 +558,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class PlayerJoinListener implements Listener {
+	private class PlayerJoinListener implements Listener {
 
 		@EventHandler
 		public void onJoin(PlayerJoinEvent event) {
@@ -544,7 +569,7 @@ public abstract class BuffSpell extends TargetedSpell implements TargetedEntityS
 
 	}
 
-	public class PlayerMoveListener implements Listener {
+	private class PlayerMoveListener implements Listener {
 
 		private static final double MOTION_TOLERANCE = 0.1;
 

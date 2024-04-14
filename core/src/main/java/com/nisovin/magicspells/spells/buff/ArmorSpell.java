@@ -124,12 +124,12 @@ public class ArmorSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.contains(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		if (!entities.remove(entity.getUniqueId()) || !entity.isValid()) return;
 
 		EntityEquipment eq = entity.getEquipment();
@@ -137,7 +137,7 @@ public class ArmorSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		for (UUID id : entities) {
 			Entity entity = Bukkit.getEntity(id);
 			if (entity == null || !entity.isValid()) continue;
@@ -187,7 +187,7 @@ public class ArmorSpell extends BuffSpell {
 		@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 		public void onEntityDamage(EntityDamageEvent event) {
 			Entity entity = event.getEntity();
-			if (!(entity instanceof LivingEntity le) || !isActive(le) || le.getNoDamageTicks() >= 10) return;
+			if (!(entity instanceof LivingEntity le) || !isActiveBuff(le) || le.getNoDamageTicks() >= 10) return;
 
 			addUseAndChargeCost(le);
 		}
@@ -197,13 +197,13 @@ public class ArmorSpell extends BuffSpell {
 			if (event.getSlotType() != SlotType.ARMOR) return;
 
 			HumanEntity entity = event.getWhoClicked();
-			if (isActive(entity) && hasMarker(event.getCurrentItem())) event.setCancelled(true);
+			if (isActiveBuff(entity) && hasMarker(event.getCurrentItem())) event.setCancelled(true);
 		}
 
 		@EventHandler(ignoreCancelled = true)
 		public void onInventoryDrag(InventoryDragEvent event) {
 			HumanEntity entity = event.getWhoClicked();
-			if (!isActive(entity)) return;
+			if (!isActiveBuff(entity)) return;
 
 			InventoryView view = event.getView();
 
@@ -221,7 +221,7 @@ public class ArmorSpell extends BuffSpell {
 			if (!event.getAction().isRightClick() || event.useItemInHand() == Event.Result.DENY) return;
 
 			Player player = event.getPlayer();
-			if (!isActive(player)) return;
+			if (!isActiveBuff(player)) return;
 
 			EquipmentSlot slot = event.getMaterial().getEquipmentSlot();
 			if (!slot.isArmor()) return;
@@ -239,7 +239,7 @@ public class ArmorSpell extends BuffSpell {
 		@EventHandler
 		public void onPlayerRespawn(PlayerRespawnEvent event) {
 			Player player = event.getPlayer();
-			if (!isActive(player) || isExpired(player)) return;
+			if (!isActiveBuff(player) || isExpired(player)) return;
 
 			EntityEquipment eq = player.getEquipment();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(MagicSpells.plugin, () -> setArmor(eq));
@@ -248,7 +248,7 @@ public class ArmorSpell extends BuffSpell {
 		@EventHandler
 		public void onPlayerQuit(PlayerQuitEvent event) {
 			Player player = event.getPlayer();
-			if (!isActive(player)) return;
+			if (!isActiveBuff(player)) return;
 
 			if (cancelOnLogout) turnOff(player);
 			else removeArmor(player.getEquipment());
@@ -257,7 +257,7 @@ public class ArmorSpell extends BuffSpell {
 		@EventHandler
 		public void onPlayerJoin(PlayerJoinEvent event) {
 			Player player = event.getPlayer();
-			if (!isActive(player)) return;
+			if (!isActiveBuff(player)) return;
 
 			if (!isExpired(player)) setArmor(player.getEquipment());
 			else turnOff(player);

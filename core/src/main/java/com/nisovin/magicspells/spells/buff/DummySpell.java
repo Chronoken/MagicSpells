@@ -9,7 +9,6 @@ import org.bukkit.entity.LivingEntity;
 import com.nisovin.magicspells.util.SpellData;
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.spells.BuffSpell;
-import com.nisovin.magicspells.spelleffects.EffectPosition;
 
 public class DummySpell extends BuffSpell {
 
@@ -28,20 +27,17 @@ public class DummySpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.contains(entity.getUniqueId());
 	}
 	
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 	}
 
 	@Override
-	protected void turnOff() {
-		for (EffectPosition pos: EffectPosition.values()) {
-			cancelEffectForAllPlayers(pos);
-		}
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 

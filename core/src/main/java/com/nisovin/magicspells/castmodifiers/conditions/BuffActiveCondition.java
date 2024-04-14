@@ -42,7 +42,7 @@ public class BuffActiveCondition extends Condition {
 	}
 
 	private boolean active(LivingEntity target) {
-		return buff.isActiveAndNotExpired(target);
+		return buff.isActive(target);
 	}
 
 }

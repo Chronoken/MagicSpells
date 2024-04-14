@@ -108,29 +108,24 @@ public class WindglideSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 		entity.setGliding(false);
 	}
 
 	@Override
-	protected void turnOff() {
-		for (EffectPosition pos : EffectPosition.values()) {
-			cancelEffectForAllPlayers(pos);
-		}
-
+	protected void turnOffBuff() {
 		for (UUID id : entities.keySet()) {
 			Entity entity = Bukkit.getEntity(id);
 			if (!(entity instanceof LivingEntity livingEntity)) continue;
 			if (!entity.isValid()) continue;
 
 			livingEntity.setGliding(false);
-			turnOff(livingEntity);
 		}
 
 		entities.clear();
@@ -139,7 +134,7 @@ public class WindglideSpell extends BuffSpell {
 
 	@EventHandler
 	public void onEntityGlide(EntityToggleGlideEvent e) {
-		if (e.getEntity() instanceof LivingEntity entity && isActive(entity) && !e.isGliding())
+		if (e.getEntity() instanceof LivingEntity entity && isActiveBuff(entity) && !e.isGliding())
 			e.setCancelled(true);
 	}
 

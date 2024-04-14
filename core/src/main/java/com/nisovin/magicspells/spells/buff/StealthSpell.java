@@ -29,23 +29,23 @@ public class StealthSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.contains(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityTarget(EntityTargetEvent event) {
-		if (!(event.getTarget() instanceof LivingEntity target) || !isActive(target)) return;
+		if (!(event.getTarget() instanceof LivingEntity target) || !isActiveBuff(target)) return;
 
 		if (isExpired(target)) {
 			turnOff(target);

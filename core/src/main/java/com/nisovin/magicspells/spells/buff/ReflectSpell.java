@@ -75,17 +75,17 @@ public class ReflectSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return reflectors.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		reflectors.remove(entity.getUniqueId());
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		reflectors.clear();
 	}
 
@@ -94,7 +94,7 @@ public class ReflectSpell extends BuffSpell {
 		LivingEntity target = event.getTarget();
 		if (target == null) return;
 		if (!target.isValid()) return;
-		if (!isActive(target)) return;
+		if (!isActiveBuff(target)) return;
 
 		if (shieldBreakerNames != null && shieldBreakerNames.contains(event.getSpell().getInternalName())) {
 			turnOff(target);

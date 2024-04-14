@@ -65,12 +65,12 @@ public class SeeHealthSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return players.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		players.remove(entity.getUniqueId());
 
 		if (updater != null && players.isEmpty()) {
@@ -80,7 +80,7 @@ public class SeeHealthSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		players.clear();
 
 		if (updater != null) {

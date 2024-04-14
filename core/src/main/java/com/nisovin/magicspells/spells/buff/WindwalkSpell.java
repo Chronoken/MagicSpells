@@ -133,7 +133,7 @@ public class WindwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	public boolean isActiveBuff(LivingEntity entity) {
 		return players.containsKey(entity.getUniqueId());
 	}
 
@@ -154,12 +154,16 @@ public class WindwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		for (UUID id : players.keySet()) {
-			Player player = Bukkit.getPlayer(id);
-			if (player == null || !player.isValid()) continue;
+			Player pl = Bukkit.getPlayer(id);
+			if (pl == null || !pl.isValid()) continue;
 
-			turnOffBuff(player);
+			FlyData flyData = players.get(id);
+			pl.setFlying(false);
+			pl.setAllowFlight(flyData.wasFlyingAllowed());
+			pl.setFlySpeed(flyData.oldFlySpeed());
+			pl.setFallDistance(0);
 		}
 
 		players.clear();
@@ -181,7 +185,7 @@ public class WindwalkSpell extends BuffSpell {
 
 		@EventHandler(priority = EventPriority.MONITOR)
 		public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
-			if (isActive(event.getPlayer()) && !event.isFlying()) event.setCancelled(true);
+			if (isActiveBuff(event.getPlayer()) && !event.isFlying()) event.setCancelled(true);
 		}
 
 	}
@@ -191,8 +195,8 @@ public class WindwalkSpell extends BuffSpell {
 		@EventHandler(priority = EventPriority.MONITOR)
 		public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
 			Player player = event.getPlayer();
-			if (!isActive(player)) return;
-			if (!isActive(player) || player.getLocation().subtract(0, 1, 0).getBlock().getType().isAir()) return;
+			if (!isActiveBuff(player)) return;
+			if (!isActiveBuff(player) || player.getLocation().subtract(0, 1, 0).getBlock().getType().isAir()) return;
 
 			if (alwaysFly) {
 				player.teleport(player.getLocation().add(0, 0.25, 0), TeleportFlag.EntityState.RETAIN_PASSENGERS, TeleportFlag.EntityState.RETAIN_VEHICLE);

@@ -70,12 +70,12 @@ public class CarpetSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		BlockPlatform platform = entities.get(entity.getUniqueId());
 		if (platform == null) return;
 
@@ -84,7 +84,7 @@ public class CarpetSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.values().forEach(BlockPlatform::destroyPlatform);
 		entities.clear();
 	}
@@ -121,7 +121,7 @@ public class CarpetSpell extends BuffSpell {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
-		if (!isActive(player)) return;
+		if (!isActiveBuff(player)) return;
 
 		if (player.isSneaking()) {
 			falling.remove(player.getUniqueId());

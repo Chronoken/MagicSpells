@@ -62,12 +62,12 @@ public class FrostwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		BlockPlatform platform = entities.get(entity.getUniqueId());
 		if (platform == null) return;
 
@@ -76,13 +76,13 @@ public class FrostwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.values().forEach(BlockPlatform::destroyPlatform);
 		entities.clear();
 	}
 
 	private void handleMove(LivingEntity entity, Location to, Location from) {
-		if (!isActive(entity)) return;
+		if (!isActiveBuff(entity)) return;
 		if (isExpired(entity)) {
 			turnOff(entity);
 			return;

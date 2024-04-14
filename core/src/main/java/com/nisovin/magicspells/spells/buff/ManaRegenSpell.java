@@ -52,17 +52,17 @@ public class ManaRegenSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return players.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		players.remove(entity.getUniqueId());
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		players.clear();
 	}
 

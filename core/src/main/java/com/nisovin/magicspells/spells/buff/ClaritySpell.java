@@ -71,7 +71,7 @@ public class ClaritySpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
@@ -81,14 +81,14 @@ public class ClaritySpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void onSpellCast(SpellCastEvent event) {
 		LivingEntity caster = event.getCaster();
-		if (!isActive(caster) || !filter.check(event.getSpell())) return;
+		if (!isActiveBuff(caster) || !filter.check(event.getSpell())) return;
 
 		float multiplier = entities.get(caster.getUniqueId()).get();
 

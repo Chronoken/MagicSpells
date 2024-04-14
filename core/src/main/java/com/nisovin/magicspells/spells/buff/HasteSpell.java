@@ -70,12 +70,12 @@ public class HasteSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return players.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		HasteData data = players.remove(entity.getUniqueId());
 		if (data == null) return;
 
@@ -84,7 +84,7 @@ public class HasteSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		for (UUID id : players.keySet()) {
 			Player player = Bukkit.getPlayer(id);
 			if (player == null) continue;
@@ -99,7 +99,7 @@ public class HasteSpell extends BuffSpell {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
 		Player player = event.getPlayer();
-		if (!isActive(player)) return;
+		if (!isActiveBuff(player)) return;
 
 		if (isExpired(player)) {
 			turnOff(player);
@@ -136,7 +136,7 @@ public class HasteSpell extends BuffSpell {
 	@EventHandler
 	public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
-		if (!isActive(player)) return;
+		if (!isActiveBuff(player)) return;
 
 		player.removePotionEffect(PotionEffectType.SPEED);
 

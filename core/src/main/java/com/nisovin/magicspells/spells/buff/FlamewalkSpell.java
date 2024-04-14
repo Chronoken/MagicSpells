@@ -82,12 +82,12 @@ public class FlamewalkSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 		if (!entities.isEmpty()) return;
 		if (burner == null) return;
@@ -97,7 +97,7 @@ public class FlamewalkSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.clear();
 		if (burner == null) return;
 

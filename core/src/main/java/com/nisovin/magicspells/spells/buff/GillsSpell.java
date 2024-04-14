@@ -110,12 +110,12 @@ public class GillsSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		GillData data = entities.remove(entity.getUniqueId());
 		if (data != null && data.headEffect) {
 			EntityEquipment eq = entity.getEquipment();
@@ -126,12 +126,18 @@ public class GillsSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		for (UUID uuid : entities.keySet()) {
 			Entity entity = Bukkit.getEntity(uuid);
 			if (!(entity instanceof LivingEntity livingEntity) || !livingEntity.isValid()) continue;
 
-			turnOffBuff(livingEntity);
+			GillData data = entities.get(uuid);
+			if (data != null && data.headEffect) {
+				EntityEquipment eq = livingEntity.getEquipment();
+				if (eq == null) return;
+
+				eq.setHelmet(data.helmet);
+			}
 		}
 
 		entities.clear();
@@ -142,7 +148,7 @@ public class GillsSpell extends BuffSpell {
 		if (event.getCause() != DamageCause.DROWNING) return;
 
 		Entity entity = event.getEntity();
-		if (!(entity instanceof LivingEntity livingEntity) || !isActive(livingEntity)) return;
+		if (!(entity instanceof LivingEntity livingEntity) || !isActiveBuff(livingEntity)) return;
 
 		if (isExpired(livingEntity)) {
 			turnOff(livingEntity);
@@ -179,7 +185,7 @@ public class GillsSpell extends BuffSpell {
 		if (event.getInventory().getType() != InventoryType.PLAYER) return;
 
 		HumanEntity entity = event.getWhoClicked();
-		if (!isActive(entity)) return;
+		if (!isActiveBuff(entity)) return;
 
 		Set<Integer> slots = event.getRawSlots();
 		if (slots.contains(5)) event.setCancelled(true);

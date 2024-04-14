@@ -78,18 +78,18 @@ public class StonevisionSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return players.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		TransparentBlockSet t = players.remove(entity.getUniqueId());
 		if (t != null) t.removeTransparency();
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		for (TransparentBlockSet tbs : players.values()) {
 			tbs.removeTransparency();
 		}
@@ -100,7 +100,7 @@ public class StonevisionSpell extends BuffSpell {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player pl = event.getPlayer();
-		if (!isActive(pl)) return;
+		if (!isActiveBuff(pl)) return;
 		if (isExpired(pl)) {
 			turnOff(pl);
 			return;

@@ -70,24 +70,24 @@ public class EmpowerSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSpellCast(SpellCastEvent event) {
 		LivingEntity caster = event.getCaster();
-		if (caster == null || !isActive(caster) || !filter.check(event.getSpell())) return;
+		if (caster == null || !isActiveBuff(caster) || !filter.check(event.getSpell())) return;
 
 		event.increasePower(entities.get(caster.getUniqueId()).get());
 		addUseAndChargeCost(caster);

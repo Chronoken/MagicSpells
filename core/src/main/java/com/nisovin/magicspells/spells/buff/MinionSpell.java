@@ -313,7 +313,7 @@ public class MinionSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return minions.containsKey(entity.getUniqueId());
 	}
 
@@ -322,7 +322,7 @@ public class MinionSpell extends BuffSpell {
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		LivingEntity minion = minions.remove(entity.getUniqueId());
 		if (minion != null && !minion.isDead()) minion.remove();
 
@@ -331,7 +331,7 @@ public class MinionSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		minions.values().forEach(Entity::remove);
 		minions.clear();
 
@@ -388,7 +388,7 @@ public class MinionSpell extends BuffSpell {
 
 		if (!(e.getEntity() instanceof LivingEntity entity) || !entity.isValid()) return;
 		// Check if the damaged entity is a player
-		if (entity instanceof Player pl && isActive(pl)) {
+		if (entity instanceof Player pl && isActiveBuff(pl)) {
 			// If a Minion tries to attack his owner, cancel the damage and stop the minion
 			if (minions.get(pl.getUniqueId()).equals(damager)) {
 				targets.remove(pl.getUniqueId());
@@ -428,7 +428,7 @@ public class MinionSpell extends BuffSpell {
 
 		if (damager instanceof Player pl) {
 			// Check if player's damaged target is his minion, if it's not, make him attack your target
-			if (!isActive(pl)) return;
+			if (!isActiveBuff(pl)) return;
 			for (BuffSpell buff : MagicSpells.getBuffManager().getActiveBuffs(pl)) {
 				if (!(buff instanceof MinionSpell minionBuff)) continue;
 				if (entity.equals(minionBuff.minions.get(pl.getUniqueId()))) {
@@ -479,7 +479,7 @@ public class MinionSpell extends BuffSpell {
 	// Owner cant damage his minion with spells
 	@EventHandler(ignoreCancelled = true)
 	public void onSpellTarget(SpellTargetEvent e) {
-		if (!isActive(e.getCaster())) return;
+		if (!isActiveBuff(e.getCaster())) return;
 		if (!e.getSpell().isBeneficial() && e.getTarget().equals(minions.get(e.getCaster().getUniqueId()))) e.setCancelled(true);
 	}
 
@@ -518,7 +518,7 @@ public class MinionSpell extends BuffSpell {
 	public void onPlayerMove(PlayerMoveEvent e) {
 		if (e.getFrom().getBlock().equals(e.getTo().getBlock())) return;
 		Player pl = e.getPlayer();
-		if (!isActive(pl)) return;
+		if (!isActiveBuff(pl)) return;
 		LivingEntity minion = minions.get(pl.getUniqueId());
 
 		if ((pl.getWorld().equals(minion.getWorld()) && pl.getLocation().distanceSquared(minion.getLocation()) > maxDistance * maxDistance) || targets.get(pl.getUniqueId()) == null || !targets.containsKey(pl.getUniqueId())) {

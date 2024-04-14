@@ -41,7 +41,7 @@ public class OwnedBuffActiveCondition extends Condition {
 
 	private boolean isOwned(LivingEntity caster, LivingEntity target) {
 		if (target == null) return false;
-		return buff.isActiveAndNotExpired(target) && buff.getLastCaster(target).equals(caster);
+		return buff.isActive(target) && buff.getLastCaster(target).equals(caster);
 	}
 
 }

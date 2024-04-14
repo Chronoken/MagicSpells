@@ -53,17 +53,17 @@ public class InvisibilitySpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return manager.isActive(this, entity);
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		manager.turnOffBuff(this, entity);
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		if (manager != null) {
 			manager.stop();
 			manager = null;

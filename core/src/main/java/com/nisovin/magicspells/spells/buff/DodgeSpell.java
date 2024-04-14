@@ -80,27 +80,24 @@ public class DodgeSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 	}
 
 	@Override
-	protected void turnOff() {
-		for (EffectPosition pos: EffectPosition.values()) {
-			cancelEffectForAllPlayers(pos);
-		}
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 
 	@EventHandler
 	public void onProjectileHit(ParticleProjectileHitEvent e) {
 		LivingEntity target = e.getTarget();
-		if (!isActive(target)) return;
+		if (!isActiveBuff(target)) return;
 
 		Spell spell = e.getSpell();
 		if (spell != null && !filter.check(spell)) return;

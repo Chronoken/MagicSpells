@@ -54,7 +54,7 @@ public class DamageEmpowerSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
@@ -64,14 +64,14 @@ public class DamageEmpowerSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSpellApplyDamage(SpellApplyDamageEvent event) {
 		LivingEntity caster = event.getCaster();
-		if (!isActive(caster)) return;
+		if (!isActiveBuff(caster)) return;
 		if (!filter.check(event.getSpell())) return;
 
 		float damageMultiplier = entities.get(caster.getUniqueId()).get();

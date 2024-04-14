@@ -51,12 +51,12 @@ public class WaterwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 		Player player = (Player) entity;
 
@@ -68,7 +68,7 @@ public class WaterwalkSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		for (UUID id : entities.keySet()) {
 			Player pl = Bukkit.getPlayer(id);
 			if (pl == null) continue;

@@ -87,7 +87,7 @@ public class ResistSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.containsKey(entity.getUniqueId());
 	}
 
@@ -97,14 +97,14 @@ public class ResistSpell extends BuffSpell {
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 
 	@EventHandler
 	public void onSpellDamage(SpellApplyDamageEvent event) {
 		if (spellDamageTypes.isEmpty()) return;
-		if (!isActive(event.getTarget())) return;
+		if (!isActiveBuff(event.getTarget())) return;
 
 		String spellDamageType = event.getSpellDamageType();
 		if (spellDamageType == null) return;
@@ -135,7 +135,7 @@ public class ResistSpell extends BuffSpell {
 
 		Entity entity = event.getEntity();
 		if (!(entity instanceof LivingEntity caster)) return;
-		if (!isActive(caster)) return;
+		if (!isActiveBuff(caster)) return;
 
 		LivingEntity target = null;
 		if (event instanceof EntityDamageByEntityEvent e)

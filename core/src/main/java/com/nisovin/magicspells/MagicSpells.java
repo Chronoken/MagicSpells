@@ -2065,7 +2065,6 @@ public class MagicSpells extends JavaPlugin {
 					}
 				}
 			}
-			if (spell instanceof BuffSpell buffSpell) buffSpell.stopAllEffects();
 
 			spell.turnOff();
 		}

@@ -54,17 +54,17 @@ public class ImpactRecordSpell extends BuffSpell {
 	}
 
 	@Override
-	public boolean isActive(LivingEntity entity) {
+	protected boolean isActiveBuff(LivingEntity entity) {
 		return entities.contains(entity.getUniqueId());
 	}
 
 	@Override
-	public void turnOffBuff(LivingEntity entity) {
+	protected void turnOffBuff(LivingEntity entity) {
 		entities.remove(entity.getUniqueId());
 	}
 
 	@Override
-	protected void turnOff() {
+	protected void turnOffBuff() {
 		entities.clear();
 	}
 	
@@ -74,7 +74,7 @@ public class ImpactRecordSpell extends BuffSpell {
 		
 		LivingEntity target = event.getTarget();
 		if (!(target instanceof Player playerTarget)) return;
-		if (!isActive(playerTarget)) return;
+		if (!isActiveBuff(playerTarget)) return;
 		
 		Spell spell = event.getSpell();
 		if (!recordFilter.check(spell)) return;
