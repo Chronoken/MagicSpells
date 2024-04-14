@@ -304,7 +304,7 @@ public class OrbitSpell extends TargetedSpell implements TargetedEntitySpell, Ta
 				repeatingVertTaskId = MagicSpells.scheduleRepeatingTask(() -> yOffset += vertExpandRadius, vertExpandDelay, vertExpandDelay);
 			} else repeatingVertTaskId = -1;
 
-			ticksPerRevolution = (int) (secondsPerRevolution.get(data) * 20 / tickInterval);
+			ticksPerRevolution = Math.round(secondsPerRevolution.get(data) * 20 / tickInterval);
 
 			maxDuration = OrbitSpell.this.maxDuration.get(data) * TimeUtil.MILLISECONDS_PER_SECOND;
 
