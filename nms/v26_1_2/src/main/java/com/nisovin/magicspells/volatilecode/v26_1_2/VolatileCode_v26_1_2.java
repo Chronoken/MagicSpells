@@ -1,10 +1,9 @@
-package com.nisovin.magicspells.volatilecode.latest;
+package com.nisovin.magicspells.volatilecode.v26_1_2;
 
 import java.util.*;
 import java.lang.invoke.VarHandle;
 import java.util.function.Consumer;
 import java.lang.invoke.MethodType;
-import java.util.function.Supplier;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 
@@ -12,7 +11,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import org.bukkit.World;
 import org.bukkit.Bukkit;
-import org.bukkit.Particle;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import org.bukkit.entity.Entity;
@@ -31,7 +29,6 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import net.kyori.adventure.text.Component;
 
@@ -51,21 +48,20 @@ import net.minecraft.advancements.*;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.core.particles.ColorParticleOption;
-import net.minecraft.advancements.triggers.ImpossibleTrigger;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 
-public class VolatileCodeLatest extends VolatileCodeHandle {
+public class VolatileCode_v26_1_2 extends VolatileCodeHandle {
 
 	private final Identifier TOAST_KEY = Identifier.fromNamespaceAndPath("magicspells", "toast_effect");
 
@@ -80,7 +76,7 @@ public class VolatileCodeLatest extends VolatileCodeHandle {
 	private final VarHandle RUN_HANDLE;
 
 	@SuppressWarnings("unchecked")
-	public VolatileCodeLatest(VolatileCodeHelper helper) throws Exception {
+	public VolatileCode_v26_1_2(VolatileCodeHelper helper) throws Exception {
 		super(helper);
 
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
@@ -157,7 +153,7 @@ public class VolatileCodeLatest extends VolatileCodeHandle {
 
 	@Override
 	public void playDragonDeathEffect(Location location) {
-		EnderDragon dragon = new EnderDragon(EntityTypes.ENDER_DRAGON, ((CraftWorld) location.getWorld()).getHandle());
+		EnderDragon dragon = new EnderDragon(EntityType.ENDER_DRAGON, ((CraftWorld) location.getWorld()).getHandle());
 		dragon.setPos(location.x(), location.y(), location.z());
 
 		BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
@@ -254,7 +250,7 @@ public class VolatileCodeLatest extends VolatileCodeHandle {
 
 	@Override
 	public GlowManager getGlowManager() {
-		return new VolatileGlowManagerLatest(helper);
+		return new VolatileGlowManager_v26_1_2(helper);
 	}
 
 	@Override
@@ -293,32 +289,6 @@ public class VolatileCodeLatest extends VolatileCodeHandle {
 		}
 
 		return count;
-	}
-
-	@Override
-	public @Nullable Object getVolatileParticleData(
-		Particle particle,
-		Supplier<Integer> geyserWaterBlocks,
-		Supplier<Float> geyserBurstImpulse
-	) {
-		Class<?> type = particle.getDataType();
-
-		if (type == Particle.Geyser.class) {
-			Integer waterBlocks = geyserWaterBlocks.get();
-			if (waterBlocks == null) return null;
-
-			return new Particle.Geyser(waterBlocks);
-		}
-
-		if (type == Particle.GeyserBase.class) {
-			Integer waterBlocks = geyserWaterBlocks.get();
-			Float burstImpulse = geyserBurstImpulse.get();
-			if (waterBlocks == null || burstImpulse == null) return null;
-
-			return new Particle.GeyserBase(waterBlocks, burstImpulse);
-		}
-
-		return null;
 	}
 
 }
