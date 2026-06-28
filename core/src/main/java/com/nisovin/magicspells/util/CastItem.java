@@ -156,7 +156,7 @@ public class CastItem {
 			&& (MagicSpells.ignoreCastItemAmount() || amount == i.amount)
 			&& (MagicSpells.ignoreCastItemNames() || Objects.equals(name, i.name))
 			&& (MagicSpells.ignoreCastItemCustomModelData() || customModelData == i.customModelData)
-			&& (MagicSpells.ignoreCastItemItemModel() || itemModel == i.itemModel)
+			&& (MagicSpells.ignoreCastItemItemModel() || Objects.equals(itemModel, i.itemModel))
 			&& (MagicSpells.ignoreCastItemBreakability() || unbreakable == i.unbreakable)
 			&& (MagicSpells.ignoreCastItemColor() || Objects.equals(color, i.color))
 			&& (MagicSpells.ignoreCastItemPotionType() || Objects.equals(potionType, i.potionType))
