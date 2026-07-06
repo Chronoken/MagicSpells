@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.block.data.BlockData;
 
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 
@@ -154,8 +155,10 @@ public class DisguiseSpell extends BuffSpell {
 		if (watcher instanceof DroppedItemWatcher droppedItemWatcher)
 			droppedItemWatcher.setItemStack(entityData.getDroppedItemStack().get(data));
 
-		if (watcher instanceof EndermanWatcher endermanWatcher)
-			endermanWatcher.setHeldBlock(SpigotConversionUtil.fromBukkitBlockData(entityData.getCarriedBlockData().get(data)));
+		if (watcher instanceof EndermanWatcher endermanWatcher) {
+			BlockData blockData = entityData.getCarriedBlockData().get(data);
+			if (blockData != null) endermanWatcher.setHeldBlock(SpigotConversionUtil.fromBukkitBlockData(blockData));
+		}
 
 		if (watcher instanceof FallingBlockWatcher fallingBlockWatcher)
 			fallingBlockWatcher.setBlockData(entityData.getFallingBlockData().get(data));
