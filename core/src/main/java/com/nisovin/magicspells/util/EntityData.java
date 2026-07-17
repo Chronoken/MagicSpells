@@ -264,51 +264,58 @@ public class EntityData {
 
 		// Armor Stand
 		fallback(
-			key -> addBoolean(transformers, config, key, false, ArmorStand.class, ArmorStand::setSmall, forceOptional),
+			key -> addOptBoolean(transformers, config, key, ArmorStand.class, ArmorStand::setSmall),
 			"armor-stand.small", "small"
 		);
 		fallback(
-			key -> addBoolean(transformers, config, key, false, ArmorStand.class, ArmorStand::setMarker, forceOptional),
+			key -> addOptBoolean(transformers, config, key, ArmorStand.class, ArmorStand::setMarker),
 			"armor-stand.marker", "marker"
 		);
 		fallback(
-			key -> addBoolean(transformers, config, key, true, ArmorStand.class, ArmorStand::setVisible, forceOptional),
+			key -> addOptBoolean(transformers, config, key, ArmorStand.class, ArmorStand::setVisible),
 			"armor-stand.visible", "visible"
 		);
 		fallback(
-			key -> addBoolean(transformers, config, key, true, ArmorStand.class, ArmorStand::setArms, forceOptional),
+			transformers, key -> ConfigDataUtil.getBoolean(config, key), true, forceOptional,
+			ArmorStand.class, ArmorStand::setArms,
 			"armor-stand.has-arms", "has-arms"
 		);
 		fallback(
-			key -> addBoolean(transformers, config, key, true, ArmorStand.class, ArmorStand::setBasePlate, forceOptional),
+			key -> addOptBoolean(transformers, config, key, ArmorStand.class, ArmorStand::setBasePlate),
 			"armor-stand.has-base-plate", "has-base-plate"
 		);
-		addBoolean(transformers, config, "armor-stand.disable-slots", false, ArmorStand.class, (stand, disabled) -> {
+		addOptBoolean(transformers, config, "armor-stand.disable-slots", ArmorStand.class, (stand, disabled) -> {
 			if (disabled) stand.setDisabledSlots(EquipmentSlot.values());
-		}, forceOptional);
+		});
 
 		fallback(
-			key -> addEulerAngle(transformers, config, key, EulerAngle.ZERO, ArmorStand.class, ArmorStand::setHeadPose, forceOptional),
+			transformers, key -> ConfigDataUtil.getEulerAngle(config, key, null), EulerAngle.ZERO, forceOptional,
+			ArmorStand.class, ArmorStand::setHeadPose,
 			"armor-stand.head-angle", "head-angle"
 		);
 		fallback(
-			key -> addEulerAngle(transformers, config, key, EulerAngle.ZERO, ArmorStand.class, ArmorStand::setBodyPose, forceOptional),
+			transformers, key -> ConfigDataUtil.getEulerAngle(config, key, null), EulerAngle.ZERO, forceOptional,
+			ArmorStand.class, ArmorStand::setBodyPose,
 			"armor-stand.body-angle", "body-angle"
 		);
 		fallback(
-			key -> addEulerAngle(transformers, config, key, EulerAngle.ZERO, ArmorStand.class, ArmorStand::setLeftArmPose, forceOptional),
+			transformers, key -> ConfigDataUtil.getEulerAngle(config, key, null), EulerAngle.ZERO, forceOptional,
+			ArmorStand.class, ArmorStand::setLeftArmPose,
 			"armor-stand.left-arm-angle", "left-arm-angle"
 		);
 		fallback(
-			key -> addEulerAngle(transformers, config, key, EulerAngle.ZERO, ArmorStand.class, ArmorStand::setRightArmPose, forceOptional),
+			transformers, key -> ConfigDataUtil.getEulerAngle(config, key, null), EulerAngle.ZERO, forceOptional,
+			ArmorStand.class, ArmorStand::setRightArmPose,
 			"armor-stand.right-arm-angle", "right-arm-angle"
 		);
 		fallback(
-			key -> addEulerAngle(transformers, config, key, EulerAngle.ZERO, ArmorStand.class, ArmorStand::setLeftLegPose, forceOptional),
+			transformers, key -> ConfigDataUtil.getEulerAngle(config, key, null), EulerAngle.ZERO, forceOptional,
+			ArmorStand.class, ArmorStand::setLeftLegPose,
 			"armor-stand.left-leg-angle", "left-leg-angle"
 		);
 		fallback(
-			key -> addEulerAngle(transformers, config, key, EulerAngle.ZERO, ArmorStand.class, ArmorStand::setRightLegPose, forceOptional),
+			transformers, key -> ConfigDataUtil.getEulerAngle(config, key, null), EulerAngle.ZERO, forceOptional,
+			ArmorStand.class, ArmorStand::setRightLegPose,
 			"armor-stand.right-leg-angle", "right-leg-angle"
 		);
 
@@ -391,7 +398,7 @@ public class EntityData {
 
 		// Enderman
 		carriedBlockData = fallback(
-			key -> addBlockData(transformers, config, key, null, Enderman.class, Enderman::setCarriedBlock, forceOptional),
+			key -> addOptBlockData(transformers, config, key, Enderman.class, Enderman::setCarriedBlock),
 			"carried-block", "material"
 		);
 
@@ -566,7 +573,8 @@ public class EntityData {
 
 		// Phantom
 		fallback(
-			key -> addInteger(transformers, config, key, 0, Phantom.class, Phantom::setSize, forceOptional),
+			transformers, key -> ConfigDataUtil.getInteger(config, key), 0, forceOptional,
+			Phantom.class, Phantom::setSize,
 			"phantom.size", "size"
 		);
 
@@ -588,7 +596,8 @@ public class EntityData {
 
 		// Puffer Fish
 		size = fallback(
-			key -> addInteger(transformers, config, key, 0, PufferFish.class, PufferFish::setPuffState, forceOptional),
+			transformers, key -> ConfigDataUtil.getInteger(config, key), 0, forceOptional,
+			PufferFish.class, PufferFish::setPuffState,
 			"pufferfish.puff-state", "size"
 		);
 
@@ -605,7 +614,7 @@ public class EntityData {
 
 		// Sheep
 		sheared = fallback(
-			key -> addBoolean(transformers, config, key, false, Sheep.class, Sheep::setSheared, forceOptional),
+			key -> addOptBoolean(transformers, config, key, Sheep.class, Sheep::setSheared),
 			"sheep.sheared", "sheared"
 		);
 		color = fallback(
@@ -635,7 +644,8 @@ public class EntityData {
 
 		// Slime
 		fallback(
-			key -> addInteger(transformers, config, key, 0, Slime.class, Slime::setSize, forceOptional),
+			transformers, key -> ConfigDataUtil.getInteger(config, key), 0, forceOptional,
+			Slime.class, Slime::setSize,
 			"slime.size", "size"
 		);
 
@@ -674,7 +684,7 @@ public class EntityData {
 
 		// Wolf
 		fallback(
-			key -> addBoolean(transformers, config, key, false, Wolf.class, Wolf::setAngry, forceOptional),
+			key -> addOptBoolean(transformers, config, key, Wolf.class, Wolf::setAngry),
 			"wolf.angry", "angry"
 		);
 
@@ -1022,46 +1032,6 @@ public class EntityData {
 		return supplier;
 	}
 
-	private <T> ConfigData<Integer> addInteger(Multimap<Class<?>, Transformer<?>> transformers, ConfigurationSection config, String name, int def, Class<T> type, BiConsumer<T, Integer> setter, boolean forceOptional) {
-		ConfigData<Integer> supplier;
-		if (forceOptional) {
-			supplier = ConfigDataUtil.getInteger(config, name);
-			transformers.put(type, new TransformerImpl<>(supplier, setter, true));
-		} else {
-			supplier = ConfigDataUtil.getInteger(config, name, def);
-			transformers.put(type, new TransformerImpl<>(supplier, setter));
-		}
-
-		return supplier;
-	}
-
-	private <T> ConfigData<BlockData> addBlockData(Multimap<Class<?>, Transformer<?>> transformers, ConfigurationSection config, String name, BlockData def, Class<T> type, BiConsumer<T, BlockData> setter, boolean forceOptional) {
-		ConfigData<BlockData> supplier;
-		if (forceOptional) {
-			supplier = ConfigDataUtil.getBlockData(config, name, null);
-			transformers.put(type, new TransformerImpl<>(supplier, setter, true));
-		} else {
-			supplier = ConfigDataUtil.getBlockData(config, name, def);
-			transformers.put(type, new TransformerImpl<>(supplier, setter));
-		}
-
-		return supplier;
-	}
-
-	private <T> ConfigData<EulerAngle> addEulerAngle(Multimap<Class<?>, Transformer<?>> transformers, ConfigurationSection config, String name, EulerAngle def, Class<T> type, BiConsumer<T, EulerAngle> setter, boolean forceOptional) {
-		ConfigData<EulerAngle> supplier;
-
-		if (forceOptional) {
-			supplier = ConfigDataUtil.getEulerAngle(config, name, null);
-			transformers.put(type, new TransformerImpl<>(supplier, setter, true));
-		} else {
-			supplier = ConfigDataUtil.getEulerAngle(config, name, def);
-			transformers.put(type, new TransformerImpl<>(supplier, setter));
-		}
-
-		return supplier;
-	}
-
 	private <T> ConfigData<Boolean> addOptBoolean(Multimap<Class<?>, Transformer<?>> transformers, ConfigurationSection config, String name, Class<T> type, BiConsumer<T, Boolean> setter) {
 		ConfigData<Boolean> supplier = ConfigDataUtil.getBoolean(config, name);
 		transformers.put(type, new TransformerImpl<>(supplier, setter, true));
@@ -1215,6 +1185,9 @@ public class EntityData {
 		return supplier;
 	}
 
+	/**
+	 * @param function Use {@code addOptX} methods.
+	 */
 	private <T> ConfigData<T> fallback(Function<String, ConfigData<T>> function, String... keys) {
 		for (String key : keys) {
 			ConfigData<T> data = function.apply(key);
@@ -1222,6 +1195,31 @@ public class EntityData {
 		}
 
 		return data -> null;
+	}
+
+	/**
+	 * @param configDataFun Make its default value {@code null}.
+	 */
+	private <D, T> ConfigData<D> fallback(
+		Multimap<Class<?>, Transformer<?>> transformers,
+		Function<String, ConfigData<D>> configDataFun,
+		D def,
+		boolean forceOptional,
+		Class<T> type,
+		BiConsumer<T, D> setter,
+		String... keys
+	) {
+		for (String key : keys) {
+			ConfigData<D> supplier = configDataFun.apply(key);
+			if (supplier.isNull()) continue;
+
+			transformers.put(type, new TransformerImpl<>(supplier, setter, forceOptional));
+			return supplier;
+		}
+
+		ConfigData<D> supplier = _ -> forceOptional ? null : def;
+		transformers.put(type, new TransformerImpl<>(supplier, setter, forceOptional));
+		return supplier;
 	}
 
 	public ConfigData<Vector3f> getVector(ConfigurationSection config, String path) {
