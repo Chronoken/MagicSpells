@@ -1338,24 +1338,20 @@ public abstract class Spell implements Comparable<Spell>, Listener {
 	 * @return whether the spell is on cooldown
 	 */
 	public boolean onCooldown(LivingEntity livingEntity) {
+		return hasActiveCooldown(livingEntity) && !Perm.NO_COOLDOWN.has(livingEntity);
+	}
+
+	private boolean hasActiveCooldown(LivingEntity livingEntity) {
 		UUID uuid = livingEntity.getUniqueId();
 		long timeMillis = System.currentTimeMillis();
 
 		ChargeState state = chargeStates.get(uuid);
-		boolean depleted = state != null && state.isDepleted();
+		if (state != null && state.isDepleted()) return true;
 
-		if (!depleted && serverCooldown > 0 && nextCastServer > timeMillis) {
-			depleted = true;
-		}
+		if (serverCooldown > 0 && nextCastServer > timeMillis) return true;
 
-		if (!depleted) {
-			Long next = nextCast.get(uuid);
-			if (next != null && next > timeMillis) {
-				depleted = true;
-			}
-		}
-
-		return depleted && !Perm.NO_COOLDOWN.has(livingEntity);
+		Long next = nextCast.get(uuid);
+		return next != null && next > timeMillis;
 	}
 
 	/**
