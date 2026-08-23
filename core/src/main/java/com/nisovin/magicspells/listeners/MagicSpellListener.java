@@ -31,19 +31,22 @@ public class MagicSpellListener implements Listener {
 		// Check if target has noTarget permission / is in noMagicZone / is an invisible marker armorstand
 		LivingEntity target = event.getTarget();
 		Spell spell = event.getSpell();
-		if (target == null) return;
+
+		if (target == null)
+			return;
 
 		if (isMSEntity(target)) {
 			event.setCancelled(true);
 			return;
 		}
 
-		if (spell != null && noMagicZoneManager != null && noMagicZoneManager.willFizzle(target, spell)) {
+		if (Perm.NO_TARGET.has(target))  {
 			event.setCancelled(true);
 			return;
 		}
 
-		if (Perm.NO_TARGET.has(target)) event.setCancelled(true);
+		if (spell != null && noMagicZoneManager != null && noMagicZoneManager.willFizzle(target, spell))
+			event.setCancelled(true);
 	}
 
 	@EventHandler
