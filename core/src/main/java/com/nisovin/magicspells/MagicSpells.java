@@ -1975,7 +1975,7 @@ public class MagicSpells extends JavaPlugin {
 			method.setAccessible(true);
 			final MethodHandle methodHandle;
 			try {
-				MethodHandle handle = MethodHandles.lookup().unreflect(method);
+				MethodHandle handle = MethodHandles.privateLookupIn(listener.getClass(), MethodHandles.lookup()).unreflect(method);
 				if (!Modifier.isStatic(method.getModifiers())) handle = handle.bindTo(listener);
 				methodHandle = handle.asType(MethodType.methodType(void.class, Event.class));
 			} catch (IllegalAccessException e) {
