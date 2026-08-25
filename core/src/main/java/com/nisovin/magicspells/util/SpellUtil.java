@@ -63,8 +63,7 @@ public class SpellUtil {
 	 * @return true if the player has all the reagents, false otherwise
 	 */
 	public static boolean hasReagents(LivingEntity livingEntity, SpellReagents.ReagentItem[] reagents, double healthCost, int manaCost, int hungerCost, int experienceCost, int levelsCost, int durabilityCost, float moneyCost, Map<String, Double> variables) {
-		// Is the livingEntity exempt from reagent costs?
-		if (Perm.NO_REAGENTS.has(livingEntity)) return true;
+		if (!hasCosts(reagents, healthCost, manaCost, hungerCost, experienceCost, levelsCost, durabilityCost, moneyCost, variables) || Perm.NO_REAGENTS.has(livingEntity)) return true;
 
 		// player reagents
 		if (livingEntity instanceof Player player) {
@@ -102,7 +101,7 @@ public class SpellUtil {
 		// Health costs
 		if (healthCost > 0 && livingEntity.getHealth() <= healthCost) return false;
 
-		// Durabilty costs
+		// Durability costs
 		if (durabilityCost > 0) {
 			// Durability cost is charged from the main hand item
 			EntityEquipment equipment = livingEntity.getEquipment();
@@ -134,6 +133,13 @@ public class SpellUtil {
 		return true;
 	}
 
+	private static boolean hasCosts(SpellReagents.ReagentItem[] reagents, double healthCost, int manaCost, int hungerCost, int experienceCost, int levelsCost, int durabilityCost, float moneyCost, Map<String, Double> variables) {
+		return (reagents != null && reagents.length > 0)
+			|| healthCost != 0 || manaCost != 0 || hungerCost != 0
+			|| experienceCost != 0 || levelsCost != 0 || durabilityCost != 0
+			|| moneyCost != 0 || (variables != null && !variables.isEmpty());
+	}
+
 	public static void removeReagents(LivingEntity livingEntity, SpellReagents reagents) {
 		removeReagents(livingEntity, reagents.getItemsAsArray(), reagents.getHealth(), reagents.getMana(), reagents.getHunger(), reagents.getExperience(), reagents.getLevels(), reagents.getDurability(), reagents.getMoney(), reagents.getVariables());
 	}
@@ -147,7 +153,7 @@ public class SpellUtil {
 	 * @param manaCost the mana to remove
 	 */
 	public static void removeReagents(LivingEntity livingEntity, SpellReagents.ReagentItem[] reagents, double healthCost, int manaCost, int hungerCost, int experienceCost, int levelsCost, int durabilityCost, float moneyCost, Map<String, Double> variables) {
-		if (Perm.NO_REAGENTS.has(livingEntity)) return;
+		if (!hasCosts(reagents, healthCost, manaCost, hungerCost, experienceCost, levelsCost, durabilityCost, moneyCost, variables) || Perm.NO_REAGENTS.has(livingEntity)) return;
 
 		if (reagents != null) {
 			for (SpellReagents.ReagentItem item : reagents) {
